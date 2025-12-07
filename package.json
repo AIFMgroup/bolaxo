@@ -25,6 +25,7 @@
     "@aws-sdk/s3-request-presigner": "^3.919.0",
     "@prisma/client": "^6.17.1",
     "@react-pdf/renderer": "^4.3.1",
+    "@sentry/nextjs": "^10.29.0",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.6",
     "ai": "^3.1.0",
