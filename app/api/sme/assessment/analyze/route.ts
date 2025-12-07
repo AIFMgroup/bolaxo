@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     
     try {
       const { text } = await callOpenAIResponses({
-        model: 'gpt-5-mini',
+        model: 'gpt-5.1-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: `Analysera följande företagsinformation för försäljningsberedskap:\n\n${JSON.stringify(dataSummary, null, 2)}\n\nReturnera JSON enligt schemat.` }

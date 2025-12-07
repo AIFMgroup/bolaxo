@@ -28,6 +28,8 @@ function safeHeader(request: NextRequest, headerName: string): string {
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
+  const cookieUserId = request.cookies.get('bolaxo_user_id')?.value
+  const cookieUserRole = request.cookies.get('bolaxo_user_role')?.value
   
   // Explicit redirect from root to /sv
   if (pathname === '/') {
@@ -43,6 +45,7 @@ export async function middleware(request: NextRequest) {
   if (hasValidLocalePrefix) {
     // Extract current locale
     const currentLocale = pathname.split('/')[1]
+    const isDashboard = pathname.startsWith(`/${currentLocale}/dashboard`)
     
     // Handle admin routes first
     if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
@@ -62,6 +65,12 @@ export async function middleware(request: NextRequest) {
       }
     }
     
+    // Protect dashboard routes: require session cookie
+    if (isDashboard && !cookieUserId) {
+      const loginUrl = new URL(`/${currentLocale}/login`, request.url)
+      return NextResponse.redirect(loginUrl)
+    }
+
     // Pass through with locale header
     const response = NextResponse.next()
     response.headers.set('x-next-intl-locale', currentLocale)

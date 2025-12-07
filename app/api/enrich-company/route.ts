@@ -877,8 +877,8 @@ Extrahera och returnera JSON med följande fält (lämna tomt om inte hittas):
 
 Returnera ENDAST giltig JSON, ingen annan text.`
 
-    const { text } = await callOpenAIResponses({
-      model: 'gpt-5-mini',
+        const { text } = await callOpenAIResponses({
+          model: 'gpt-5.1-mini',
       messages: [
         {
           role: 'system',

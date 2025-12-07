@@ -1986,6 +1986,7 @@
     "menu": {
       "overview": "Overview",
       "myListings": "My Listing",
+      "readiness": "Sale Readiness",
       "matchedBuyers": "Matched Buyers",
       "ndaRequests": "NDA Requests",
       "messages": "Messages",
