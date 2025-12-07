@@ -188,7 +188,7 @@ export async function GET(request: NextRequest) {
     // Build report
     const report: GapReport = {
       listingId,
-      listingTitle: listing.anonymousTitle || listing.title || 'Okänt företag',
+      listingTitle: listing.anonymousTitle || listing.companyName || 'Okänt företag',
       generatedAt: new Date().toISOString(),
       overallScore: result.totalScore,
       totalMandatory: result.requirements.filter(r => r.mandatory).length,
