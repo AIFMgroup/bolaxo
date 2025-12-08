@@ -1,11 +1,12 @@
 import AccountDeletionForm from '@/components/AccountDeletionForm'
 
-type Props = {
-  params: { locale: string }
-}
-
-export default function DeleteAccountPage({ params }: Props) {
-  const locale = params.locale || 'sv'
-  return <AccountDeletionForm locale={locale} backHref={`/${locale}/dashboard`} />
+// Next.js Page expects `params` as a Promise in app router typing
+export default async function DeleteAccountPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  return <AccountDeletionForm locale={locale || 'sv'} backHref={`/${locale}/dashboard`} />
 }
 
