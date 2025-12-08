@@ -1,104 +1,153 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { cookies } from 'next/headers'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
-
-// GDPR Article 15 & 20: Right to Data Portability
-export async function GET(request: Request) {
+// GDPR Article 15 & 20: Right to data portability (JSON export)
+export async function GET() {
   try {
     const cookieStore = await cookies()
     const userId = cookieStore.get('bolaxo_user_id')?.value
 
     if (!userId) {
-      return NextResponse.json(
-        { error: 'Not authenticated' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }
 
-    // Hämta ALL användardata
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      include: {
-        valuations: true,
-        listings: true
-      }
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        phone: true,
+        companyName: true,
+        orgNumber: true,
+        region: true,
+        createdAt: true,
+        lastLoginAt: true,
+        verified: true,
+        bankIdVerified: true,
+        buyerProfile: {
+          select: {
+            id: true,
+            buyerType: true,
+            investmentExperience: true,
+            financingReady: true,
+            preferredRegions: true,
+            preferredIndustries: true,
+            revenueMin: true,
+            revenueMax: true,
+            ebitdaMin: true,
+            ebitdaMax: true,
+            priceMin: true,
+            priceMax: true,
+          },
+        },
+        sellerProfile: {
+          select: {
+            id: true,
+            sellerType: true,
+            regions: true,
+            branches: true,
+            profileComplete: true,
+            verifiedAt: true,
+          },
+        },
+        listings: {
+          select: {
+            id: true,
+            anonymousTitle: true,
+            companyName: true,
+            status: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 50,
+        },
+        valuations: {
+          select: {
+            id: true,
+            createdAt: true,
+            companyName: true,
+            industry: true,
+            mostLikely: true,
+            minValue: true,
+            maxValue: true,
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 20,
+        },
+        premiumValuations: {
+          select: {
+            id: true,
+            status: true,
+            createdAt: true,
+            completedAt: true,
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 20,
+        },
+        savedListings: {
+          select: {
+            listingId: true,
+            createdAt: true,
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 50,
+        },
+      },
     })
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Ta bort känslig data (tokens, passwords om de fanns)
-    const exportData = {
-      personalInformation: {
-        email: user.email,
-        name: user.name,
-        phone: user.phone,
-        companyName: user.companyName,
-        orgNumber: user.orgNumber,
-        region: user.region,
-        role: user.role,
-        verified: user.verified,
-        bankIdVerified: user.bankIdVerified,
-        createdAt: user.createdAt,
-        lastLoginAt: user.lastLoginAt
+    const messages = await prisma.message.findMany({
+      where: { OR: [{ senderId: userId }, { recipientId: userId }] },
+      select: {
+        id: true,
+        listingId: true,
+        senderId: true,
+        recipientId: true,
+        subject: true,
+        createdAt: true,
       },
-      valuations: user.valuations.map(v => ({
-        id: v.id,
-        createdAt: v.createdAt,
-        companyName: v.companyName,
-        industry: v.industry,
-        valuationRange: {
-          min: v.minValue,
-          max: v.maxValue,
-          mostLikely: v.mostLikely
-        },
-        inputData: v.inputJson,
-        resultData: v.resultJson
-      })),
-      listings: user.listings.map(l => ({
-        id: l.id,
-        createdAt: l.createdAt,
-        publishedAt: l.publishedAt,
-        status: l.status,
-        companyName: l.companyName,
-        anonymousTitle: l.anonymousTitle,
-        industry: l.industry,
-        revenue: l.revenue,
-        employees: l.employees,
-        location: l.location,
-        packageType: l.packageType
-      })),
-      metadata: {
-        exportedAt: new Date().toISOString(),
-        exportVersion: '1.0',
-        exportFormat: 'JSON',
-        gdprCompliant: true
-      }
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    })
+
+    const ndaRequests = await prisma.nDARequest.findMany({
+      where: { OR: [{ buyerId: userId }, { sellerId: userId }] },
+      select: {
+        id: true,
+        listingId: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    })
+
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      user,
+      messages,
+      ndaRequests,
     }
 
-    // Logga export (audit trail)
-    console.log(`GDPR Data Export for user ${user.email}`)
-
-    // Returnera som downloadbar JSON
     return new NextResponse(JSON.stringify(exportData, null, 2), {
       headers: {
         'Content-Type': 'application/json',
-        'Content-Disposition': `attachment; filename="bolaxo_data_export_${user.id}_${new Date().toISOString().split('T')[0]}.json"`
-      }
+        'Content-Disposition': `attachment; filename="bolaxo_data_export_${user.id}_${new Date()
+          .toISOString()
+          .split('T')[0]}.json"`,
+      },
     })
-
   } catch (error) {
-    console.error('Data export error:', error)
-    return NextResponse.json(
-      { error: 'Failed to export data' },
-      { status: 500 }
-    )
+    console.error('Export data error:', error)
+    return NextResponse.json({ error: 'Failed to export data' }, { status: 500 })
   }
 }
 

@@ -154,6 +154,9 @@ export default function Footer() {
             <Link href={`/${locale}/juridiskt/gdpr`} className="hover:text-white transition-colors">
               {t('gdpr')}
             </Link>
+            <Link href={`/${locale}/konto/radera`} className="hover:text-white transition-colors">
+              {t('deleteAccount')}
+            </Link>
           </div>
 
           {/* Social Links */}
