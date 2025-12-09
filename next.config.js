@@ -17,10 +17,6 @@ const nextConfig = {
   },
   // Exclude ESM-only packages from server-side bundling
   serverExternalPackages: ['@react-pdf/renderer', 'pdfkit'],
-  experimental: {
-    // Handle ESM packages properly
-    esmExternals: 'loose',
-  },
   images: {
     remotePatterns: [
       {
