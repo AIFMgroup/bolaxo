@@ -9,6 +9,8 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/api/sanitycheck-pdf': ['./node_modules/pdfkit/js/data/**/*'],
   },
+  // Transpile ESM-only PDF renderer for client bundles
+  transpilePackages: ['@react-pdf/renderer'],
   reactStrictMode: true,
   trailingSlash: false, // Ensure URLs don't have trailing slashes
   eslint: {
