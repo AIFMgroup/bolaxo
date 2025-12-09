@@ -17,8 +17,8 @@ const nextConfig = {
     // Tillåt prod-build utan att eslint är installerat i CI-miljöer
     ignoreDuringBuilds: true,
   },
-  // Exclude ESM-only packages from server-side bundling
-  serverExternalPackages: ['@react-pdf/renderer', 'pdfkit'],
+  // Exclude heavy CJS-only packages from server-side bundling
+  serverExternalPackages: ['pdfkit'],
   images: {
     remotePatterns: [
       {
