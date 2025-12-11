@@ -129,18 +129,7 @@ async function main() {
   const dataRoom = await prisma.dataRoom.create({
     data: {
       listingId: testListing.id,
-      structure: {
-        folders: [
-          { id: 'financials', name: 'Finansiell data', children: [] },
-          { id: 'contracts', name: 'Avtal', children: [] },
-          { id: 'legal', name: 'Juridiskt', children: [] },
-          { id: 'tax', name: 'Skatt', children: [] },
-          { id: 'employees', name: 'Personal', children: [] },
-          { id: 'ip', name: 'IP', children: [] },
-          { id: 'other', name: 'Övrigt', children: [] }
-        ]
-      },
-      accessRules: {}
+      createdBy: 'seed',
     }
   })
 
