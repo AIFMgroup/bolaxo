@@ -154,10 +154,10 @@ export default function BuyerDataRoomPage() {
       const res = await fetch(`/api/dataroom/download-url?documentId=${documentId}&versionId=${versionId}`)
       const data = await res.json()
       
-      if (res.ok && data.url) {
+      if (res.ok && data.downloadUrl) {
         // Open download in new tab
         const link = document.createElement('a')
-        link.href = data.url
+        link.href = data.downloadUrl
         link.download = fileName
         link.target = '_blank'
         document.body.appendChild(link)

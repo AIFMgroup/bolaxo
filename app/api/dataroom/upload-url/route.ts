@@ -16,6 +16,24 @@ const s3 = new S3Client({
 const BUCKET = process.env.AWS_S3_BUCKET_NAME || 'trestor-dataroom-prod'
 const URL_TTL = 60 * 5 // 5 minutes
 
+// Simple in-memory rate limiter per IP per 60s window
+const RATE_LIMIT = 30
+const rateStore = new Map<string, { count: number; reset: number }>()
+
+function rateLimit(ip: string | null | undefined) {
+  const key = ip || 'unknown'
+  const now = Date.now()
+  const windowMs = 60_000
+  const entry = rateStore.get(key)
+  if (!entry || entry.reset < now) {
+    rateStore.set(key, { count: 1, reset: now + windowMs })
+    return false
+  }
+  if (entry.count >= RATE_LIMIT) return true
+  entry.count += 1
+  return false
+}
+
 async function getUserRole(dataRoomId: string, userId?: string) {
   if (!userId) return null
   const perm = await prisma.dataRoomPermission.findFirst({
@@ -26,6 +44,10 @@ async function getUserRole(dataRoomId: string, userId?: string) {
 
 export async function POST(req: NextRequest) {
   try {
+    if (rateLimit(req.headers.get('x-forwarded-for'))) {
+      return NextResponse.json({ error: 'Rate limit' }, { status: 429 })
+    }
+
     const body = await req.json().catch(() => ({}))
     const { listingId, folderId, fileName, mimeType, size } = body || {}
 
@@ -98,6 +120,7 @@ export async function POST(req: NextRequest) {
         size,
         storageKey: objectKey,
         uploadedBy: userId,
+        virusScan: 'pending',
       },
     })
 

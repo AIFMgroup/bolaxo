@@ -15,6 +15,24 @@ const s3 = new S3Client({
 const BUCKET = process.env.AWS_S3_BUCKET_NAME || 'trestor-dataroom-prod'
 const URL_TTL = 60 * 5 // 5 minutes
 
+// Simple in-memory rate limiter per IP per 60s window
+const RATE_LIMIT = 60
+const rateStore = new Map<string, { count: number; reset: number }>()
+
+function rateLimit(ip: string | null | undefined) {
+  const key = ip || 'unknown'
+  const now = Date.now()
+  const windowMs = 60_000
+  const entry = rateStore.get(key)
+  if (!entry || entry.reset < now) {
+    rateStore.set(key, { count: 1, reset: now + windowMs })
+    return false
+  }
+  if (entry.count >= RATE_LIMIT) return true
+  entry.count += 1
+  return false
+}
+
 async function getUserRole(dataRoomId: string, userId?: string) {
   if (!userId) return null
   const perm = await prisma.dataRoomPermission.findFirst({
@@ -39,6 +57,10 @@ async function hasNda(dataRoomId: string, userId?: string, email?: string) {
 
 export async function GET(req: NextRequest) {
   try {
+    if (rateLimit(req.headers.get('x-forwarded-for'))) {
+      return NextResponse.json({ error: 'Rate limit' }, { status: 429 })
+    }
+
     const { searchParams } = new URL(req.url)
     const versionId = searchParams.get('versionId')
     const documentId = searchParams.get('documentId')
@@ -93,6 +115,14 @@ export async function GET(req: NextRequest) {
       if (!ndaOk) {
         return NextResponse.json({ error: 'NDA krävs innan nedladdning' }, { status: 403 })
       }
+    }
+
+    // Block if virus scan not clean
+    if (version.virusScan === 'blocked') {
+      return NextResponse.json({ error: 'Filen är blockerad (virus)' }, { status: 403 })
+    }
+    if (version.virusScan === 'pending') {
+      return NextResponse.json({ error: 'Filen skannas. Försök igen om en stund.' }, { status: 403 })
     }
 
     const presignedUrl = await getSignedUrl(
