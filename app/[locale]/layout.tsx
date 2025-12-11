@@ -10,6 +10,7 @@ import ChatWidget from '@/components/ChatWidget'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import AuthProviderWrapper from '@/components/AuthProviderWrapper'
 import ToastProviderWrapper from '@/components/ToastProviderWrapper'
+import PasswordGateWrapper from '@/components/PasswordGateWrapper'
 
 // Ensure dynamic rendering for locale routes
 export const dynamic = 'force-dynamic'
@@ -47,17 +48,19 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <AuthProviderWrapper>
-            <ToastProviderWrapper>
-              <ErrorBoundary>
-                <Header />
-                <main>{children}</main>
-                <Footer />
-                <CookieConsent />
-                <ChatWidget />
-              </ErrorBoundary>
-            </ToastProviderWrapper>
-          </AuthProviderWrapper>
+          <PasswordGateWrapper>
+            <AuthProviderWrapper>
+              <ToastProviderWrapper>
+                <ErrorBoundary>
+                  <Header />
+                  <main>{children}</main>
+                  <Footer />
+                  <CookieConsent />
+                  <ChatWidget />
+                </ErrorBoundary>
+              </ToastProviderWrapper>
+            </AuthProviderWrapper>
+          </PasswordGateWrapper>
         </NextIntlClientProvider>
       </body>
     </html>
