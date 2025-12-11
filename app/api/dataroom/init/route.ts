@@ -30,6 +30,8 @@ export async function POST(req: NextRequest) {
 
     // Upsert datarum
     let dataroom = await prisma.dataRoom.findUnique({ where: { listingId } })
+    let rootFolderId: string | undefined
+
     if (!dataroom) {
       dataroom = await prisma.dataRoom.create({
         data: {
@@ -49,13 +51,24 @@ export async function POST(req: NextRequest) {
             },
           },
         },
-        include: { folders: true },
       })
+      // root folder is freshly created
+      const root = await prisma.dataRoomFolder.findFirst({
+        where: { dataRoomId: dataroom.id, parentId: null },
+        select: { id: true },
+      })
+      rootFolderId = root?.id
+    } else {
+      const root = await prisma.dataRoomFolder.findFirst({
+        where: { dataRoomId: dataroom.id, parentId: null },
+        select: { id: true },
+      })
+      rootFolderId = root?.id
     }
 
     return NextResponse.json({
       dataroomId: dataroom.id,
-      rootFolderId: dataroom.folders?.[0]?.id,
+      rootFolderId: rootFolderId || null,
     })
   } catch (error) {
     console.error('dataroom init error', error)
