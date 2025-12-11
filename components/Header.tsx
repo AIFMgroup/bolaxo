@@ -72,8 +72,8 @@ const getNavigation = (t: (key: string) => string): NavItem[] => {
   baseNav.push({
     label: 'Dashboard',
     dropdown: [
-      { label: 'Köpare', href: '/auto-login/buyer' },
-      { label: 'Säljare', href: '/auto-login/seller' },
+      { label: 'Köpare (demo)', href: '/demo/dashboard/buyer' },
+      { label: 'Säljare (demo)', href: '/demo/dashboard/seller' },
     ]
   })
 
