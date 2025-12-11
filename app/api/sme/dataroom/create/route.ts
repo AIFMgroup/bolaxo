@@ -9,25 +9,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing listingId' }, { status: 400 });
     }
 
-    const defaultStructure = {
-      folders: [
-        { id: 'financials', name: 'Ekonomi', children: [] },
-        { id: 'contracts', name: 'Avtal', children: [] },
-        { id: 'legal', name: 'Juridiskt', children: [] },
-        { id: 'tax', name: 'Skatt', children: [] },
-        { id: 'employees', name: 'Personal', children: [] },
-        { id: 'ip', name: 'Immateriella rättigheter', children: [] },
-        { id: 'other', name: 'Övrigt', children: [] },
-      ],
-    };
-
     const dataRoom = await prisma.dataRoom.upsert({
       where: { listingId },
-      update: { structure: defaultStructure },
+      update: {},
       create: {
         listingId,
-        structure: defaultStructure,
-        accessRules: {},
+        createdBy: 'system',
       },
     });
 
