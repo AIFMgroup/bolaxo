@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
       })),
       dataroomIndex: dataroom
         ? {
-            folders: (dataroom.structure as any)?.folders || [],
+            folders: [],
           }
         : undefined,
       ndaReportData: {
