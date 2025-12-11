@@ -96,8 +96,6 @@ export async function POST(request: NextRequest) {
         email: email.toLowerCase(),
         role,
         token,
-        message,
-        invitedById: userId,
         expiresAt,
       },
     })
@@ -110,7 +108,7 @@ export async function POST(request: NextRequest) {
         action: 'INVITE_SENT',
         targetType: 'INVITE',
         targetId: invite.id,
-        meta: { email: email.toLowerCase(), role },
+        meta: { email: email.toLowerCase(), role, message },
       },
     })
 
@@ -169,11 +167,6 @@ export async function GET(request: NextRequest) {
     const invites = await prisma.dataRoomInvite.findMany({
       where: { dataRoomId },
       orderBy: { createdAt: 'desc' },
-      include: {
-        invitedBy: {
-          select: { name: true, email: true },
-        },
-      },
     })
 
     return NextResponse.json({
@@ -182,7 +175,6 @@ export async function GET(request: NextRequest) {
         email: inv.email,
         role: inv.role,
         status: inv.status,
-        invitedBy: inv.invitedBy?.name || inv.invitedBy?.email,
         createdAt: inv.createdAt,
         expiresAt: inv.expiresAt,
         acceptedAt: inv.acceptedAt,
