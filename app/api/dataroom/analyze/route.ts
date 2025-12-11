@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
-import OpenAI from 'openai'
+import { callLLM, parseJSONResponse, getLLMProviderInfo } from '@/lib/llm-client'
 
 // POST /api/dataroom/analyze
 // Trigger AI analysis of a document version
@@ -95,9 +95,14 @@ export async function POST(request: NextRequest) {
     runDocumentAnalysis(documentVersionId, docVersion.fileName, docVersion.document.title)
       .catch((err) => console.error('Analysis error:', err))
 
+    // Return provider info so frontend knows data handling
+    const providerInfo = getLLMProviderInfo()
+
     return NextResponse.json({
       status: 'analyzing',
       message: 'Analys startad. Resultatet visas inom kort.',
+      provider: providerInfo.provider,
+      secure: providerInfo.secure,
     })
   } catch (error) {
     console.error('Error triggering document analysis:', error)
@@ -176,28 +181,13 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Background analysis function
+// Background analysis function using LLM abstraction
 async function runDocumentAnalysis(
   documentVersionId: string,
   fileName: string,
   documentTitle: string
 ) {
-  const openaiApiKey = process.env.OPENAI_API_KEY
-  if (!openaiApiKey) {
-    console.error('OPENAI_API_KEY not configured')
-    await prisma.dataRoomDocumentVersion.update({
-      where: { id: documentVersionId },
-      data: {
-        analysisStatus: 'failed',
-        analysisSummary: 'AI-analys ej konfigurerad',
-      },
-    })
-    return
-  }
-
   try {
-    const client = new OpenAI({ apiKey: openaiApiKey })
-
     // Determine document type from filename/title for context-aware analysis
     const docContext = getDocumentContext(fileName, documentTitle)
 
@@ -236,25 +226,19 @@ Baserat på filnamnet och dokumenttypen, bedöm:
 
 OBS: Du har endast tillgång till metadata (filnamn, titel). Ge feedback baserat på vad du kan utläsa från dessa och allmänna DD-krav för denna dokumenttyp.`
 
-    // Use Responses API with gpt-5.1-mini
-    // Note: Falling back to gpt-4o-mini if gpt-5.1-mini not available yet
-    const response = await client.chat.completions.create({
-      model: 'gpt-4o-mini', // Use gpt-5.1-mini when available
-      messages: [
+    // Call LLM (automatically uses Bedrock or OpenAI based on configuration)
+    const response = await callLLM(
+      [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
       ],
-      response_format: { type: 'json_object' },
-      temperature: 0.3,
-      max_tokens: 1000,
-    })
+      { temperature: 0.3, maxTokens: 1000 }
+    )
 
-    const content = response.choices[0]?.message?.content
-    if (!content) {
-      throw new Error('No response from AI')
-    }
+    console.log(`[DD-Coach] Analysis completed using ${response.provider} (${response.model})`)
 
-    const analysis = JSON.parse(content)
+    // Parse JSON response
+    const analysis = parseJSONResponse(response.content)
 
     // Validate and normalize response
     const normalizedFindings = Array.isArray(analysis.findings)
@@ -280,7 +264,7 @@ OBS: Du har endast tillgång till metadata (filnamn, titel). Ge feedback baserat
       },
     })
 
-    console.log(`Analysis completed for ${documentVersionId}: score=${score}`)
+    console.log(`[DD-Coach] Analysis saved for ${documentVersionId}: score=${score}`)
   } catch (error) {
     console.error('Document analysis failed:', error)
     await prisma.dataRoomDocumentVersion.update({
@@ -392,5 +376,3 @@ function getDocumentContext(fileName: string, title: string): {
       'Relevant information för due diligence-processen. Bör vara komplett, daterat och helst signerat där tillämpligt.',
   }
 }
-
-
