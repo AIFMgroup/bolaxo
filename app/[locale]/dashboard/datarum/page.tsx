@@ -5,7 +5,6 @@ import ClientDashboardLayout from '@/components/dashboard/ClientDashboardLayout'
 import DataRoomManager from '@/components/dataroom/DataRoomManager'
 import ReadinessChecklist from '@/components/ReadinessChecklist'
 import { useAuth } from '@/contexts/AuthContext'
-import { Loader2, Building, Lock, ArrowRight, FolderOpen, ClipboardCheck } from 'lucide-react'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
@@ -72,11 +71,8 @@ export default function DataRoomPage() {
   if (loading) {
     return (
       <ClientDashboardLayout>
-        <div className="flex flex-col items-center justify-center min-h-[400px]">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-navy/10 to-coral/10 flex items-center justify-center mb-4">
-            <Loader2 className="w-6 h-6 animate-spin text-navy" />
-          </div>
-          <p className="text-gray-500">Laddar...</p>
+        <div className="flex flex-col items-center justify-center min-h-[400px] text-gray-700">
+          <p className="text-gray-700">Laddar...</p>
         </div>
       </ClientDashboardLayout>
     )
@@ -88,9 +84,6 @@ export default function DataRoomPage() {
     return (
       <ClientDashboardLayout>
         <div className="max-w-md mx-auto text-center py-16">
-          <div className="w-20 h-20 bg-gradient-to-br from-navy/10 to-navy/5 rounded-3xl flex items-center justify-center mx-auto mb-6">
-            <Building className="w-10 h-10 text-navy/60" />
-          </div>
           <h1 className="text-2xl font-semibold text-gray-900 mb-3">Inget datarum än</h1>
           <p className="text-gray-500 mb-8">
             Skapa en annons först så sätter vi automatiskt upp ett säkert datarum.
@@ -100,7 +93,6 @@ export default function DataRoomPage() {
             className="inline-flex items-center gap-2 px-6 py-3 bg-navy text-white rounded-xl font-medium hover:bg-navy/90 transition-all hover:shadow-lg hover:shadow-navy/20"
           >
             Skapa annons
-            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </ClientDashboardLayout>
@@ -121,9 +113,8 @@ export default function DataRoomPage() {
                 Säker dokumenthantering för din företagsförsäljning
               </p>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-mint/10 border border-mint/30 rounded-full text-sm text-emerald-700">
-              <Lock className="w-4 h-4" />
-              <span>Privat tills du delar</span>
+            <div className="px-4 py-2 bg-mint/10 border border-mint/30 rounded-full text-sm text-emerald-700">
+              Privat tills du delar
             </div>
           </div>
         </div>
@@ -157,7 +148,6 @@ export default function DataRoomPage() {
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            <FolderOpen className="w-4 h-4" />
             Datarum
           </button>
           <button
@@ -168,7 +158,6 @@ export default function DataRoomPage() {
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            <ClipboardCheck className="w-4 h-4" />
             DD-checklista
           </button>
         </div>
@@ -184,17 +173,10 @@ export default function DataRoomPage() {
             ) : (
               <div className="space-y-6">
                 <div className="bg-white rounded-2xl border border-gray-100 p-5">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-coral/20 to-coral/5 flex items-center justify-center flex-shrink-0">
-                      <ClipboardCheck className="w-6 h-6 text-coral" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 mb-1">DD-kravlista</h3>
-                      <p className="text-sm text-gray-500">
-                        Strukturerad mall för alla due diligence-kategorier. Ladda upp per krav och följ din status.
-                      </p>
-                    </div>
-                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-1">DD-kravlista</h3>
+                  <p className="text-sm text-gray-500">
+                    Strukturerad mall för alla due diligence-kategorier. Ladda upp per krav och följ din status.
+                  </p>
                 </div>
                 <ReadinessChecklist
                   listingId={selectedListing}

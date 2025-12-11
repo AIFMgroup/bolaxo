@@ -343,7 +343,7 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 iconless-dataroom">
       {/* Tabs */}
       <div className="flex items-center justify-between">
         <div className="flex gap-1 p-1 bg-gray-100/80 rounded-xl">
@@ -463,13 +463,12 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
             {/* Search & View toggle */}
             <div className="flex items-center gap-3 mb-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Sök dokument..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/30 transition-all"
+                  className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/30 transition-all"
                 />
               </div>
               <div className="flex gap-1 p-1 bg-white border border-gray-200 rounded-xl">
@@ -479,7 +478,7 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                     viewStyle === 'list' ? 'bg-gray-100 text-navy' : 'text-gray-400 hover:text-gray-600'
                   }`}
                 >
-                  <List className="w-4 h-4" />
+                  Lista
                 </button>
                 <button
                   onClick={() => setViewStyle('grid')}
@@ -487,7 +486,7 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                     viewStyle === 'grid' ? 'bg-gray-100 text-navy' : 'text-gray-400 hover:text-gray-600'
                   }`}
                 >
-                  <Grid3X3 className="w-4 h-4" />
+                  Rutnät
                 </button>
               </div>
             </div>
@@ -846,6 +845,11 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
         className="hidden"
         onChange={(e) => e.target.files && handleUpload(e.target.files)}
       />
+      <style jsx global>{`
+        .iconless-dataroom svg {
+          display: none !important;
+        }
+      `}</style>
     </div>
   )
 }

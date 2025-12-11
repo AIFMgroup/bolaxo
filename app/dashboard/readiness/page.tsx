@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import ClientDashboardLayout from '@/components/dashboard/ClientDashboardLayout'
 import ReadinessChecklist from '@/components/ReadinessChecklist'
 import { useAuth } from '@/contexts/AuthContext'
-import { Loader2, Building, AlertCircle, Plus, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
 // Prevent static generation - this page requires AuthProvider
@@ -54,8 +53,8 @@ export default function ReadinessPage() {
   if (loading) {
     return (
       <ClientDashboardLayout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="w-8 h-8 animate-spin text-navy" />
+        <div className="flex items-center justify-center min-h-[400px] text-gray-700">
+          Laddar...
         </div>
       </ClientDashboardLayout>
     )
@@ -65,9 +64,6 @@ export default function ReadinessPage() {
     return (
       <ClientDashboardLayout>
         <div className="max-w-2xl mx-auto text-center py-12">
-          <div className="w-20 h-20 bg-navy/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Building className="w-10 h-10 text-navy" />
-          </div>
           <h1 className="text-2xl font-bold text-navy mb-4">Ingen annons att förbereda</h1>
           <p className="text-gray-600 mb-8">
             Skapa först en annons för ditt bolag, sedan kan du förbereda dokumentationen för due diligence här.
@@ -76,7 +72,6 @@ export default function ReadinessPage() {
             href="/salja/start"
             className="inline-flex items-center gap-2 px-6 py-3 bg-navy text-white rounded-xl font-medium hover:bg-navy/90 transition-colors"
           >
-            <Plus className="w-5 h-5" />
             Skapa annons
           </Link>
         </div>
@@ -89,10 +84,7 @@ export default function ReadinessPage() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Sparkles className="w-7 h-7 text-coral" />
-            <h1 className="text-2xl font-bold text-navy">Säljberedskap</h1>
-          </div>
+          <h1 className="text-2xl font-bold text-navy mb-2">Säljberedskap</h1>
           <p className="text-gray-600">
             Förbered ditt företag för försäljning genom att ladda upp all dokumentation som köpare och revisorer behöver för due diligence.
           </p>
@@ -120,15 +112,12 @@ export default function ReadinessPage() {
         )}
 
         {/* Info banner */}
-        <div className="bg-sky-50 border border-sky-200 rounded-xl p-4 mb-6 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-sky-600 mt-0.5 flex-shrink-0" />
-          <div className="text-sm text-sky-800">
-            <p className="font-medium mb-1">Varför är detta viktigt?</p>
-            <p>
-              En komplett dokumentation snabbar på due diligence-processen avsevärt och ger köpare förtroende. 
-              Företag med hög säljberedskap säljs i snitt 40% snabbare och till bättre villkor.
-            </p>
-          </div>
+        <div className="bg-sky-50 border border-sky-200 rounded-xl p-4 mb-6 text-sm text-sky-800">
+          <p className="font-medium mb-1">Varför är detta viktigt?</p>
+          <p>
+            En komplett dokumentation snabbar på due diligence-processen avsevärt och ger köpare förtroende. 
+            Företag med hög säljberedskap säljs i snitt 40% snabbare och till bättre villkor.
+          </p>
         </div>
 
         {/* Checklist */}
