@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import ClientDashboardLayout from '@/components/dashboard/ClientDashboardLayout'
+import DataRoomManager from '@/components/dataroom/DataRoomManager'
 import ReadinessChecklist from '@/components/ReadinessChecklist'
 import { useAuth } from '@/contexts/AuthContext'
-import { Loader2, Building, Sparkles, ShieldCheck, Bell, Plus } from 'lucide-react'
+import { Loader2, Building, Sparkles, ShieldCheck, Bell, Plus, FolderOpen, ClipboardCheck } from 'lucide-react'
 import Link from 'next/link'
 
-// Prevent static generation - this page requires AuthProvider
 export const dynamic = 'force-dynamic'
 export const dynamicParams = true
 
@@ -19,11 +19,14 @@ interface Listing {
   readinessScore?: number
 }
 
+type ViewMode = 'dataroom' | 'checklist'
+
 export default function DataRoomPage() {
   const { user } = useAuth()
   const [listings, setListings] = useState<Listing[]>([])
   const [selectedListing, setSelectedListing] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [viewMode, setViewMode] = useState<ViewMode>('dataroom')
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -84,9 +87,11 @@ export default function DataRoomPage() {
     )
   }
 
+  const currentListing = listings.find(l => l.id === selectedListing)
+
   return (
     <ClientDashboardLayout>
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-wrap items-start gap-4 justify-between">
@@ -96,8 +101,8 @@ export default function DataRoomPage() {
                 <h1 className="text-2xl font-bold text-navy">Datarum</h1>
               </div>
               <p className="text-gray-600 max-w-2xl">
-                Ett samlat, säkert datarum för din företagsförsäljning. Ladda upp alla obligatoriska dokument,
-                få koll på status och dela med köpare när du är redo.
+                Ett samlat, säkert datarum för din företagsförsäljning. Ladda upp dokument,
+                bjud in köpare och håll koll på due diligence-status.
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -113,63 +118,91 @@ export default function DataRoomPage() {
           </div>
         </div>
 
-        {/* Listing selector */}
-        {listings.length > 1 && (
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Välj bolag/datarum
-            </label>
-            <select
-              value={selectedListing || ''}
-              onChange={(e) => setSelectedListing(e.target.value)}
-              className="w-full md:w-auto px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20"
-            >
-              {listings.map(listing => (
-                <option key={listing.id} value={listing.id}>
-                  {listing.anonymousTitle || listing.title}
-                  {listing.readinessScore !== undefined && ` (${Math.round(listing.readinessScore * 100)}% redo)`}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* Datarum checklist (re-uses readiness engine) */}
-        <div className="space-y-6">
-          <div className="bg-white border border-gray-200 rounded-2xl p-4">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-navy/10 flex items-center justify-center">
-                <FolderOpenIcon />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-navy">Mall för due diligence</h3>
-                <p className="text-sm text-gray-600">
-                  Vi använder vår DD-mall (finans, skatt, juridik, HR, kommersiellt, IT, operation/ESG)
-                  så att du vet exakt vilka filer som krävs. Ladda upp per rad, se status och ladda ner gap-rapporten.
-                </p>
-              </div>
+        {/* Listing selector & View toggle */}
+        <div className="flex flex-wrap items-center gap-4 mb-6">
+          {listings.length > 1 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Välj bolag
+              </label>
+              <select
+                value={selectedListing || ''}
+                onChange={(e) => setSelectedListing(e.target.value)}
+                className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20"
+              >
+                {listings.map(listing => (
+                  <option key={listing.id} value={listing.id}>
+                    {listing.anonymousTitle || listing.title}
+                  </option>
+                ))}
+              </select>
             </div>
-          </div>
-
-          {selectedListing && (
-            <ReadinessChecklist
-              listingId={selectedListing}
-              onComplete={() => {
-                alert('Klart! Alla obligatoriska dokument är på plats.')
-              }}
-            />
           )}
+
+          <div className="flex-1" />
+
+          {/* View toggle */}
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('dataroom')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewMode === 'dataroom'
+                  ? 'bg-white text-navy shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <FolderOpen className="w-4 h-4" />
+              Datarum
+            </button>
+            <button
+              onClick={() => setViewMode('checklist')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewMode === 'checklist'
+                  ? 'bg-white text-navy shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <ClipboardCheck className="w-4 h-4" />
+              DD-checklista
+            </button>
+          </div>
         </div>
+
+        {/* Content */}
+        {selectedListing && (
+          <>
+            {viewMode === 'dataroom' ? (
+              <DataRoomManager
+                listingId={selectedListing}
+                listingName={currentListing?.anonymousTitle || currentListing?.title}
+              />
+            ) : (
+              <div className="space-y-6">
+                <div className="bg-white border border-gray-200 rounded-2xl p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-navy/10 flex items-center justify-center">
+                      <ClipboardCheck className="w-5 h-5 text-navy" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-navy">DD-kravlista</h3>
+                      <p className="text-sm text-gray-600">
+                        Vår mall täcker alla kategorier: finans, skatt, juridik, HR, kommersiellt, IT och ESG.
+                        Ladda upp per krav och se din status i realtid.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <ReadinessChecklist
+                  listingId={selectedListing}
+                  onComplete={() => {
+                    alert('Klart! Alla obligatoriska dokument är på plats.')
+                  }}
+                />
+              </div>
+            )}
+          </>
+        )}
       </div>
     </ClientDashboardLayout>
   )
 }
-
-function FolderOpenIcon() {
-  return <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-navy" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M3 7h4l2 3h12" />
-    <path d="M5 7V5h4l2 2h8a2 2 0 0 1 2 2v2" />
-    <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10" />
-  </svg>
-}
-
