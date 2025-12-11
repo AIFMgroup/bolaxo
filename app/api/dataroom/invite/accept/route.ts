@@ -31,9 +31,7 @@ export async function POST(request: NextRequest) {
             },
           },
         },
-        invitedBy: {
-          select: { id: true },
-        },
+        // no invitedBy relation available on invite; we only use invitedBy field on Permission
       },
     })
 
@@ -98,7 +96,7 @@ export async function POST(request: NextRequest) {
         dataRoomId: invite.dataRoomId,
         userId,
         role: invite.role as any,
-        invitedBy: invite.invitedBy?.id || userId,
+        invitedBy: userId,
       },
     })
 
