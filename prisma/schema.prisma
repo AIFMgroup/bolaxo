@@ -767,43 +767,154 @@ model Agreement {
   @@index([riskLevel])
 }
 
+enum DataRoomRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
 model DataRoom {
   id              String   @id @default(cuid())
   listingId       String   @unique
   listing         Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  
-  // Structure (JSON tree)
-  structure       Json     // {folders: [{id, name, children: [...]}]}
-  
-  // Access rules
-  accessRules     Json     // {buyerId: {canView: true, canDownload: false, expiresAt: ...}}
-  
-  // Audit & logging
-  accessLogs      DataRoomAccess[]
-  
+
+  // Ownership and setup
+  createdBy       String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  
+
+  folders         DataRoomFolder[]
+  documents       DataRoomDocument[]
+  permissions     DataRoomPermission[]
+  invites         DataRoomInvite[]
+  ndaAcceptances  DataRoomNDAAcceptance[]
+  auditLogs       DataRoomAudit[]
+
   @@index([listingId])
 }
 
-model DataRoomAccess {
-  id              String   @id @default(cuid())
-  dataRoomId      String
-  dataRoom        DataRoom @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
-  
-  buyerId         String   // Buyer email or ID
-  action          String   // view, download, preview
-  filePath        String?
-  fileName        String?
-  
-  ipAddress       String?
-  userAgent       String?
-  
-  createdAt       DateTime @default(now())
-  
+model DataRoomFolder {
+  id          String     @id @default(cuid())
+  dataRoomId  String
+  dataRoom    DataRoom   @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
+  name        String
+  parentId    String?
+  path        String     // e.g. /Finans/2024
+  order       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  documents   DataRoomDocument[]
+
   @@index([dataRoomId])
-  @@index([buyerId])
+  @@index([parentId])
+  @@index([path])
+}
+
+model DataRoomDocument {
+  id               String                  @id @default(cuid())
+  dataRoomId       String
+  dataRoom         DataRoom                @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
+  folderId         String?
+  folder           DataRoomFolder?         @relation(fields: [folderId], references: [id], onDelete: SetNull)
+
+  title            String
+  requirementId    String?                 // maps to readiness requirement when applicable
+  status           String   @default("draft") // draft, pending_scan, ready, blocked
+
+  currentVersionId String?
+  currentVersion   DataRoomDocumentVersion? @relation("CurrentDocVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
+
+  versions         DataRoomDocumentVersion[]
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([dataRoomId])
+  @@index([folderId])
+  @@index([requirementId])
+}
+
+model DataRoomDocumentVersion {
+  id           String   @id @default(cuid())
+  documentId   String
+  document     DataRoomDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  version      Int
+  fileName     String
+  mimeType     String
+  size         Int
+  storageKey   String
+  uploadedBy   String
+  uploadedAt   DateTime @default(now())
+  virusScan    String   @default("pending") // pending, clean, blocked
+  watermark    Boolean  @default(false)
+
+  @@unique([documentId, version])
+  @@index([documentId])
+}
+
+model DataRoomPermission {
+  id          String        @id @default(cuid())
+  dataRoomId  String
+  dataRoom    DataRoom      @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
+  userId      String?
+  email       String?
+  role        DataRoomRole
+  invitedBy   String
+  createdAt   DateTime      @default(now())
+
+  @@index([dataRoomId])
+  @@index([userId])
+  @@index([email])
+}
+
+model DataRoomInvite {
+  id          String       @id @default(cuid())
+  dataRoomId  String
+  dataRoom    DataRoom     @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
+  email       String
+  role        DataRoomRole
+  token       String       @unique
+  status      String       @default("pending") // pending, accepted, expired, revoked
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  createdAt   DateTime     @default(now())
+
+  @@index([dataRoomId])
+  @@index([email])
+}
+
+model DataRoomNDAAcceptance {
+  id          String   @id @default(cuid())
+  dataRoomId  String
+  dataRoom    DataRoom @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
+  userId      String?
+  email       String
+  version     String   @default("v1")
+  acceptedAt  DateTime @default(now())
+  ipAddress   String?
+  userAgent   String?
+
+  @@index([dataRoomId])
+  @@index([userId])
+  @@index([email])
+}
+
+model DataRoomAudit {
+  id          String   @id @default(cuid())
+  dataRoomId  String
+  dataRoom    DataRoom @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
+  actorId     String?
+  actorEmail  String?
+  action      String   // view, download, upload, delete, invite, accept_nda
+  targetType  String?
+  targetId    String?
+  meta        Json?
+  createdAt   DateTime @default(now())
+
+  @@index([dataRoomId])
+  @@index([actorId])
   @@index([createdAt])
 }
 
