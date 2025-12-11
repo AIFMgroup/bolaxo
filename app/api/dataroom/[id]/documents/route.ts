@@ -90,7 +90,7 @@ export async function GET(
     await prisma.dataRoomAudit.create({
       data: {
         dataRoomId,
-        userId,
+        actorId: userId,
         action: 'VIEW',
         targetType: 'DATAROOM',
         targetId: dataRoomId,
