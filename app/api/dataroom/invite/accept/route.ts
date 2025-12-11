@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
         dataRoomId: invite.dataRoomId,
         userId,
         role: invite.role as any,
-        grantedById: invite.invitedById,
+        invitedBy: invite.invitedById || userId,
       },
     })
 
