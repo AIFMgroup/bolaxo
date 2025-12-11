@@ -1,9 +1,27 @@
 'use client'
 
+import { useEffect } from 'react'
 import SellerDashboard from '@/components/dashboard/SellerDashboard'
 import DashboardLayout from '@/components/dashboard/DashboardLayout'
 
 export default function DemoSellerDashboardPage() {
+  useEffect(() => {
+    // Seed dev auth + cookies so middleware and auth context treat this as logged-in
+    const demoUser = {
+      id: 'demo-seller',
+      email: 'demo-seller@trestorgroup.se',
+      name: 'Demo Säljare',
+      role: 'seller',
+      loginTime: new Date().toISOString(),
+    }
+
+    localStorage.setItem('dev-auth-user', JSON.stringify(demoUser))
+    localStorage.setItem('dev-auth-token', `dev-token-${demoUser.id}-${Date.now()}`)
+
+    document.cookie = `bolaxo_user_id=${demoUser.id}; path=/; max-age=86400`
+    document.cookie = `bolaxo_user_role=${demoUser.role}; path=/; max-age=86400`
+  }, [])
+
   return (
     <DashboardLayout demoRole="seller">
       <div className="bg-yellow-50 border-b border-yellow-200 px-6 py-2 text-sm text-yellow-800 text-center mb-6 rounded-lg">
