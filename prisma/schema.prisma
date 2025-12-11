@@ -851,6 +851,13 @@ model DataRoomDocumentVersion {
   virusScan    String   @default("pending") // pending, clean, blocked
   watermark    Boolean  @default(false)
 
+  // AI DD-coach analysis
+  analysisStatus   String   @default("pending") // pending, analyzing, ok, warnings, failed
+  analysisSummary  String?  // Short summary of document quality
+  analysisFindings Json?    // Detailed findings as JSON array
+  analysisScore    Int?     // 0-100 completeness/quality score
+  analyzedAt       DateTime?
+
   @@unique([documentId, version])
   @@index([documentId])
 }

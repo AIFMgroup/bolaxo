@@ -23,6 +23,18 @@ interface DocumentVersion {
   createdAt: string
 }
 
+interface AnalysisFinding {
+  type: 'success' | 'warning' | 'error' | 'info'
+  message: string
+}
+
+interface DocumentAnalysis {
+  status: 'pending' | 'analyzing' | 'ok' | 'warnings' | 'failed'
+  summary?: string
+  score?: number
+  findings?: AnalysisFinding[]
+}
+
 interface Document {
   id: string
   title: string
@@ -36,6 +48,7 @@ interface Document {
     size: number
     mimeType: string
     uploadedAt: string
+    analysis?: DocumentAnalysis
   } | null
   versions?: DocumentVersion[]
   uploadedBy: string
@@ -98,6 +111,9 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
   const [inviting, setInviting] = useState(false)
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviteRole, setInviteRole] = useState<'VIEWER' | 'EDITOR'>('VIEWER')
+  const [showAnalysis, setShowAnalysis] = useState<Document | null>(null)
+  const [analysisData, setAnalysisData] = useState<DocumentAnalysis | null>(null)
+  const [loadingAnalysis, setLoadingAnalysis] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -164,6 +180,8 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
     setUploadProgress(0)
     setShowUpload(false)
 
+    const uploadedVersions: { documentId: string; versionId: string }[] = []
+
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
@@ -173,7 +191,7 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            dataRoomId: dataRoom.id,
+            listingId: dataRoom.listingId,
             fileName: file.name,
             mimeType: file.type,
             size: file.size,
@@ -186,24 +204,95 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
           throw new Error(data.error || 'Kunde inte få upload-URL')
         }
 
-        const { url } = await urlRes.json()
+        const { uploadUrl, documentId, versionId } = await urlRes.json()
 
-        await fetch(url, {
+        await fetch(uploadUrl, {
           method: 'PUT',
           body: file,
           headers: { 'Content-Type': file.type },
         })
 
+        uploadedVersions.push({ documentId, versionId })
         setUploadProgress(Math.round(((i + 1) / files.length) * 100))
       }
 
       await loadDocuments(dataRoom.id)
+
+      // Trigger DD-coach analysis for each uploaded document
+      for (const { versionId } of uploadedVersions) {
+        triggerAnalysis(versionId).catch(console.error)
+      }
     } catch (err: any) {
       console.error('Upload error:', err)
       alert(err.message || 'Uppladdning misslyckades')
     } finally {
       setUploading(false)
       setUploadProgress(0)
+    }
+  }
+
+  const triggerAnalysis = async (documentVersionId: string) => {
+    if (!dataRoom) return
+    try {
+      await fetch('/api/dataroom/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          documentVersionId,
+          dataRoomId: dataRoom.id,
+        }),
+      })
+    } catch (err) {
+      console.error('Failed to trigger analysis:', err)
+    }
+  }
+
+  const loadAnalysis = async (doc: Document) => {
+    setShowAnalysis(doc)
+    setLoadingAnalysis(true)
+    setAnalysisData(null)
+
+    const versionId = doc.currentVersion?.id
+    if (!versionId) {
+      setAnalysisData({ status: 'pending', summary: 'Ingen version tillgänglig' })
+      setLoadingAnalysis(false)
+      return
+    }
+
+    try {
+      const res = await fetch(`/api/dataroom/analyze?documentVersionId=${versionId}`)
+      if (res.ok) {
+        const data = await res.json()
+        setAnalysisData(data)
+      } else {
+        setAnalysisData({ status: 'failed', summary: 'Kunde inte hämta analys' })
+      }
+    } catch (err) {
+      setAnalysisData({ status: 'failed', summary: 'Nätverksfel' })
+    } finally {
+      setLoadingAnalysis(false)
+    }
+  }
+
+  const rerunAnalysis = async () => {
+    if (!showAnalysis || !dataRoom) return
+    const versionId = showAnalysis.currentVersion?.id
+    if (!versionId) return
+
+    setLoadingAnalysis(true)
+    try {
+      await fetch('/api/dataroom/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          documentVersionId: versionId,
+          dataRoomId: dataRoom.id,
+        }),
+      })
+      // Wait a bit then reload
+      setTimeout(() => loadAnalysis(showAnalysis), 2000)
+    } catch (err) {
+      setLoadingAnalysis(false)
     }
   }
 
@@ -552,6 +641,15 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                             <span className="text-sm text-gray-400">{formatFileSize(doc.currentVersion?.size || 0)}</span>
                           </div>
                         </div>
+                        {/* DD-Coach Analysis Button */}
+                        <button
+                          onClick={() => loadAnalysis(doc)}
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full transition-all bg-gradient-to-r from-violet-50 to-indigo-50 text-indigo-700 hover:from-violet-100 hover:to-indigo-100 border border-indigo-100"
+                          title="DD-coach analys"
+                        >
+                          <Sparkles className="w-3 h-3" />
+                          DD-coach
+                        </button>
                         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           {doc.versions && doc.versions.length > 1 && (
                             <button
@@ -832,6 +930,143 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* DD-Coach Analysis Modal */}
+      {showAnalysis && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-indigo-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">DD-coach</h2>
+                  <p className="text-sm text-gray-500">{showAnalysis.title}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setShowAnalysis(null)
+                  setAnalysisData(null)
+                }}
+                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-400" />
+              </button>
+            </div>
+
+            {loadingAnalysis ? (
+              <div className="py-12 text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-indigo-500 mx-auto mb-4" />
+                <p className="text-gray-500">Analyserar dokument...</p>
+              </div>
+            ) : analysisData ? (
+              <div className="space-y-5">
+                {/* Score */}
+                {analysisData.score !== undefined && (
+                  <div className="flex items-center gap-4">
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold ${
+                      analysisData.score >= 80 ? 'bg-emerald-50 text-emerald-600' :
+                      analysisData.score >= 60 ? 'bg-amber-50 text-amber-600' :
+                      'bg-red-50 text-red-600'
+                    }`}>
+                      {analysisData.score}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900 mb-1">Kvalitetspoäng</p>
+                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all ${
+                            analysisData.score >= 80 ? 'bg-emerald-500' :
+                            analysisData.score >= 60 ? 'bg-amber-500' :
+                            'bg-red-500'
+                          }`}
+                          style={{ width: `${analysisData.score}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Summary */}
+                {analysisData.summary && (
+                  <div className="p-4 bg-gray-50 rounded-xl">
+                    <p className="text-sm text-gray-700">{analysisData.summary}</p>
+                  </div>
+                )}
+
+                {/* Findings */}
+                {analysisData.findings && analysisData.findings.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium text-gray-900">Observations</h4>
+                    {analysisData.findings.map((finding, idx) => (
+                      <div
+                        key={idx}
+                        className={`flex items-start gap-3 p-3 rounded-lg ${
+                          finding.type === 'success' ? 'bg-emerald-50' :
+                          finding.type === 'warning' ? 'bg-amber-50' :
+                          finding.type === 'error' ? 'bg-red-50' :
+                          'bg-blue-50'
+                        }`}
+                      >
+                        <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                          finding.type === 'success' ? 'bg-emerald-100 text-emerald-600' :
+                          finding.type === 'warning' ? 'bg-amber-100 text-amber-600' :
+                          finding.type === 'error' ? 'bg-red-100 text-red-600' :
+                          'bg-blue-100 text-blue-600'
+                        }`}>
+                          {finding.type === 'success' && <CheckCircle className="w-3 h-3" />}
+                          {finding.type === 'warning' && <AlertCircle className="w-3 h-3" />}
+                          {finding.type === 'error' && <X className="w-3 h-3" />}
+                          {finding.type === 'info' && <Sparkles className="w-3 h-3" />}
+                        </div>
+                        <p className={`text-sm ${
+                          finding.type === 'success' ? 'text-emerald-800' :
+                          finding.type === 'warning' ? 'text-amber-800' :
+                          finding.type === 'error' ? 'text-red-800' :
+                          'text-blue-800'
+                        }`}>
+                          {finding.message}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Actions */}
+                <div className="flex gap-3 pt-2">
+                  <button
+                    onClick={rerunAnalysis}
+                    className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
+                  >
+                    Kör om analys
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowAnalysis(null)
+                      setAnalysisData(null)
+                    }}
+                    className="flex-1 px-4 py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-colors"
+                  >
+                    Stäng
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="py-12 text-center">
+                <p className="text-gray-500">Ingen analys tillgänglig</p>
+                <button
+                  onClick={rerunAnalysis}
+                  className="mt-4 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors"
+                >
+                  Starta analys
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
