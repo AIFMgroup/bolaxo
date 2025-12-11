@@ -92,22 +92,7 @@ interface WizardProps {
   variant?: 'modal' | 'page'
 }
 
-// ... existing code ...
-
 export default function ImprovedValuationWizard({ onClose, variant = 'modal' }: WizardProps) {
-  { value: 'restaurang', label: 'Restaurang & Café', icon: <Package className="w-4 h-4" />, description: 'Restauranger, caféer, barer' },
-  { value: 'ehandel', label: 'E-handel', icon: <Globe className="w-4 h-4" />, description: 'Onlinebutiker, marknadsplatser' },
-  { value: 'webbtjanster', label: 'SaaS & Webbtjänster', icon: <Globe className="w-4 h-4" />, description: 'Mjukvara som tjänst, appar' },
-  { value: 'konsult', label: 'Konsultverksamhet', icon: <Briefcase className="w-4 h-4" />, description: 'Managementkonsulter, rådgivning' },
-  { value: 'tillverkning', label: 'Tillverkning', icon: <Settings className="w-4 h-4" />, description: 'Produktion, fabrik' },
-  { value: 'handel', label: 'Detaljhandel', icon: <Building className="w-4 h-4" />, description: 'Fysiska butiker' },
-  { value: 'bygg', label: 'Bygg & Anläggning', icon: <Building className="w-4 h-4" />, description: 'Entreprenad, byggföretag' },
-  { value: 'transport', label: 'Transport & Logistik', icon: <Package className="w-4 h-4" />, description: 'Åkeri, spedition' },
-  { value: 'it', label: 'IT-tjänster', icon: <Settings className="w-4 h-4" />, description: 'Systemutveckling, IT-support' },
-  { value: 'halsa', label: 'Hälsa & Vård', icon: <Shield className="w-4 h-4" />, description: 'Vårdföretag, gym, spa' },
-  { value: 'utbildning', label: 'Utbildning', icon: <Award className="w-4 h-4" />, description: 'Skolor, kurser' },
-  { value: 'other', label: 'Annat', icon: <Building className="w-4 h-4" />, description: 'Övriga branscher' }
-]
 
 const steps = [
   { id: 1, title: 'Grunduppgifter', icon: Building, description: 'Företagets basinfo' },
