@@ -65,11 +65,14 @@ export async function POST(request: NextRequest) {
     })
 
     // Create NDA acceptance
+    const versionValue = ndaVersion || 'v1.0'
+    const userEmail = user?.email || 'unknown'
     const acceptance = await prisma.dataRoomNDAAcceptance.create({
       data: {
         dataRoomId,
         userId,
-        ndaVersion: ndaVersion || 'v1.0',
+        email: userEmail,
+        version: versionValue,
         ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
         userAgent: request.headers.get('user-agent') || 'unknown',
       },
@@ -84,8 +87,8 @@ export async function POST(request: NextRequest) {
         targetType: 'NDA',
         targetId: acceptance.id,
         meta: {
-          ndaVersion: ndaVersion || 'v1.0',
-          email: user?.email,
+          ndaVersion: versionValue,
+          email: userEmail,
           ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip'),
         },
       },
