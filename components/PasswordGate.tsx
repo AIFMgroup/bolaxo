@@ -1,12 +1,14 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import { Lock, ArrowRight, Eye, EyeOff, Check } from 'lucide-react'
 
 const CORRECT_PASSWORD = 'bolaxo'
 const STORAGE_KEY = 'bolaxo_auth'
 
 export default function PasswordGate({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -17,12 +19,22 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY)
+    const isDemoRoute =
+      pathname?.includes('/demo/dashboard/buyer') ||
+      pathname?.includes('/demo/dashboard/seller')
+
+    if (isDemoRoute) {
+      // Always allow demo dashboards without password
+      setIsAuthenticated(true)
+      return
+    }
+
     if (stored === 'authenticated') {
       setIsAuthenticated(true)
     } else {
       setIsAuthenticated(false)
     }
-  }, [])
+  }, [pathname])
 
   useEffect(() => {
     if (isAuthenticated === false && inputRef.current) {
