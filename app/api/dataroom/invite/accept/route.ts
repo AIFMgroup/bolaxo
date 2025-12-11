@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
         action: 'INVITE_ACCEPTED',
         targetType: 'INVITE',
         targetId: invite.id,
-        metadata: { role: invite.role },
+        meta: { role: invite.role },
       },
     })
 

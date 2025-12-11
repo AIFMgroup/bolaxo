@@ -106,11 +106,11 @@ export async function POST(request: NextRequest) {
     await prisma.dataRoomAudit.create({
       data: {
         dataRoomId,
-        userId,
+        actorId: userId,
         action: 'INVITE_SENT',
         targetType: 'INVITE',
         targetId: invite.id,
-        metadata: { email: email.toLowerCase(), role },
+        meta: { email: email.toLowerCase(), role },
       },
     })
 

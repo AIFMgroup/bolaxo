@@ -79,15 +79,15 @@ export async function POST(request: NextRequest) {
     await prisma.dataRoomAudit.create({
       data: {
         dataRoomId,
-        userId,
+        actorId: userId,
         action: 'NDA_ACCEPTED',
         targetType: 'NDA',
         targetId: acceptance.id,
-        metadata: {
+        meta: {
           ndaVersion: ndaVersion || 'v1.0',
           email: user?.email,
+          ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip'),
         },
-        ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip'),
       },
     })
 

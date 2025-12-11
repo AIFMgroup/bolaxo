@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
         action: 'VIRUS_SCAN',
         targetType: 'documentVersion',
         targetId: versionId,
-        metadata: { status, reason },
+        meta: { status, reason },
       },
     })
 
