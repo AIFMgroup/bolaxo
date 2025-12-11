@@ -19,6 +19,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
     }
 
+    // Demo bypass: allow demo users to get a static dataroom without DB lookups
+    if (userId.startsWith('demo')) {
+      return NextResponse.json({
+        dataroomId: 'demo-dataroom-1',
+        rootFolderId: 'demo-root-folder',
+      })
+    }
+
     // Verify ownership
     const listing = await prisma.listing.findFirst({
       where: { id: listingId, userId },

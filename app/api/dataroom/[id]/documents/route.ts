@@ -17,6 +17,90 @@ export async function GET(
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
     }
 
+    // Demo bypass: return static data without touching DB
+    if (userId.startsWith('demo') || dataRoomId.startsWith('demo')) {
+      const demoFolders = [
+        { id: 'demo-root-folder', name: 'Root', parentId: null, documentCount: 2 },
+        { id: 'demo-finance', name: 'Finansiellt', parentId: 'demo-root-folder', documentCount: 1 },
+        { id: 'demo-legal', name: 'Legal', parentId: 'demo-root-folder', documentCount: 1 },
+      ]
+
+      const demoDocuments = [
+        {
+          id: 'demo-doc-1',
+          name: 'Årsredovisning 2023.pdf',
+          category: 'Finansiellt',
+          requirementId: null,
+          folder: { id: 'demo-finance', name: 'Finansiellt' },
+          currentVersion: {
+            id: 'demo-ver-1',
+            versionNumber: 1,
+            fileName: 'arsredovisning-2023.pdf',
+            fileSize: 1_024_000,
+            mimeType: 'application/pdf',
+            uploadedAt: new Date().toISOString(),
+          },
+          versions: [
+            {
+              id: 'demo-ver-1',
+              versionNumber: 1,
+              fileName: 'arsredovisning-2023.pdf',
+              fileSize: 1_024_000,
+              createdAt: new Date().toISOString(),
+            },
+          ],
+          uploadedBy: 'Demo Säljare',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: 'demo-doc-2',
+          name: 'Aktieägaravtal.pdf',
+          category: 'Legal',
+          requirementId: null,
+          folder: { id: 'demo-legal', name: 'Legal' },
+          currentVersion: {
+            id: 'demo-ver-2',
+            versionNumber: 1,
+            fileName: 'aktieagaravtal.pdf',
+            fileSize: 420_000,
+            mimeType: 'application/pdf',
+            uploadedAt: new Date().toISOString(),
+          },
+          versions: [
+            {
+              id: 'demo-ver-2',
+              versionNumber: 1,
+              fileName: 'aktieagaravtal.pdf',
+              fileSize: 420_000,
+              createdAt: new Date().toISOString(),
+            },
+          ],
+          uploadedBy: 'Demo Säljare',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ]
+
+      return NextResponse.json({
+        dataRoom: {
+          id: 'demo-dataroom-1',
+          listingId: 'demo-listing-1',
+          listingName: 'Demo Företag AB',
+          ndaRequired: false,
+        },
+        folders: demoFolders,
+        documents: demoDocuments,
+        permissions: {
+          role: 'OWNER',
+          canUpload: false,
+          canDelete: false,
+          canInvite: false,
+          canDownload: false,
+        },
+      })
+    }
+
     // Check permission
     const permission = await prisma.dataRoomPermission.findFirst({
       where: {

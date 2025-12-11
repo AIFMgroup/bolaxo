@@ -45,6 +45,46 @@ export async function GET(request: NextRequest) {
       )
     }
     
+    // Demo bypass: if x-user-id starts with "demo", return mock listings without DB lookups
+    const demoUserId = request.headers.get('x-user-id')
+    if (demoUserId?.startsWith('demo')) {
+      const demoListings = [
+        {
+          id: 'demo-listing-1',
+          title: 'Demo Företag AB',
+          anonymousTitle: 'Tillväxtbolag inom tjänster',
+          status: 'active',
+          package: 'pro',
+          publishedAt: new Date().toISOString().split('T')[0],
+          expiresAt: null,
+          views: 128,
+          viewsToday: 4,
+          ndaRequests: 2,
+          messages: 3,
+          saves: 6,
+          priceRange: '15-25 MSEK',
+          revenue: 18_000_000,
+          lastActivity: '1 timme sedan',
+          createdAt: new Date(),
+        },
+      ]
+
+      return NextResponse.json({
+        listings: demoListings,
+        ndaRequests: [],
+        stats: {
+          totalListings: demoListings.length,
+          activeListings: demoListings.length,
+          draftListings: 0,
+          pausedListings: 0,
+          totalViews: demoListings.reduce((s, l) => s + (l.views || 0), 0),
+          totalNDARequests: demoListings.reduce((s, l) => s + (l.ndaRequests || 0), 0),
+          totalSaves: demoListings.reduce((s, l) => s + (l.saves || 0), 0),
+          totalMessages: demoListings.reduce((s, l) => s + (l.messages || 0), 0),
+        },
+      })
+    }
+
     // Verify auth
     const auth = await verifySellerAuth(request)
     if (!auth.isValid || !auth.userId) {

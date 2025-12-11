@@ -14,6 +14,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
     }
 
+    // Demo bypass: accept invites but do nothing server-side
+    if (userId.startsWith('demo')) {
+      const body = await request.json()
+      const { dataRoomId, email, role } = body
+      return NextResponse.json({
+        invite: {
+          id: 'demo-invite',
+          email,
+          role,
+          status: 'PENDING',
+          createdAt: new Date().toISOString(),
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        message: 'Demo-invite skapad (mock)',
+      })
+    }
+
     const body = await request.json()
     const { dataRoomId, email, role, message } = body
 
@@ -142,6 +159,23 @@ export async function GET(request: NextRequest) {
 
     if (!userId) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
+    }
+
+    // Demo bypass: return mocked invites
+    if (userId.startsWith('demo')) {
+      return NextResponse.json({
+        invites: [
+          {
+            id: 'demo-invite-1',
+            email: 'advisor@demo.se',
+            role: 'VIEWER',
+            status: 'PENDING',
+            createdAt: new Date().toISOString(),
+            expiresAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+            acceptedAt: null,
+          },
+        ],
+      })
     }
 
     const { searchParams } = new URL(request.url)
