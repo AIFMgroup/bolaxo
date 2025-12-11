@@ -1926,7 +1926,7 @@ export default function ImprovedValuationWizard({ onClose, variant = 'modal' }: 
           inputData={data}
           onClose={() => {
             setShowResult(false)
-            onClose()
+            onClose?.()
           }}
         />
       )}
