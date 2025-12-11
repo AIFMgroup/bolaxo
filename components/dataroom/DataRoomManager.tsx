@@ -1,12 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import {
-  FolderOpen, FileText, Upload, Download, Trash2,
-  Plus, Users, Share2, Clock, Eye,
-  CheckCircle, AlertCircle, Loader2, X, History, Shield, Mail,
-  Search, Grid3X3, List, ChevronRight, Sparkles, UserPlus
-} from 'lucide-react'
 
 interface Folder {
   id: string
@@ -85,7 +79,6 @@ interface Props {
 }
 
 type Tab = 'documents' | 'sharing'
-type ViewStyle = 'grid' | 'list'
 
 export default function DataRoomManager({ listingId, listingName }: Props) {
   const [loading, setLoading] = useState(true)
@@ -97,7 +90,6 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
   const [invites, setInvites] = useState<Invite[]>([])
 
   const [activeTab, setActiveTab] = useState<Tab>('documents')
-  const [viewStyle, setViewStyle] = useState<ViewStyle>('list')
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null)
@@ -218,7 +210,6 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
       await loadDocuments(dataRoom.id)
 
-      // Trigger DD-coach analysis for each uploaded document
       for (const { versionId } of uploadedVersions) {
         triggerAnalysis(versionId).catch(console.error)
       }
@@ -289,7 +280,6 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
           dataRoomId: dataRoom.id,
         }),
       })
-      // Wait a bit then reload
       setTimeout(() => loadAnalysis(showAnalysis), 2000)
     } catch (err) {
       setLoadingAnalysis(false)
@@ -382,13 +372,22 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
   }
 
-  const getFileIcon = (mimeType?: string) => {
-    if (!mimeType) return 'text-gray-400'
-    if (mimeType.includes('pdf')) return 'text-red-500'
-    if (mimeType.includes('sheet') || mimeType.includes('excel')) return 'text-green-600'
-    if (mimeType.includes('word') || mimeType.includes('document')) return 'text-blue-600'
-    if (mimeType.includes('image')) return 'text-purple-500'
-    return 'text-gray-400'
+  const getFileTypeLabel = (mimeType?: string) => {
+    if (!mimeType) return 'FIL'
+    if (mimeType.includes('pdf')) return 'PDF'
+    if (mimeType.includes('sheet') || mimeType.includes('excel')) return 'XLS'
+    if (mimeType.includes('word') || mimeType.includes('document')) return 'DOC'
+    if (mimeType.includes('image')) return 'IMG'
+    return 'FIL'
+  }
+
+  const getFileTypeColor = (mimeType?: string) => {
+    if (!mimeType) return 'bg-gray-100 text-gray-600'
+    if (mimeType.includes('pdf')) return 'bg-rose-50 text-rose-600'
+    if (mimeType.includes('sheet') || mimeType.includes('excel')) return 'bg-emerald-50 text-emerald-600'
+    if (mimeType.includes('word') || mimeType.includes('document')) return 'bg-blue-50 text-blue-600'
+    if (mimeType.includes('image')) return 'bg-purple-50 text-purple-600'
+    return 'bg-gray-100 text-gray-600'
   }
 
   const filteredDocs = documents
@@ -399,15 +398,12 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
       d.currentVersion?.fileName.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
-  const acceptedInvites = invites.filter((i) => i.status === 'ACCEPTED')
   const pendingInvites = invites.filter((i) => i.status === 'PENDING')
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-16">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-navy/10 to-coral/10 flex items-center justify-center mb-4">
-          <Loader2 className="w-6 h-6 animate-spin text-navy" />
-        </div>
+      <div className="flex flex-col items-center justify-center py-20">
+        <div className="w-8 h-8 border-2 border-navy border-t-transparent rounded-full animate-spin mb-4" />
         <p className="text-gray-500">Laddar datarum...</p>
       </div>
     )
@@ -415,15 +411,15 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center py-16">
-        <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center mb-4">
-          <AlertCircle className="w-6 h-6 text-red-500" />
+      <div className="flex flex-col items-center justify-center py-20">
+        <div className="w-16 h-16 rounded-3xl bg-rose-50 flex items-center justify-center mb-4 animate-pulse-shadow">
+          <span className="text-2xl text-rose-500">!</span>
         </div>
         <p className="text-gray-900 font-medium mb-2">Något gick fel</p>
-        <p className="text-gray-500 text-sm mb-4">{error}</p>
+        <p className="text-gray-500 text-sm mb-6">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="px-4 py-2 text-sm text-navy hover:bg-navy/5 rounded-lg transition-colors"
+          className="px-5 py-2.5 text-sm text-navy hover:bg-navy/5 rounded-xl transition-colors"
         >
           Försök igen
         </button>
@@ -432,38 +428,36 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
   }
 
   return (
-    <div className="space-y-6 iconless-dataroom">
+    <div className="space-y-6">
       {/* Tabs */}
       <div className="flex items-center justify-between">
-        <div className="flex gap-1 p-1 bg-gray-100/80 rounded-xl">
+        <div className="flex gap-1 p-1.5 bg-gray-50 rounded-2xl">
           <button
             onClick={() => setActiveTab('documents')}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+            className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
               activeTab === 'documents'
-                ? 'bg-white text-navy shadow-sm'
+                ? 'bg-white text-gray-900 shadow-sm animate-pulse-shadow'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            <FolderOpen className="w-4 h-4" />
             Dokument
-            <span className={`px-2 py-0.5 rounded-full text-xs ${
-              activeTab === 'documents' ? 'bg-navy/10 text-navy' : 'bg-gray-200 text-gray-600'
+            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
+              activeTab === 'documents' ? 'bg-gray-100 text-gray-600' : 'bg-gray-200 text-gray-500'
             }`}>
               {documents.length}
             </span>
           </button>
           <button
             onClick={() => setActiveTab('sharing')}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+            className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
               activeTab === 'sharing'
-                ? 'bg-white text-navy shadow-sm'
+                ? 'bg-white text-gray-900 shadow-sm animate-pulse-shadow'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            <Users className="w-4 h-4" />
             Delning
             {pendingInvites.length > 0 && (
-              <span className="w-2 h-2 rounded-full bg-coral animate-pulse" />
+              <span className="ml-2 w-2 h-2 inline-block rounded-full bg-amber-500" />
             )}
           </button>
         </div>
@@ -471,9 +465,8 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
         {activeTab === 'documents' && permissions?.canUpload && (
           <button
             onClick={() => setShowUpload(true)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all hover:shadow-lg hover:shadow-navy/20"
+            className="px-6 py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all hover:shadow-lg hover:shadow-navy/20 animate-pulse-shadow-navy"
           >
-            <Upload className="w-4 h-4" />
             Ladda upp
           </button>
         )}
@@ -484,24 +477,20 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
         <div className="grid lg:grid-cols-5 gap-6">
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-4">
-            {/* Folders */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-4">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+            <div className="bg-white rounded-3xl border border-gray-100 p-5 animate-pulse-shadow">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
                 Mappar
               </h3>
               <div className="space-y-1">
                 <button
                   onClick={() => setSelectedFolder(null)}
-                  className={`w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all flex items-center justify-between group ${
+                  className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all flex items-center justify-between ${
                     !selectedFolder
                       ? 'bg-navy text-white'
                       : 'hover:bg-gray-50 text-gray-700'
                   }`}
                 >
-                  <span className="flex items-center gap-2">
-                    <FolderOpen className={`w-4 h-4 ${!selectedFolder ? 'text-white/70' : 'text-gray-400'}`} />
-                    Alla
-                  </span>
+                  <span>Alla</span>
                   <span className={`text-xs font-medium ${!selectedFolder ? 'text-white/60' : 'text-gray-400'}`}>
                     {documents.length}
                   </span>
@@ -510,16 +499,13 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                   <button
                     key={folder.id}
                     onClick={() => setSelectedFolder(folder.id)}
-                    className={`w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all flex items-center justify-between ${
+                    className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all flex items-center justify-between ${
                       selectedFolder === folder.id
                         ? 'bg-navy text-white'
                         : 'hover:bg-gray-50 text-gray-700'
                     }`}
                   >
-                    <span className="flex items-center gap-2 truncate">
-                      <FolderOpen className={`w-4 h-4 flex-shrink-0 ${selectedFolder === folder.id ? 'text-white/70' : 'text-gray-400'}`} />
-                      <span className="truncate">{folder.name}</span>
-                    </span>
+                    <span className="truncate">{folder.name}</span>
                     <span className={`text-xs font-medium ${selectedFolder === folder.id ? 'text-white/60' : 'text-gray-400'}`}>
                       {folder.documentCount}
                     </span>
@@ -528,20 +514,18 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
               </div>
             </div>
 
-            {/* Quick stats */}
-            <div className="bg-gradient-to-br from-mint/20 to-mint/5 rounded-2xl p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Shield className="w-4 h-4 text-emerald-600" />
-                <span className="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Status</span>
-              </div>
-              <div className="space-y-2">
+            <div className="bg-white rounded-3xl border border-gray-100 p-5 animate-pulse-shadow">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
+                Status
+              </h3>
+              <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Filer</span>
                   <span className="font-semibold text-gray-900">{documents.length}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Delat med</span>
-                  <span className="font-semibold text-gray-900">{acceptedInvites.length}</span>
+                  <span className="text-gray-600">Delade med</span>
+                  <span className="font-semibold text-gray-900">{invites.filter(i => i.status === 'ACCEPTED').length}</span>
                 </div>
               </div>
             </div>
@@ -549,35 +533,15 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
           {/* Main content */}
           <div className="lg:col-span-4">
-            {/* Search & View toggle */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex-1 relative">
-                <input
-                  type="text"
-                  placeholder="Sök dokument..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/30 transition-all"
-                />
-              </div>
-              <div className="flex gap-1 p-1 bg-white border border-gray-200 rounded-xl">
-                <button
-                  onClick={() => setViewStyle('list')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewStyle === 'list' ? 'bg-gray-100 text-navy' : 'text-gray-400 hover:text-gray-600'
-                  }`}
-                >
-                  Lista
-                </button>
-                <button
-                  onClick={() => setViewStyle('grid')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewStyle === 'grid' ? 'bg-gray-100 text-navy' : 'text-gray-400 hover:text-gray-600'
-                  }`}
-                >
-                  Rutnät
-                </button>
-              </div>
+            {/* Search */}
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Sök dokument..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-5 py-3 bg-white border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/30 transition-all"
+              />
             </div>
 
             {/* Drop zone / Document list */}
@@ -585,49 +549,47 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`bg-white rounded-2xl border-2 transition-all ${
+              className={`bg-white rounded-3xl border-2 transition-all ${
                 isDragging
                   ? 'border-navy border-dashed bg-navy/5'
                   : 'border-gray-100'
               }`}
             >
               {isDragging ? (
-                <div className="p-16 text-center">
-                  <Upload className="w-10 h-10 text-navy mx-auto mb-3 animate-bounce" />
-                  <p className="text-navy font-medium">Släpp filer här</p>
+                <div className="p-20 text-center">
+                  <p className="text-navy font-medium text-lg">Släpp filer här</p>
                 </div>
               ) : filteredDocs.length === 0 ? (
-                <div className="p-16 text-center">
-                  <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <FileText className="w-8 h-8 text-gray-300" />
+                <div className="p-20 text-center">
+                  <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                    <span className="text-3xl text-gray-300">+</span>
                   </div>
-                  <p className="text-gray-500 mb-1">
+                  <p className="text-gray-900 font-medium mb-1">
                     {searchQuery ? 'Inga dokument matchade sökningen' : 'Inga dokument ännu'}
                   </p>
                   <p className="text-gray-400 text-sm mb-6">Dra och släpp filer hit</p>
                   {permissions?.canUpload && !searchQuery && (
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all"
+                      className="px-6 py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all"
                     >
-                      <Upload className="w-4 h-4" />
                       Välj filer
                     </button>
                   )}
                 </div>
-              ) : viewStyle === 'list' ? (
+              ) : (
                 <div className="divide-y divide-gray-50">
                   {filteredDocs.map((doc) => (
                     <div
                       key={doc.id}
-                      className="p-4 hover:bg-gray-50/50 transition-colors group"
+                      className="p-5 hover:bg-gray-50/50 transition-colors group"
                     >
                       <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center ${getFileIcon(doc.currentVersion?.mimeType)}`}>
-                          <FileText className="w-5 h-5" />
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xs font-bold ${getFileTypeColor(doc.currentVersion?.mimeType)}`}>
+                          {getFileTypeLabel(doc.currentVersion?.mimeType)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
                             <h3 className="font-medium text-gray-900 truncate">{doc.title}</h3>
                             {doc.versions && doc.versions.length > 1 && (
                               <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">
@@ -635,19 +597,16 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                               </span>
                             )}
                           </div>
-                          <div className="flex items-center gap-3 mt-0.5">
+                          <div className="flex items-center gap-3 mt-1">
                             <span className="text-sm text-gray-400">{doc.currentVersion?.fileName}</span>
                             <span className="text-xs text-gray-300">•</span>
                             <span className="text-sm text-gray-400">{formatFileSize(doc.currentVersion?.size || 0)}</span>
                           </div>
                         </div>
-                        {/* DD-Coach Analysis Button */}
                         <button
                           onClick={() => loadAnalysis(doc)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full transition-all bg-gradient-to-r from-violet-50 to-indigo-50 text-indigo-700 hover:from-violet-100 hover:to-indigo-100 border border-indigo-100"
-                          title="DD-coach analys"
+                          className="px-4 py-2 text-xs font-medium rounded-xl transition-all bg-violet-50 text-violet-700 hover:bg-violet-100"
                         >
-                          <Sparkles className="w-3 h-3" />
                           DD-coach
                         </button>
                         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -657,41 +616,20 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                                 setSelectedDoc(doc)
                                 setShowVersions(true)
                               }}
-                              className="p-2 text-gray-400 hover:text-navy hover:bg-gray-100 rounded-lg transition-colors"
-                              title="Versioner"
+                              className="px-3 py-2 text-xs font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                             >
-                              <History className="w-4 h-4" />
+                              Versioner
                             </button>
                           )}
                           <button
                             onClick={() => handleDownload(doc)}
                             disabled={downloading === doc.id}
-                            className="flex items-center gap-2 px-4 py-2 bg-navy text-white rounded-lg text-sm font-medium hover:bg-navy/90 transition-all disabled:opacity-50"
+                            className="px-4 py-2 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all disabled:opacity-50"
                           >
-                            {downloading === doc.id ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                              <Download className="w-4 h-4" />
-                            )}
+                            {downloading === doc.id ? 'Laddar...' : 'Ladda ner'}
                           </button>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {filteredDocs.map((doc) => (
-                    <div
-                      key={doc.id}
-                      className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors group cursor-pointer"
-                      onClick={() => handleDownload(doc)}
-                    >
-                      <div className={`w-12 h-12 rounded-xl bg-white flex items-center justify-center mb-3 ${getFileIcon(doc.currentVersion?.mimeType)}`}>
-                        <FileText className="w-6 h-6" />
-                      </div>
-                      <h3 className="font-medium text-gray-900 text-sm truncate mb-1">{doc.title}</h3>
-                      <p className="text-xs text-gray-400">{formatFileSize(doc.currentVersion?.size || 0)}</p>
                     </div>
                   ))}
                 </div>
@@ -706,16 +644,9 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Invite form */}
           {permissions?.canInvite && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-coral/20 to-coral/5 flex items-center justify-center">
-                  <UserPlus className="w-5 h-5 text-coral" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Bjud in</h3>
-                  <p className="text-sm text-gray-500">Dela datarum med köpare eller rådgivare</p>
-                </div>
-              </div>
+            <div className="bg-white rounded-3xl border border-gray-100 p-6 animate-pulse-shadow">
+              <h3 className="font-semibold text-gray-900 mb-1">Bjud in</h3>
+              <p className="text-sm text-gray-500 mb-5">Dela datarum med köpare eller rådgivare</p>
 
               <div className="flex gap-3">
                 <div className="flex-1">
@@ -724,7 +655,7 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
                     placeholder="namn@företag.se"
-                    className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy/20 transition-all"
+                    className="w-full px-5 py-3 bg-gray-50 border-0 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy/20 transition-all"
                   />
                 </div>
                 <div className="flex gap-1 p-1 bg-gray-50 rounded-xl">
@@ -732,62 +663,57 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                     onClick={() => setInviteRole('VIEWER')}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       inviteRole === 'VIEWER'
-                        ? 'bg-white text-navy shadow-sm'
+                        ? 'bg-white text-gray-900 shadow-sm'
                         : 'text-gray-500 hover:text-gray-700'
                     }`}
                   >
-                    <Eye className="w-4 h-4" />
+                    Läsare
                   </button>
                   <button
                     onClick={() => setInviteRole('EDITOR')}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       inviteRole === 'EDITOR'
-                        ? 'bg-white text-navy shadow-sm'
+                        ? 'bg-white text-gray-900 shadow-sm'
                         : 'text-gray-500 hover:text-gray-700'
                     }`}
                   >
-                    <FileText className="w-4 h-4" />
+                    Redigerare
                   </button>
                 </div>
                 <button
                   onClick={handleInvite}
                   disabled={inviting || !inviteEmail}
-                  className="px-5 py-3 bg-navy text-white rounded-xl font-medium hover:bg-navy/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-3 bg-navy text-white rounded-xl font-medium hover:bg-navy/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {inviting ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Mail className="w-5 h-5" />
-                  )}
+                  {inviting ? 'Skickar...' : 'Bjud in'}
                 </button>
               </div>
 
-              <p className="text-xs text-gray-400 mt-3 flex items-center gap-1">
-                <Shield className="w-3 h-3" />
+              <p className="text-xs text-gray-400 mt-4">
                 Inbjudna måste godkänna NDA innan åtkomst
               </p>
             </div>
           )}
 
           {/* Invites list */}
-          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-50">
+          <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden animate-pulse-shadow">
+            <div className="px-6 py-5 border-b border-gray-50">
               <h3 className="font-semibold text-gray-900">Inbjudna ({invites.length})</h3>
             </div>
 
             {invites.length === 0 ? (
-              <div className="p-12 text-center">
-                <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                  <Users className="w-6 h-6 text-gray-300" />
+              <div className="p-16 text-center">
+                <div className="w-16 h-16 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl text-gray-300">0</span>
                 </div>
                 <p className="text-gray-500 text-sm">Inga inbjudningar ännu</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-50">
                 {invites.map((inv) => (
-                  <div key={inv.id} className="px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center text-sm font-medium text-gray-600">
+                  <div key={inv.id} className="px-6 py-5 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-sm font-medium text-gray-600">
                         {inv.email[0].toUpperCase()}
                       </div>
                       <div>
@@ -799,19 +725,17 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                     </div>
                     <div>
                       {inv.status === 'PENDING' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 text-xs font-medium rounded-full">
-                          <Clock className="w-3 h-3" />
+                        <span className="px-3 py-1.5 bg-amber-50 text-amber-600 text-xs font-medium rounded-full">
                           Väntande
                         </span>
                       )}
                       {inv.status === 'ACCEPTED' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-medium rounded-full">
-                          <CheckCircle className="w-3 h-3" />
+                        <span className="px-3 py-1.5 bg-emerald-50 text-emerald-600 text-xs font-medium rounded-full">
                           Accepterad
                         </span>
                       )}
                       {inv.status === 'EXPIRED' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-500 text-xs font-medium rounded-full">
+                        <span className="px-3 py-1.5 bg-gray-100 text-gray-500 text-xs font-medium rounded-full">
                           Utgången
                         </span>
                       )}
@@ -827,14 +751,14 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
       {/* Upload Modal */}
       {showUpload && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl">
+          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl animate-pulse-shadow">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-900">Ladda upp</h2>
               <button
                 onClick={() => setShowUpload(false)}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-xl transition-colors text-gray-400"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                ×
               </button>
             </div>
 
@@ -843,14 +767,14 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all ${
+              className={`border-2 border-dashed rounded-3xl p-12 text-center cursor-pointer transition-all ${
                 isDragging
                   ? 'border-navy bg-navy/5'
                   : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Upload className="w-7 h-7 text-gray-400" />
+              <div className="w-16 h-16 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl text-gray-400">+</span>
               </div>
               <p className="text-gray-700 font-medium mb-1">
                 Dra och släpp filer
@@ -866,7 +790,7 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                 </div>
                 <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-navy to-coral transition-all duration-300 rounded-full"
+                    className="h-full bg-navy transition-all duration-300 rounded-full"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
@@ -879,7 +803,7 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
       {/* Versions Modal */}
       {showVersions && selectedDoc && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl">
+          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl animate-pulse-shadow">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">Versioner</h2>
@@ -890,9 +814,9 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                   setShowVersions(false)
                   setSelectedDoc(null)
                 }}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-xl transition-colors text-gray-400"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                ×
               </button>
             </div>
 
@@ -900,14 +824,14 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
               {selectedDoc.versions?.map((v) => (
                 <div
                   key={v.id}
-                  className={`flex items-center justify-between p-4 rounded-xl transition-colors ${
+                  className={`flex items-center justify-between p-4 rounded-2xl transition-colors ${
                     v.id === selectedDoc.currentVersion?.id
                       ? 'bg-navy/5 border border-navy/20'
                       : 'bg-gray-50 hover:bg-gray-100'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-semibold ${
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold ${
                       v.id === selectedDoc.currentVersion?.id
                         ? 'bg-navy text-white'
                         : 'bg-gray-200 text-gray-600'
@@ -923,9 +847,9 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                   </div>
                   <button
                     onClick={() => handleDownload(selectedDoc, v.id)}
-                    className="p-2 text-gray-400 hover:text-navy hover:bg-white rounded-lg transition-colors"
+                    className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-lg transition-colors"
                   >
-                    <Download className="w-4 h-4" />
+                    Ladda ner
                   </button>
                 </div>
               ))}
@@ -937,53 +861,48 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
       {/* DD-Coach Analysis Modal */}
       {showAnalysis && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl animate-pulse-shadow">
             <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-indigo-600" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900">DD-coach</h2>
-                  <p className="text-sm text-gray-500">{showAnalysis.title}</p>
-                </div>
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">DD-coach</h2>
+                <p className="text-sm text-gray-500 mt-1">{showAnalysis.title}</p>
               </div>
               <button
                 onClick={() => {
                   setShowAnalysis(null)
                   setAnalysisData(null)
                 }}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-xl transition-colors text-gray-400"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                ×
               </button>
             </div>
 
             {loadingAnalysis ? (
-              <div className="py-12 text-center">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-500 mx-auto mb-4" />
+              <div className="py-16 text-center">
+                <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                 <p className="text-gray-500">Analyserar dokument...</p>
               </div>
             ) : analysisData ? (
-              <div className="space-y-5">
+              <div className="space-y-6">
                 {/* Score */}
                 {analysisData.score !== undefined && (
-                  <div className="flex items-center gap-4">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold ${
+                  <div className="flex items-center gap-5">
+                    <div className={`w-20 h-20 rounded-3xl flex items-center justify-center text-2xl font-bold ${
                       analysisData.score >= 80 ? 'bg-emerald-50 text-emerald-600' :
                       analysisData.score >= 60 ? 'bg-amber-50 text-amber-600' :
-                      'bg-red-50 text-red-600'
+                      'bg-rose-50 text-rose-600'
                     }`}>
                       {analysisData.score}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900 mb-1">Kvalitetspoäng</p>
+                      <p className="text-sm font-medium text-gray-900 mb-2">Kvalitetspoäng</p>
                       <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                         <div 
                           className={`h-full rounded-full transition-all ${
                             analysisData.score >= 80 ? 'bg-emerald-500' :
                             analysisData.score >= 60 ? 'bg-amber-500' :
-                            'bg-red-500'
+                            'bg-rose-500'
                           }`}
                           style={{ width: `${analysisData.score}%` }}
                         />
@@ -994,40 +913,35 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
                 {/* Summary */}
                 {analysisData.summary && (
-                  <div className="p-4 bg-gray-50 rounded-xl">
-                    <p className="text-sm text-gray-700">{analysisData.summary}</p>
+                  <div className="p-5 bg-gray-50 rounded-2xl">
+                    <p className="text-sm text-gray-700 leading-relaxed">{analysisData.summary}</p>
                   </div>
                 )}
 
                 {/* Findings */}
                 {analysisData.findings && analysisData.findings.length > 0 && (
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-gray-900">Observations</h4>
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-medium text-gray-900">Observationer</h4>
                     {analysisData.findings.map((finding, idx) => (
                       <div
                         key={idx}
-                        className={`flex items-start gap-3 p-3 rounded-lg ${
+                        className={`flex items-start gap-4 p-4 rounded-2xl ${
                           finding.type === 'success' ? 'bg-emerald-50' :
                           finding.type === 'warning' ? 'bg-amber-50' :
-                          finding.type === 'error' ? 'bg-red-50' :
+                          finding.type === 'error' ? 'bg-rose-50' :
                           'bg-blue-50'
                         }`}
                       >
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                          finding.type === 'success' ? 'bg-emerald-100 text-emerald-600' :
-                          finding.type === 'warning' ? 'bg-amber-100 text-amber-600' :
-                          finding.type === 'error' ? 'bg-red-100 text-red-600' :
-                          'bg-blue-100 text-blue-600'
-                        }`}>
-                          {finding.type === 'success' && <CheckCircle className="w-3 h-3" />}
-                          {finding.type === 'warning' && <AlertCircle className="w-3 h-3" />}
-                          {finding.type === 'error' && <X className="w-3 h-3" />}
-                          {finding.type === 'info' && <Sparkles className="w-3 h-3" />}
-                        </div>
-                        <p className={`text-sm ${
+                        <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
+                          finding.type === 'success' ? 'bg-emerald-500' :
+                          finding.type === 'warning' ? 'bg-amber-500' :
+                          finding.type === 'error' ? 'bg-rose-500' :
+                          'bg-blue-500'
+                        }`} />
+                        <p className={`text-sm leading-relaxed ${
                           finding.type === 'success' ? 'text-emerald-800' :
                           finding.type === 'warning' ? 'text-amber-800' :
-                          finding.type === 'error' ? 'text-red-800' :
+                          finding.type === 'error' ? 'text-rose-800' :
                           'text-blue-800'
                         }`}>
                           {finding.message}
@@ -1041,7 +955,7 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                 <div className="flex gap-3 pt-2">
                   <button
                     onClick={rerunAnalysis}
-                    className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
+                    className="flex-1 px-5 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
                   >
                     Kör om analys
                   </button>
@@ -1050,18 +964,18 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                       setShowAnalysis(null)
                       setAnalysisData(null)
                     }}
-                    className="flex-1 px-4 py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-colors"
+                    className="flex-1 px-5 py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-colors"
                   >
                     Stäng
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="py-12 text-center">
-                <p className="text-gray-500">Ingen analys tillgänglig</p>
+              <div className="py-16 text-center">
+                <p className="text-gray-500 mb-6">Ingen analys tillgänglig</p>
                 <button
                   onClick={rerunAnalysis}
-                  className="mt-4 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors"
+                  className="px-6 py-3 bg-violet-600 text-white rounded-xl text-sm font-medium hover:bg-violet-700 transition-colors"
                 >
                   Starta analys
                 </button>
@@ -1080,9 +994,29 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
         className="hidden"
         onChange={(e) => e.target.files && handleUpload(e.target.files)}
       />
+
       <style jsx global>{`
-        .iconless-dataroom svg {
-          display: none !important;
+        @keyframes pulse-shadow {
+          0%, 100% {
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.03);
+          }
+          50% {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+          }
+        }
+        @keyframes pulse-shadow-navy {
+          0%, 100% {
+            box-shadow: 0 0 0 0 rgba(30, 58, 95, 0.15);
+          }
+          50% {
+            box-shadow: 0 8px 30px rgba(30, 58, 95, 0.25);
+          }
+        }
+        .animate-pulse-shadow {
+          animation: pulse-shadow 3s ease-in-out infinite;
+        }
+        .animate-pulse-shadow-navy {
+          animation: pulse-shadow-navy 2s ease-in-out infinite;
         }
       `}</style>
     </div>
