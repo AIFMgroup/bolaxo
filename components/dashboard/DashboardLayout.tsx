@@ -22,9 +22,10 @@ interface MenuItem {
 
 interface DashboardLayoutProps {
   children: React.ReactNode
+  demoRole?: 'seller' | 'buyer'
 }
 
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default function DashboardLayout({ children, demoRole }: DashboardLayoutProps) {
   const pathname = usePathname()
   const { user, logout } = useAuth()
   const t = useTranslations('dashboard')
@@ -34,7 +35,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   
   // Role-specific menu items
   const getMenuItems = (): MenuItem[] => {
-    const userRole = user?.role || ''
+    const userRole = demoRole || user?.role || ''
     if (isSeller(userRole)) {
       return [
         { label: t('menu.overview'), href: `/${locale}/dashboard`, icon: LayoutDashboard },
@@ -132,11 +133,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {!collapsed && (
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-sm text-navy truncate">
-                  {user?.name || user?.email}
+                  {demoRole ? 'Demo User' : (user?.name || user?.email)}
                 </div>
                 <div className="text-xs text-graphite/70 flex items-center gap-1">
                   <span className="w-2 h-2 bg-mint rounded-full"></span>
-                  {isSeller(user?.role || '') ? t('roles.seller') : isBuyer(user?.role || '') ? t('roles.buyer') : t('roles.broker')}
+                  {isSeller(demoRole || user?.role || '') ? t('roles.seller') : isBuyer(demoRole || user?.role || '') ? t('roles.buyer') : t('roles.broker')}
                 </div>
               </div>
             )}

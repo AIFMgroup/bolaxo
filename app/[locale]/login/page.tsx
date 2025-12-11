@@ -279,6 +279,24 @@ function LoginForm() {
                 </Link>
               </p>
             </div>
+
+            {/* Demo Links */}
+            <div className="mt-8 pt-8 border-t border-gray-100 text-center">
+              <p className="text-sm text-gray-500 mb-4">
+                {locale === 'sv' ? 'Vill du testa plattformen utan konto?' : 'Want to try the platform without an account?'}
+              </p>
+              <div className="flex justify-center gap-4">
+                <Link href={getLocalizedPath('/demo/dashboard/seller')} className="text-sm font-medium text-primary-navy hover:underline flex items-center gap-1">
+                  <Building className="w-4 h-4" />
+                  {locale === 'sv' ? 'Demo: Säljare' : 'Demo: Seller'}
+                </Link>
+                <span className="text-gray-300">|</span>
+                <Link href={getLocalizedPath('/demo/dashboard/buyer')} className="text-sm font-medium text-primary-navy hover:underline flex items-center gap-1">
+                  <Search className="w-4 h-4" />
+                  {locale === 'sv' ? 'Demo: Köpare' : 'Demo: Buyer'}
+                </Link>
+              </div>
+            </div>
           </div>
 
           {/* Right Side - Info */}

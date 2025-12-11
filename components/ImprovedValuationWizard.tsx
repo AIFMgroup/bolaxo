@@ -88,10 +88,13 @@ interface ValuationData {
 }
 
 interface WizardProps {
-  onClose: () => void
+  onClose?: () => void
+  variant?: 'modal' | 'page'
 }
 
-const industries = [
+// ... existing code ...
+
+export default function ImprovedValuationWizard({ onClose, variant = 'modal' }: WizardProps) {
   { value: 'restaurang', label: 'Restaurang & Café', icon: <Package className="w-4 h-4" />, description: 'Restauranger, caféer, barer' },
   { value: 'ehandel', label: 'E-handel', icon: <Globe className="w-4 h-4" />, description: 'Onlinebutiker, marknadsplatser' },
   { value: 'webbtjanster', label: 'SaaS & Webbtjänster', icon: <Globe className="w-4 h-4" />, description: 'Mjukvara som tjänst, appar' },
