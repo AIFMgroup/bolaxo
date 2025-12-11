@@ -117,7 +117,11 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
         }
 
         const initData = await initRes.json()
-        const dataRoomId = initData.dataRoom.id
+        const dataRoomId = initData.dataRoom?.id || initData.dataroomId
+
+        if (!dataRoomId) {
+          throw new Error('Ingen datarums-ID kunde hämtas')
+        }
 
         await loadDocuments(dataRoomId)
         await loadInvites(dataRoomId)

@@ -21,8 +21,14 @@ export async function POST(req: NextRequest) {
 
     // Demo bypass: allow demo users to get a static dataroom without DB lookups
     if (userId.startsWith('demo')) {
+      const demoDataRoomId = `demo-dataroom-${listingId || '1'}`
       return NextResponse.json({
-        dataroomId: 'demo-dataroom-1',
+        dataroomId: demoDataRoomId,
+        dataRoom: {
+          id: demoDataRoomId,
+          listingId: listingId || 'demo-listing-1',
+          createdBy: userId,
+        },
         rootFolderId: 'demo-root-folder',
       })
     }

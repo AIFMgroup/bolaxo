@@ -40,10 +40,25 @@ export default function DataRoomPage() {
         })
         if (res.ok) {
           const data = await res.json()
-          setListings(data.listings || [])
-          if (data.listings?.length > 0) {
-            setSelectedListing(data.listings[0].id)
+          const fetched = data.listings || []
+          if (fetched.length > 0) {
+            setListings(fetched)
+            setSelectedListing(fetched[0].id)
+            return
           }
+        }
+
+        // Demo fallback: ensure a mock listing exists
+        if (user.id.startsWith('demo') || user.role === 'seller') {
+          const demoListing = {
+            id: 'demo-listing-1',
+            title: 'Demo Företag AB',
+            anonymousTitle: 'Tillväxtbolag inom tjänster',
+            status: 'active' as const,
+            readinessScore: 82,
+          }
+          setListings([demoListing])
+          setSelectedListing(demoListing.id)
         }
       } catch (err) {
         console.error('Error fetching listings:', err)
@@ -67,7 +82,9 @@ export default function DataRoomPage() {
     )
   }
 
-  if (listings.length === 0) {
+  const isDemoSeller = user?.id?.startsWith('demo') || user?.role === 'seller'
+
+  if (listings.length === 0 && !isDemoSeller) {
     return (
       <ClientDashboardLayout>
         <div className="max-w-md mx-auto text-center py-16">
