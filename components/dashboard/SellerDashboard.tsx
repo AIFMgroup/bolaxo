@@ -5,9 +5,9 @@ import Link from 'next/link'
 import { 
   TrendingUp, Eye, Users, CheckCircle, XCircle, Clock, Edit, 
   MessageSquare, BarChart3, HelpCircle, FileText, Target, 
-  Building2, MapPin, Calendar, DollarSign, Briefcase, 
+  Building2, MapPin, Calendar, Briefcase, 
   ArrowRight, Settings, PauseCircle, PlayCircle, ChevronRight,
-  UserCheck, FileSignature, Shield, Sparkles, ArrowUpRight, ClipboardCheck
+  UserCheck, FileSignature, Shield, Sparkles
 } from 'lucide-react'
 import { DEMO_DEALS, DEMO_QA_QUESTIONS, DEMO_ENGAGEMENT_DATA } from '@/lib/demo-data'
 import { useLocale, useTranslations } from 'next-intl'
@@ -338,18 +338,6 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
           Verktyg & Funktioner
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <Link 
-            href={`/${locale}/dashboard/readiness`} 
-            className="bg-gradient-to-br from-emerald-50 to-emerald-50/30 border border-emerald-200 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all group"
-          >
-            <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm group-hover:shadow-md transition-shadow">
-              <ClipboardCheck className="w-7 h-7 text-emerald-600" />
-            </div>
-            <p className="font-semibold text-navy mb-1">Säljberedskap</p>
-            <p className="text-sm text-graphite/70">DD-dokumentation</p>
-            <ChevronRight className="w-5 h-5 text-emerald-600 mt-3 group-hover:translate-x-1 transition-transform" />
-          </Link>
-
           <Link 
             href={`/${locale}/salja/sme-kit`} 
             className="bg-gradient-to-br from-sky/20 to-sky/5 border border-sky/30 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all group"
