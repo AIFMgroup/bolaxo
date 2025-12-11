@@ -94,7 +94,9 @@ export async function GET(
         action: 'VIEW',
         targetType: 'DATAROOM',
         targetId: dataRoomId,
-        ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip'),
+        meta: {
+          ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+        },
       },
     })
 
