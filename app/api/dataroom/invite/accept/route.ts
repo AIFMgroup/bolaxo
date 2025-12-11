@@ -31,6 +31,9 @@ export async function POST(request: NextRequest) {
             },
           },
         },
+        invitedBy: {
+          select: { id: true },
+        },
       },
     })
 
@@ -95,7 +98,7 @@ export async function POST(request: NextRequest) {
         dataRoomId: invite.dataRoomId,
         userId,
         role: invite.role as any,
-        invitedBy: invite.invitedById || userId,
+        invitedBy: invite.invitedBy?.id || userId,
       },
     })
 
