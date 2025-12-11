@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import crypto from 'crypto'
 
 const s3 = new S3Client({
   region: process.env.AWS_S3_REGION || 'eu-north-1',
@@ -14,6 +15,10 @@ const s3 = new S3Client({
 
 const BUCKET = process.env.AWS_S3_BUCKET_NAME || 'trestor-dataroom-prod'
 const URL_TTL = 60 * 5 // 5 minutes
+
+const WATERMARK_BASE_URL = process.env.WATERMARK_BASE_URL // optional external service
+const WATERMARK_SECRET = process.env.WATERMARK_SIGNING_SECRET // optional HMAC for watermark service
+const WEBHOOK_URL = process.env.DATAROOM_WEBHOOK_URL // optional event webhook
 
 // Simple in-memory rate limiter per IP per 60s window
 const RATE_LIMIT = 60
@@ -53,6 +58,36 @@ async function hasNda(dataRoomId: string, userId?: string, email?: string) {
     },
   })
   return !!exists
+}
+
+async function notifyEvent(payload: any) {
+  if (!WEBHOOK_URL) return
+  try {
+    await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+  } catch (err) {
+    console.error('dataroom webhook failed', err)
+  }
+}
+
+function buildWatermarkUrl(key: string, email?: string | null) {
+  if (!WATERMARK_BASE_URL) return null
+  const ts = Date.now().toString()
+  const subject = email || 'viewer'
+  const payload = `${key}|${subject}|${ts}`
+  const sig = WATERMARK_SECRET
+    ? crypto.createHmac('sha256', WATERMARK_SECRET).update(payload).digest('hex')
+    : 'unsigned'
+  const url = new URL(WATERMARK_BASE_URL)
+  url.searchParams.set('bucket', BUCKET)
+  url.searchParams.set('key', key)
+  url.searchParams.set('subject', subject)
+  url.searchParams.set('ts', ts)
+  url.searchParams.set('sig', sig)
+  return url.toString()
 }
 
 export async function GET(req: NextRequest) {
@@ -134,6 +169,8 @@ export async function GET(req: NextRequest) {
       { expiresIn: URL_TTL }
     )
 
+    const watermarkedUrl = buildWatermarkUrl(version.storageKey, userEmail || userId)
+
     // Audit
     await prisma.dataRoomAudit.create({
       data: {
@@ -143,11 +180,23 @@ export async function GET(req: NextRequest) {
         action: 'download',
         targetType: 'documentVersion',
         targetId: version.id,
+        meta: { watermarked: !!watermarkedUrl },
       },
     })
 
+    // Fire webhook (non-blocking)
+    notifyEvent({
+      type: 'dataroom.download',
+      dataRoomId,
+      documentVersionId: version.id,
+      actorId: userId,
+      actorEmail: userEmail,
+      watermarked: !!watermarkedUrl,
+      at: new Date().toISOString(),
+    })
+
     return NextResponse.json({
-      downloadUrl: presignedUrl,
+      downloadUrl: watermarkedUrl || presignedUrl,
       expiresIn: URL_TTL,
       fileName: version.fileName,
     })
