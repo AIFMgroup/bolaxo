@@ -70,14 +70,11 @@ export async function GET(
           include: {
             currentVersion: true,
             versions: {
-              orderBy: { versionNumber: 'desc' },
+              orderBy: { version: 'desc' },
               take: 5, // Last 5 versions
             },
             folder: {
               select: { id: true, name: true },
-            },
-            uploadedBy: {
-              select: { name: true, email: true },
             },
           },
           orderBy: { createdAt: 'desc' },
@@ -104,8 +101,8 @@ export async function GET(
     // Transform documents for response
     const documents = dataRoom.documents.map((doc) => ({
       id: doc.id,
-      name: doc.name,
-      category: doc.category,
+      name: doc.title,
+      category: null,
       requirementId: doc.requirementId,
       folder: doc.folder
         ? { id: doc.folder.id, name: doc.folder.name }
@@ -113,23 +110,23 @@ export async function GET(
       currentVersion: doc.currentVersion
         ? {
             id: doc.currentVersion.id,
-            versionNumber: doc.currentVersion.versionNumber,
+            versionNumber: doc.currentVersion.version,
             fileName: doc.currentVersion.fileName,
-            fileSize: doc.currentVersion.fileSize,
+            fileSize: doc.currentVersion.size,
             mimeType: doc.currentVersion.mimeType,
-            uploadedAt: doc.currentVersion.createdAt,
+            uploadedAt: doc.currentVersion.uploadedAt,
           }
         : null,
       versions: isOwner || isEditor
         ? doc.versions.map((v) => ({
             id: v.id,
-            versionNumber: v.versionNumber,
+            versionNumber: v.version,
             fileName: v.fileName,
-            fileSize: v.fileSize,
-            createdAt: v.createdAt,
+            fileSize: v.size,
+            createdAt: v.uploadedAt,
           }))
         : undefined, // Viewers only see current version
-      uploadedBy: doc.uploadedBy?.name || doc.uploadedBy?.email || 'Okänd',
+      uploadedBy: 'Okänd',
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     }))
@@ -150,7 +147,7 @@ export async function GET(
           dataRoom.listing?.anonymousTitle ||
           dataRoom.listing?.companyName ||
           'Okänt företag',
-        ndaRequired: dataRoom.ndaRequired,
+        ndaRequired: true,
       },
       folders,
       documents,

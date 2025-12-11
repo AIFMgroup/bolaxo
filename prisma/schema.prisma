@@ -822,7 +822,7 @@ model DataRoomDocument {
   requirementId    String?                 // maps to readiness requirement when applicable
   status           String   @default("draft") // draft, pending_scan, ready, blocked
 
-  currentVersionId String?
+  currentVersionId String? @unique
   currentVersion   DataRoomDocumentVersion? @relation("CurrentDocVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
 
   versions         DataRoomDocumentVersion[]
@@ -839,6 +839,7 @@ model DataRoomDocumentVersion {
   id           String   @id @default(cuid())
   documentId   String
   document     DataRoomDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  currentFor   DataRoomDocument? @relation("CurrentDocVersion")
 
   version      Int
   fileName     String
