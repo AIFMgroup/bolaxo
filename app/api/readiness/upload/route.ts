@@ -43,15 +43,31 @@ export async function POST(request: NextRequest) {
 
     const isDemo = userId.startsWith('demo') || listingId.startsWith('demo')
 
-    // For non-demo: validate user owns listing
-    if (!isDemo) {
-      const listing = await prisma.listing.findFirst({
-        where: { id: listingId, userId },
+    // Demo mode: return mock response without any database or S3 operations
+    if (isDemo) {
+      const documentId = `demo-doc-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+      return NextResponse.json({
+        document: {
+          id: documentId,
+          requirementId,
+          fileName: file.name,
+          fileSize: file.size,
+          uploadedAt: new Date().toISOString(),
+          status: 'uploaded',
+          periodYear: periodYear ? parseInt(periodYear) : undefined,
+          signed: signed === 'true',
+          demo: true,
+        },
       })
+    }
 
-      if (!listing) {
-        return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 })
-      }
+    // For non-demo: validate user owns listing
+    const listing = await prisma.listing.findFirst({
+      where: { id: listingId, userId },
+    })
+
+    if (!listing) {
+      return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 })
     }
 
     // Validate requirement exists
