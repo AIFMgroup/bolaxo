@@ -147,54 +147,187 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'fileName krävs' }, { status: 400 })
     }
 
-    // Demo mode: return intelligent mock analysis
+    // Demo mode: return intelligent mock analysis based on document type
     if (userId.startsWith('demo') || documentId?.startsWith('demo')) {
-      const mockCategories: Record<string, RequirementCategory> = {
-        'arsredovisning': 'finans',
-        'årsredovisning': 'finans',
-        'huvudbok': 'finans',
-        'balans': 'finans',
-        'resultat': 'finans',
-        'skatt': 'skatt',
-        'avtal': 'juridik',
-        'anställning': 'hr',
-        'kund': 'kommersiellt',
-        'it': 'it',
+      // Simulate processing delay for realism
+      await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000))
+      
+      const lowerFileName = fileName.toLowerCase()
+      
+      // Detect document type and category from filename
+      const documentTypes: Record<string, { 
+        category: RequirementCategory
+        type: string
+        baseScore: number
+        findings: AnalysisFinding[]
+        missingElements: string[]
+        recommendations: string[]
+      }> = {
+        'årsredovisning': {
+          category: 'finans',
+          type: 'Årsredovisning',
+          baseScore: 85,
+          findings: [
+            { type: 'success', title: 'Komplett årsredovisning', description: 'Dokumentet innehåller balansräkning, resultaträkning och förvaltningsberättelse.' },
+            { type: 'success', title: 'Revisorsyttrande', description: 'Revisionsberättelse finns inkluderad.' },
+            { type: 'info', title: 'Notapparat', description: 'Noter finns men kan behöva mer detaljer för fullständig DD.' },
+          ],
+          missingElements: [],
+          recommendations: ['Säkerställ att alla noter är kompletta', 'Kontrollera att jämförelsetal finns för alla poster'],
+        },
+        'huvudbok': {
+          category: 'finans',
+          type: 'Huvudbok',
+          baseScore: 78,
+          findings: [
+            { type: 'success', title: 'Transaktionshistorik', description: 'Dokumentet innehåller fullständig transaktionshistorik.' },
+            { type: 'warning', title: 'Periodavgränsning', description: 'Kontrollera att alla periodiseringar är korrekta vid årsskifte.' },
+            { type: 'info', title: 'Kontoplan', description: 'Konteringar följer BAS-kontoplanen.' },
+          ],
+          missingElements: ['Kontospecifikationer för väsentliga poster', 'Avstämning mot bokslut'],
+          recommendations: ['Inkludera kontospecifikationer för konton med stora saldon', 'Lägg till avstämningskommentarer'],
+        },
+        'balans': {
+          category: 'finans',
+          type: 'Balansrapport',
+          baseScore: 82,
+          findings: [
+            { type: 'success', title: 'Tillgångar och skulder', description: 'Dokumentet visar fullständig ställning av tillgångar och skulder.' },
+            { type: 'success', title: 'Eget kapital', description: 'Eget kapital och obeskattade reserver redovisas korrekt.' },
+            { type: 'warning', title: 'Värdering', description: 'Kontrollera värdering av materiella anläggningstillgångar.' },
+          ],
+          missingElements: ['Specifikation av kundfordringar', 'Åldersanalys av lager'],
+          recommendations: ['Lägg till åldersanalys för kundfordringar', 'Inkludera lagervärderingsmetod'],
+        },
+        'resultat': {
+          category: 'finans',
+          type: 'Resultaträkning',
+          baseScore: 80,
+          findings: [
+            { type: 'success', title: 'Intäkter och kostnader', description: 'Fullständig resultaträkning med alla poster.' },
+            { type: 'info', title: 'Bruttomarginal', description: 'Bruttomarginalen kan beräknas från dokumentet.' },
+            { type: 'warning', title: 'Extraordinära poster', description: 'Kontrollera om det finns engångsposter som påverkar jämförbarheten.' },
+          ],
+          missingElements: ['Segmentanalys om tillämpligt', 'Jämförelse med budget'],
+          recommendations: ['Identifiera och markera eventuella engångsposter', 'Lägg till månadsvisa siffror för trendanalys'],
+        },
+        'avtal': {
+          category: 'juridik',
+          type: 'Avtal',
+          baseScore: 75,
+          findings: [
+            { type: 'success', title: 'Avtalsstruktur', description: 'Dokumentet har tydlig avtalsstruktur med parter och villkor.' },
+            { type: 'warning', title: 'Signatur', description: 'Kontrollera att alla parter har signerat avtalet.' },
+            { type: 'info', title: 'Giltighetstid', description: 'Avtalsperiod och uppsägningsvillkor bör verifieras.' },
+          ],
+          missingElements: ['Signatursida', 'Bilagor'],
+          recommendations: ['Säkerställ att alla bilagor finns med', 'Verifiera att avtalet fortfarande är giltigt'],
+        },
+        'skatt': {
+          category: 'skatt',
+          type: 'Skattedeklaration',
+          baseScore: 83,
+          findings: [
+            { type: 'success', title: 'Deklaration inlämnad', description: 'Skattedeklarationen verkar vara komplett.' },
+            { type: 'info', title: 'Skatteberäkning', description: 'Kontrollera att skatteberäkningen stämmer överens med årsredovisningen.' },
+            { type: 'success', title: 'Periodicitet', description: 'Dokumentet avser rätt beskattningsperiod.' },
+          ],
+          missingElements: ['Kvitto på inlämning från Skatteverket'],
+          recommendations: ['Bifoga kvitto/bekräftelse från Skatteverket', 'Inkludera eventuella korrigeringsdeklarationer'],
+        },
+        'anställning': {
+          category: 'hr',
+          type: 'Anställningsavtal',
+          baseScore: 77,
+          findings: [
+            { type: 'success', title: 'Anställningsvillkor', description: 'Grundläggande anställningsvillkor finns dokumenterade.' },
+            { type: 'warning', title: 'Konkurrensklausul', description: 'Kontrollera om det finns konkurrens- eller sekretessklausuler.' },
+            { type: 'info', title: 'Kollektivavtal', description: 'Verifiera koppling till eventuellt kollektivavtal.' },
+          ],
+          missingElements: ['Signatur från båda parter', 'Lönebilaga'],
+          recommendations: ['Säkerställ att alla anställningsavtal är signerade', 'Inkludera aktuell lönespecifikation'],
+        },
+        'kund': {
+          category: 'kommersiellt',
+          type: 'Kundavtal/Kundlista',
+          baseScore: 79,
+          findings: [
+            { type: 'success', title: 'Kundinformation', description: 'Dokumentet innehåller relevant kundinformation.' },
+            { type: 'warning', title: 'GDPR', description: 'Säkerställ att personuppgiftshantering följer GDPR.' },
+            { type: 'info', title: 'Kundkoncentration', description: 'Analysera beroendet av enskilda stora kunder.' },
+          ],
+          missingElements: ['Kundomsättning per segment', 'Churn-analys'],
+          recommendations: ['Inkludera omsättning per kund/segment', 'Lägg till historisk kunddata för trendanalys'],
+        },
       }
 
-      let detectedCategory: RequirementCategory = 'finans'
-      const lowerFileName = fileName.toLowerCase()
-      for (const [keyword, category] of Object.entries(mockCategories)) {
+      // Find matching document type
+      let matchedType = null
+      for (const [keyword, config] of Object.entries(documentTypes)) {
         if (lowerFileName.includes(keyword)) {
-          detectedCategory = category
+          matchedType = config
           break
         }
       }
 
-      const yearMatch = fileName.match(/20[0-9]{2}/)
-      const detectedYear = yearMatch ? parseInt(yearMatch[0]) : 2024
+      // Default fallback if no match
+      if (!matchedType) {
+        matchedType = {
+          category: 'finans' as RequirementCategory,
+          type: 'Dokument',
+          baseScore: 72,
+          findings: [
+            { type: 'success' as const, title: 'Dokument laddat', description: 'Dokumentet har laddats upp och kan läsas.' },
+            { type: 'info' as const, title: 'Manuell granskning', description: 'DD-coach kunde inte automatiskt klassificera dokumentet.' },
+            { type: 'warning' as const, title: 'Verifiering behövs', description: 'Kontrollera att dokumentet uppfyller DD-kraven manuellt.' },
+          ],
+          missingElements: ['Tydlig dokumenttyp', 'Datummärkning'],
+          recommendations: ['Namnge filen tydligare (t.ex. "Årsredovisning 2024.pdf")', 'Säkerställ att dokumentet är komplett'],
+        }
+      }
 
-      const score = 75 + Math.floor(Math.random() * 20)
-      
+      // Extract year from filename
+      const yearMatch = fileName.match(/20[0-9]{2}/)
+      const detectedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear()
+
+      // Add some randomness to score for realism
+      const scoreVariation = Math.floor(Math.random() * 10) - 5
+      const finalScore = Math.max(50, Math.min(100, matchedType.baseScore + scoreVariation))
+
+      // Determine status based on score
+      const status = finalScore >= 85 ? 'approved' : finalScore >= 65 ? 'needs_review' : 'rejected'
+
+      // Build dynamic summary
+      const summary = `${matchedType.type} för ${detectedYear} har analyserats. ${
+        status === 'approved' 
+          ? 'Dokumentet uppfyller DD-kraven och är redo för granskning.'
+          : status === 'needs_review'
+          ? 'Dokumentet behöver kompletteras med vissa uppgifter innan det kan godkännas.'
+          : 'Dokumentet saknar väsentlig information och behöver åtgärdas.'
+      }`
+
       return NextResponse.json({
         analysis: {
-          score,
-          status: score >= 80 ? 'approved' : 'needs_review',
-          summary: `${CATEGORY_META_LABELS[detectedCategory]} dokument för ${detectedYear}. Dokumentet innehåller grundläggande information men behöver kompletteras med vissa detaljer.`,
+          score: finalScore,
+          status,
+          summary,
           findings: [
-            { type: 'success', title: 'Rätt format', description: 'Dokumentet är i rätt format och läsbart.' },
-            { type: 'success', title: 'Korrekt period', description: `Dokumentet avser ${detectedYear} vilket är aktuellt.` },
-            { type: 'info', title: 'Identifierad typ', description: `Klassificerat som ${CATEGORY_META_LABELS[detectedCategory]}.` },
-            ...(score < 85 ? [{ type: 'warning' as const, title: 'Ofullständig information', description: 'Vissa detaljer saknas för komplett DD-underlag.' }] : []),
+            ...matchedType.findings,
+            { 
+              type: 'info' as const, 
+              title: 'Period identifierad', 
+              description: `Dokumentet avser ${detectedYear}.` 
+            },
           ],
-          suggestedCategory: detectedCategory,
+          suggestedCategory: matchedType.category,
           suggestedPeriodYear: detectedYear,
-          isSigned: lowerFileName.includes('sign'),
-          missingElements: score < 85 ? ['Detaljerade noter', 'Jämförelsetal'] : [],
-          recommendations: score < 85 
-            ? ['Lägg till noter som förklarar större poster', 'Inkludera jämförelsetal från föregående år']
-            : ['Dokumentet uppfyller DD-kraven'],
+          isSigned: lowerFileName.includes('sign') || lowerFileName.includes('under'),
+          missingElements: status === 'approved' ? [] : matchedType.missingElements,
+          recommendations: status === 'approved' 
+            ? ['Dokumentet uppfyller DD-kraven - inga åtgärder krävs'] 
+            : matchedType.recommendations,
         },
+        provider: 'demo',
       })
     }
 
