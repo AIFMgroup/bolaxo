@@ -63,48 +63,48 @@ export async function POST(req: NextRequest) {
 
     const isDemo = userId.startsWith('demo') || listingId.startsWith('demo')
 
-    // For demo mode, we'll create a dataroom on-the-fly if needed
-    let dataroom = await prisma.dataRoom.findUnique({
+    // Demo mode: return mock upload URL and store file in S3 without database
+    if (isDemo) {
+      const extension = fileName.includes('.') ? fileName.split('.').pop() : 'bin'
+      const objectKey = `dataroom/demo/${listingId}/${crypto.randomUUID()}.${extension}`
+      const demoDocId = `demo-doc-${Date.now()}`
+      const demoVersionId = `demo-ver-${Date.now()}`
+      
+      // Generate real presigned URL for S3 upload
+      const presignedUrl = await getSignedUrl(
+        s3,
+        new PutObjectCommand({
+          Bucket: BUCKET,
+          Key: objectKey,
+          ContentType: mimeType,
+          ServerSideEncryption: 'AES256',
+        }),
+        { expiresIn: URL_TTL }
+      )
+      
+      return NextResponse.json({
+        uploadUrl: presignedUrl,
+        documentId: demoDocId,
+        versionId: demoVersionId,
+        expiresIn: URL_TTL,
+        demo: true,
+        s3Key: objectKey,
+      })
+    }
+
+    // Non-demo: normal flow with database
+    const dataroom = await prisma.dataRoom.findUnique({
       where: { listingId },
       select: { id: true, listing: { select: { userId: true } } },
     })
-    
-    // For demo: create dataroom if it doesn't exist
-    if (!dataroom && isDemo) {
-      dataroom = await prisma.dataRoom.create({
-        data: {
-          listingId,
-          createdBy: userId,
-          ndaRequired: false,
-          folders: {
-            create: {
-              name: 'Root',
-              path: '/',
-              order: 0,
-            },
-          },
-          permissions: {
-            create: {
-              userId,
-              role: 'OWNER',
-              invitedBy: userId,
-            },
-          },
-        },
-        select: { id: true, listing: { select: { userId: true } } },
-      })
-    }
     
     if (!dataroom) {
       return NextResponse.json({ error: 'Inget datarum skapat' }, { status: 404 })
     }
 
-    // For demo: skip role check
-    if (!isDemo) {
-      const role = (await getUserRole(dataroom.id, userId)) || (dataroom.listing?.userId === userId ? 'OWNER' : null)
-      if (!role || (role !== 'OWNER' && role !== 'EDITOR')) {
-        return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 })
-      }
+    const role = (await getUserRole(dataroom.id, userId)) || (dataroom.listing?.userId === userId ? 'OWNER' : null)
+    if (!role || (role !== 'OWNER' && role !== 'EDITOR')) {
+      return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 })
     }
 
     // Ensure folder exists or use root
