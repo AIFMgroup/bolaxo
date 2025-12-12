@@ -6,8 +6,7 @@ import { usePathname } from 'next/navigation'
 import { 
   LayoutDashboard, Building, FileText, MessageSquare, BarChart3, 
   Settings, Users, TrendingUp, Shield, Calendar, FolderOpen,
-  LogOut, ChevronLeft, Bell, Search, Plus, Menu, X, UserCircle,
-  Sparkles
+  LogOut, ChevronLeft, Bell, Search, Plus, Menu, X, UserCircle
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTranslations, useLocale } from 'next-intl'
@@ -98,29 +97,21 @@ export default function DashboardLayout({ children, demoRole }: DashboardLayoutP
         transform ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
         shadow-lg lg:shadow-none
       `}>
-        {/* Logo */}
-        <div className="p-5 border-b border-sand/30">
-          <div className="flex items-center justify-between">
-            <Link href={`/${locale}/dashboard`} className={`flex items-center gap-2 ${collapsed ? 'hidden' : ''}`}>
-              <div className="w-10 h-10 bg-gradient-to-br from-navy to-sky rounded-xl flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-bold text-xl text-navy tracking-tight">Trestor Group</span>
-            </Link>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCollapsed(!collapsed)}
-                className="p-2 hover:bg-sand/30 rounded-xl transition-colors hidden lg:block"
-              >
-                <ChevronLeft className={`w-5 h-5 transition-transform text-navy ${collapsed ? 'rotate-180' : ''}`} />
-              </button>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2 hover:bg-sand/30 rounded-xl transition-colors lg:hidden"
-              >
-                <X className="w-5 h-5 text-navy" />
-              </button>
-            </div>
+        {/* Sidebar controls */}
+        <div className="p-3 border-b border-sand/30">
+          <div className="flex items-center justify-end gap-2">
+            <button
+              onClick={() => setCollapsed(!collapsed)}
+              className="p-2 hover:bg-sand/30 rounded-xl transition-colors hidden lg:block"
+            >
+              <ChevronLeft className={`w-5 h-5 transition-transform text-navy ${collapsed ? 'rotate-180' : ''}`} />
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-2 hover:bg-sand/30 rounded-xl transition-colors lg:hidden"
+            >
+              <X className="w-5 h-5 text-navy" />
+            </button>
           </div>
         </div>
 
