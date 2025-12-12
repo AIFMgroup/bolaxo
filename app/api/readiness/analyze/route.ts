@@ -1082,6 +1082,450 @@ export async function POST(request: NextRequest) {
             'Analysera automatiseringsmöjligheter post-transaktion',
           ],
         },
+
+        // ===== YTTERLIGARE ANALYSTYPER =====
+        
+        // Koncern/Dotterbolag
+        'koncern': {
+          category: 'finans',
+          type: 'Koncernredovisning',
+          baseScore: 83,
+          findings: [
+            { type: 'success', title: 'Koncernbokslut', description: 'Konsoliderad redovisning för koncernen finns upprättad.' },
+            { type: 'info', title: 'Elimineringar', description: 'Koncerninterna transaktioner och mellanhavanden ska vara eliminerade.' },
+            { type: 'warning', title: 'Minoritetsintressen', description: 'Finns minoritetsägare i dotterbolag? Dessa kan komplicera transaktionen.' },
+            { type: 'info', title: 'Förvärvsanalyser', description: 'Granska goodwill från tidigare förvärv och nedskrivningsbehov.' },
+            { type: 'warning', title: 'Dotterbolagsgarantier', description: 'Kontrollera korsvisa garantier och borgensåtaganden inom koncernen.' },
+          ],
+          missingElements: ['Koncernstruktur-schema', 'Elimineringstabell', 'Förvärvskalkyler'],
+          recommendations: [
+            'Rita upp komplett koncernstruktur med ägarandelar',
+            'Dokumentera alla koncerninterna avtal och prissättning',
+            'Analysera möjlighet att sälja dotterbolag separat vs. hela koncernen',
+            'Verifiera att alla dotterbolag kan överföras utan consent',
+          ],
+        },
+        'dotterbolag': {
+          category: 'juridik',
+          type: 'Dotterbolagsstruktur',
+          baseScore: 80,
+          findings: [
+            { type: 'success', title: 'Koncernstruktur', description: 'Dokumentation av dotterbolag och ägarstruktur finns.' },
+            { type: 'info', title: 'Ägarandelar', description: 'Verifiera ägarandelar i varje dotterbolag mot registerutdrag.' },
+            { type: 'warning', title: 'Joint ventures', description: 'Delägda bolag kan kräva samtycke från andra ägare vid försäljning.' },
+            { type: 'warning', title: 'Utländska dotterbolag', description: 'Bolag i andra jurisdiktioner kräver lokal DD och kan ha särskilda regler.' },
+          ],
+          missingElements: ['Registerutdrag för alla bolag', 'Ägaravtal i delägda bolag'],
+          recommendations: ['Hämta registerutdrag för samtliga dotterbolag', 'Granska ägaravtal för delägda bolag'],
+        },
+
+        // Bank & Finansiering
+        'bankutdrag': {
+          category: 'finans',
+          type: 'Bankutdrag/Kassaverifikation',
+          baseScore: 86,
+          findings: [
+            { type: 'success', title: 'Likviditetsverifikation', description: 'Bankutdrag verifierar kassabehållning vid specifikt datum.' },
+            { type: 'info', title: 'Banksaldon', description: 'Samtliga bankkonton bör vara inkluderade - även i utländsk valuta.' },
+            { type: 'warning', title: 'Checkkredit', description: 'Kontrollera utnyttjad checkkredit - detta är skuld, inte kassa.' },
+            { type: 'info', title: 'Bankgarantier', description: 'Granska utfärdade bankgarantier som reducerar tillgänglig kredit.' },
+            { type: 'warning', title: 'Spärrade medel', description: 'Finns medel som är spärrade som säkerhet? Dessa räknas inte som fri kassa.' },
+          ],
+          missingElements: ['Utdrag från alla banker', 'Bekräftelse på checkkredit', 'Lista över bankgarantier'],
+          recommendations: [
+            'Begär saldobekräftelse från banker vid locked box-datum eller closing',
+            'Inventera samtliga bankkonton inklusive dotterbolag',
+            'Dokumentera nettoskuld-beräkning (skulder minus kassa)',
+            'Analysera normaliserat kassabehov för rörelsekapital',
+          ],
+        },
+        'checkkredit': {
+          category: 'finans',
+          type: 'Checkkredit/Kreditfacilitet',
+          baseScore: 79,
+          findings: [
+            { type: 'success', title: 'Kreditfacilitet', description: 'Dokumentation av revolverande kredit eller checkkredit finns.' },
+            { type: 'info', title: 'Beviljat vs utnyttjat', description: 'Viktigt att särskilja beviljat belopp från faktiskt utnyttjad kredit.' },
+            { type: 'warning', title: 'Change of control', description: 'De flesta kreditavtal har klausul som kräver bankens godkännande vid ägarförändring.' },
+            { type: 'warning', title: 'Säkerheter', description: 'Vilka säkerheter har ställts? Företagsinteckning, aktier, etc.' },
+          ],
+          missingElements: ['Kreditavtal', 'Senaste covenant-beräkning'],
+          recommendations: ['Kontakta bank tidigt om change of control', 'Förhandla om övertagande av kredit'],
+        },
+        'factoring': {
+          category: 'finans',
+          type: 'Factoring/Finansiering av fordringar',
+          baseScore: 75,
+          findings: [
+            { type: 'success', title: 'Factoringavtal', description: 'Dokumentation av factoringupplägg finns.' },
+            { type: 'info', title: 'Med eller utan regress', description: 'Factoring med regress innebär att säljaren bär kreditrisken - viktigt för skuldberäkning.' },
+            { type: 'warning', title: 'Dolda skulder', description: 'Factoring kan dölja faktisk skuldsättning - analysera effekt på nettoskuld.' },
+            { type: 'warning', title: 'Kundrelationer', description: 'Hur påverkas kundrelationen? Är kunderna medvetna?' },
+          ],
+          missingElements: ['Factoringavtal', 'Aktuellt utnyttjande', 'Kostnadsanalys'],
+          recommendations: [
+            'Analysera om factoring ska avslutas eller fortsätta efter transaktion',
+            'Beräkna normaliserad rörelsekapitalnivå utan factoring',
+            'Granska kunders acceptans av factoringbolag',
+          ],
+        },
+        'leasing': {
+          category: 'finans',
+          type: 'Leasingavtal',
+          baseScore: 77,
+          findings: [
+            { type: 'success', title: 'Leasingportfölj', description: 'Dokumentation av leasingavtal finns (bilar, maskiner, etc.).' },
+            { type: 'info', title: 'Finansiell vs operationell', description: 'Klassificering påverkar balansräkning under IFRS 16/K3.' },
+            { type: 'warning', title: 'Restvärdesgaranti', description: 'Kontrollera eventuella restvärdesåtaganden vid avtalets slut.' },
+            { type: 'warning', title: 'Överlåtelse', description: 'Kan leasingavtal överlåtas eller måste de avslutas vid försäljning?' },
+            { type: 'info', title: 'Off-balance sheet', description: 'Operationella leasingavtal kan dölja betydande åtaganden.' },
+          ],
+          missingElements: ['Leasingmatris med alla avtal', 'Betalningsplan per avtal'],
+          recommendations: [
+            'Skapa matris över alla leasingavtal med slutdatum och månadskostnad',
+            'Analysera total leasingskuld för skuldberäkning',
+            'Kontrollera förtida uppsägningsvillkor och kostnader',
+          ],
+        },
+
+        // Kommersiellt utökat
+        'orderbok': {
+          category: 'kommersiellt',
+          type: 'Orderbok/Backlog',
+          baseScore: 82,
+          findings: [
+            { type: 'success', title: 'Orderstatus', description: 'Dokumentation av bekräftade order och backlog finns.' },
+            { type: 'info', title: 'Leveranstider', description: 'Granska planerade leveransdatum och risk för förseningar.' },
+            { type: 'warning', title: 'Annulleringsvillkor', description: 'Kan kunder annullera order? Vilka kostnader/penalties?' },
+            { type: 'info', title: 'Marginaler', description: 'Analysera marginaler per order - finns olönsamma projekt?' },
+            { type: 'warning', title: 'Koncentration', description: 'Stor backlog hos enstaka kunder = risk om kunden avbeställer.' },
+          ],
+          missingElements: ['Orderlistning med värde och marginal', 'Leveransplan', 'Kundrisk-bedömning'],
+          recommendations: [
+            'Värdera orderboken och dess säkerhet (bekräftad vs pipeline)',
+            'Analysera historisk träffsäkerhet i orderprognoser',
+            'Identifiera order med change of control-klausuler',
+          ],
+        },
+        'pipeline': {
+          category: 'kommersiellt',
+          type: 'Säljpipeline',
+          baseScore: 73,
+          findings: [
+            { type: 'success', title: 'Pipeline-dokumentation', description: 'Säljpipeline med affärsmöjligheter finns dokumenterad.' },
+            { type: 'info', title: 'Sannolikhetsviktning', description: 'Är sannolikheter per fas realistiska baserat på historisk conversion rate?' },
+            { type: 'warning', title: 'Nyckelpersonsberoende', description: 'Hur mycket av pipelinen är beroende av specifika säljare som kan lämna?' },
+            { type: 'info', title: 'Avslutsdatum', description: 'Granska förväntade avslutsdatum - är de realistiska?' },
+            { type: 'warning', title: 'Kvalitet', description: 'Finns det "zombieaffärer" som legat i pipeline länge utan framsteg?' },
+          ],
+          missingElements: ['Historisk conversion rate per fas', 'Säljcykel-analys'],
+          recommendations: [
+            'Analysera historisk träffsäkerhet i pipeline-prognoser',
+            'Intervjua säljare om status på större affärer',
+            'Rensa pipeline från osannolika affärer före presentation',
+          ],
+        },
+        'prislista': {
+          category: 'kommersiellt',
+          type: 'Prislista/Prissättning',
+          baseScore: 78,
+          findings: [
+            { type: 'success', title: 'Prissättning dokumenterad', description: 'Prislistor och prismodeller finns dokumenterade.' },
+            { type: 'info', title: 'Rabattstruktur', description: 'Granska rabattnivåer och vem som har mandat att ge rabatter.' },
+            { type: 'warning', title: 'Prisökningar', description: 'Har bolaget möjlighet att höja priser? Analysera historiska prishöjningar.' },
+            { type: 'info', title: 'Konkurrenskraft', description: 'Hur förhåller sig priserna till konkurrenternas?' },
+            { type: 'warning', title: 'Kundspecifika priser', description: 'Finns priser låsta i avtal som inte kan ändras?' },
+          ],
+          missingElements: ['Rabattmatris', 'Historiska prishöjningar', 'Konkurrentanalys'],
+          recommendations: [
+            'Dokumentera prishöjningsmöjligheter per kundsegment',
+            'Analysera marginalstruktur per produkt/tjänst',
+            'Identifiera priskänsliga kunder',
+          ],
+        },
+        'sla': {
+          category: 'kommersiellt',
+          type: 'SLA/Servicenivåavtal',
+          baseScore: 77,
+          findings: [
+            { type: 'success', title: 'SLA-dokumentation', description: 'Servicenivåavtal med definierade KPIer finns.' },
+            { type: 'info', title: 'Uppfyllnadsgrad', description: 'Granska historisk SLA-uppfyllnad - risk för vitesanspråk?' },
+            { type: 'warning', title: 'Vitesklausuler', description: 'Vilka ekonomiska konsekvenser vid SLA-brott?' },
+            { type: 'warning', title: 'Övertagande', description: 'Kan SLA-åtaganden hållas efter ägarförändring?' },
+          ],
+          missingElements: ['SLA-uppföljningsrapporter', 'Historiska SLA-brott', 'Vitesberäkningar'],
+          recommendations: [
+            'Verifiera att SLA-nivåer är uppnåbara även efter transaktion',
+            'Analysera trend i SLA-uppfyllnad',
+            'Identifiera kunder med särskilt krävande SLA',
+          ],
+        },
+        'nps': {
+          category: 'kommersiellt',
+          type: 'Kundnöjdhet/NPS',
+          baseScore: 79,
+          findings: [
+            { type: 'success', title: 'Kundnöjdhetsdata', description: 'Net Promoter Score eller motsvarande mätning finns.' },
+            { type: 'info', title: 'Trend', description: 'Hur har NPS utvecklats över tid? Förbättring eller försämring?' },
+            { type: 'info', title: 'Branschjämförelse', description: 'Hur förhåller sig NPS till branschsnitt?' },
+            { type: 'warning', title: 'Detractors', description: 'Vilka kunder är missnöjda och varför? Risk för churn.' },
+          ],
+          missingElements: ['NPS-trend över tid', 'Kundfeedback-sammanställning'],
+          recommendations: [
+            'Analysera orsaker till låga betyg och åtgärdsplaner',
+            'Koppla NPS till kundbortfall för prognoser',
+          ],
+        },
+        'reklamation': {
+          category: 'kommersiellt',
+          type: 'Reklamationer/Garantier',
+          baseScore: 74,
+          findings: [
+            { type: 'success', title: 'Reklamationshantering', description: 'Dokumentation av reklamationer och garantiärenden finns.' },
+            { type: 'info', title: 'Garantikostnader', description: 'Analysera historiska garantikostnader som andel av omsättning.' },
+            { type: 'warning', title: 'Produktansvar', description: 'Finns risk för produktansvarskrav? Särskilt för B2C-produkter.' },
+            { type: 'warning', title: 'Reservering', description: 'Är tillräcklig reservering gjord för framtida garantiåtaganden?' },
+          ],
+          missingElements: ['Garantikostnadshistorik', 'Produktansvarskrav', 'Reserveringsberäkning'],
+          recommendations: [
+            'Beräkna normal garantikostnad som % av omsättning',
+            'Analysera produkter med hög reklamationsfrekvens',
+            'Granska produktansvarsförsäkring',
+          ],
+        },
+
+        // Varumärken & Domäner
+        'varumärke': {
+          category: 'it',
+          type: 'Varumärken',
+          baseScore: 81,
+          findings: [
+            { type: 'success', title: 'Varumärkesregistrering', description: 'Varumärken är registrerade hos PRV, EUIPO eller WIPO.' },
+            { type: 'info', title: 'Geografisk täckning', description: 'I vilka länder är varumärket skyddat? Täcker det marknaden?' },
+            { type: 'warning', title: 'Förnyelse', description: 'Kontrollera förnyelsedatum - varumärken måste förnyas regelbundet.' },
+            { type: 'warning', title: 'Invändningar', description: 'Pågår invändningsärenden eller tvister om varumärket?' },
+            { type: 'info', title: 'Ägarskap', description: 'Verifiera att bolaget (inte ägaren personligen) äger varumärkena.' },
+          ],
+          missingElements: ['Registreringsbevis', 'Lista över alla klasser', 'Förnyelseplan'],
+          recommendations: [
+            'Inventera alla varumärken med registreringsnummer och länder',
+            'Verifiera ägarskap via PRV/EUIPO',
+            'Analysera om skyddet täcker relevanta marknader',
+          ],
+        },
+        'domän': {
+          category: 'it',
+          type: 'Domännamn',
+          baseScore: 80,
+          findings: [
+            { type: 'success', title: 'Domänportfölj', description: 'Dokumentation av registrerade domännamn finns.' },
+            { type: 'info', title: 'Registrar', description: 'Vilken registrar och vem är registrerad ägare?' },
+            { type: 'warning', title: 'Ägarskap', description: 'Domäner bör ägas av bolaget, inte privatpersoner.' },
+            { type: 'warning', title: 'Förnyelse', description: 'Kontrollera utgångsdatum - domäner kan kapas om förnyelse missas.' },
+          ],
+          missingElements: ['Komplett domänlista', 'Registrar-inloggningar', 'Förnyelsekalender'],
+          recommendations: [
+            'Säkerställ att alla kritiska domäner ägs av bolaget',
+            'Konsolidera till en registrar för enklare hantering',
+            'Aktivera auto-renewal för viktiga domäner',
+          ],
+        },
+
+        // Organisation & Personal
+        'organisationsschema': {
+          category: 'hr',
+          type: 'Organisationsschema',
+          baseScore: 81,
+          findings: [
+            { type: 'success', title: 'Organisationsstruktur', description: 'Organisationsschema med rapporteringslinjer finns dokumenterat.' },
+            { type: 'info', title: 'Ledningsgrupp', description: 'Identifiera nyckelpersoner och deras roller i organisationen.' },
+            { type: 'warning', title: 'Vakanser', description: 'Finns kritiska roller som är vakanta eller under rekrytering?' },
+            { type: 'info', title: 'Span of control', description: 'Analysera om organisationen är för platt eller för hierarkisk.' },
+          ],
+          missingElements: ['Aktuellt organisationsschema', 'Ledningsgruppens sammansättning'],
+          recommendations: [
+            'Identifiera nyckelpersoner och deras retention-risk',
+            'Analysera beroende av ägare/grundare i daglig verksamhet',
+            'Planera succession för kritiska roller',
+          ],
+        },
+        'cv': {
+          category: 'hr',
+          type: 'CV/Nyckelpersoner',
+          baseScore: 78,
+          findings: [
+            { type: 'success', title: 'Ledningsprofiler', description: 'CV och bakgrundsinformation för nyckelpersoner finns.' },
+            { type: 'info', title: 'Erfarenhet', description: 'Granska relevant branscherfarenhet och track record.' },
+            { type: 'warning', title: 'Konkurrensklausuler', description: 'Har nyckelpersoner konkurrensklausuler från tidigare anställningar?' },
+            { type: 'warning', title: 'Referenstagning', description: 'Bakgrundskontroll kan avslöja problem som inte framgår av CV.' },
+          ],
+          missingElements: ['CV för alla i ledningsgruppen', 'Bakgrundskontroller'],
+          recommendations: [
+            'Genomför bakgrundskontroller på ledning före closing',
+            'Analysera retention-strategi för nyckelpersoner',
+            'Diskutera stay-bonus eller lock-up för kritiska personer',
+          ],
+        },
+        'kollektivavtal': {
+          category: 'hr',
+          type: 'Kollektivavtal',
+          baseScore: 77,
+          findings: [
+            { type: 'success', title: 'Kollektivavtalstillhörighet', description: 'Information om kollektivavtal finns dokumenterad.' },
+            { type: 'info', title: 'Arbetsgivarorganisation', description: 'Vilket arbetsgivarförbund och vilka avtal gäller?' },
+            { type: 'warning', title: 'MBL-förhandlingar', description: 'Företagsförsäljning kräver MBL-förhandling (§11) med facket.' },
+            { type: 'info', title: 'Övergång av verksamhet', description: 'Vid inkråmsförsäljning gäller regler om övergång av verksamhet (LAS §6b).' },
+          ],
+          missingElements: ['Kollektivavtal', 'Facklig kontaktperson', 'MBL-protokoll'],
+          recommendations: [
+            'Planera MBL-förhandling i god tid före transaktion',
+            'Analysera påverkan på anställningsvillkor',
+            'Granska eventuella lokala avtal',
+          ],
+        },
+        'semesterskuld': {
+          category: 'hr',
+          type: 'Semesterskuld',
+          baseScore: 82,
+          findings: [
+            { type: 'success', title: 'Semesterskuld beräknad', description: 'Upplupen semester- och kompskuld är dokumenterad.' },
+            { type: 'info', title: 'Per anställd', description: 'Granska fördelning - har vissa anställda oproportionerligt mycket sparad semester?' },
+            { type: 'warning', title: 'Obegränsad semester', description: 'Om obegränsad semester-policy finns - hur hanteras skulden?' },
+            { type: 'info', title: 'Closing-justering', description: 'Semesterskuld är ofta föremål för justering av köpeskilling.' },
+          ],
+          missingElements: ['Semesterskuld per person', 'Beräkningsunderlag'],
+          recommendations: [
+            'Beräkna semesterskuld vid locked box/closing',
+            'Analysera om skulden är normaliserad eller ovanligt hög',
+            'Definiera hantering i SPA (inkluderad i pris eller separat justering)',
+          ],
+        },
+
+        // Tillstånd & Certifikat
+        'tillstånd': {
+          category: 'operation',
+          type: 'Tillstånd/Licenser',
+          baseScore: 81,
+          findings: [
+            { type: 'success', title: 'Verksamhetstillstånd', description: 'Nödvändiga tillstånd för verksamheten finns dokumenterade.' },
+            { type: 'info', title: 'Giltighetstid', description: 'Kontrollera giltighetstid och förnyelseprocess.' },
+            { type: 'warning', title: 'Överlåtbarhet', description: 'Kan tillstånd överföras vid ägarförändring eller måste nya sökas?' },
+            { type: 'warning', title: 'Villkorsförändringar', description: 'Kan myndigheten ändra villkor eller återkalla tillstånd?' },
+          ],
+          missingElements: ['Tillståndslista', 'Förnyelsekalender', 'Myndighetskontakter'],
+          recommendations: [
+            'Inventera alla tillstånd och licenser verksamheten är beroende av',
+            'Kontakta myndigheter om tillstånds överlåtbarhet',
+            'Planera för eventuella nya ansökningar',
+          ],
+        },
+        'iso': {
+          category: 'operation',
+          type: 'ISO-certifiering',
+          baseScore: 83,
+          findings: [
+            { type: 'success', title: 'Certifiering aktiv', description: 'ISO-certifiering (9001/14001/27001 eller annan) är aktiv.' },
+            { type: 'info', title: 'Certifieringsorgan', description: 'Verifiera att certifieringsorganet är ackrediterat.' },
+            { type: 'warning', title: 'Giltighetstid', description: 'Kontrollera när nästa recertifiering sker och om det finns avvikelser.' },
+            { type: 'info', title: 'Kundkrav', description: 'Är certifieringen ett krav från kunder? Vad händer om den försvinner?' },
+          ],
+          missingElements: ['Certifikat', 'Senaste revisionsrapport', 'Avvikelselista'],
+          recommendations: [
+            'Verifiera att certifieringen upprätthålls efter transaktion',
+            'Granska eventuella avvikelser från senaste revision',
+            'Analysera vilka kunder som kräver certifiering',
+          ],
+        },
+        'certifikat': {
+          category: 'operation',
+          type: 'Certifieringar',
+          baseScore: 80,
+          findings: [
+            { type: 'success', title: 'Certifieringsstatus', description: 'Dokumentation av certifieringar finns.' },
+            { type: 'info', title: 'Relevans', description: 'Vilka certifieringar är affärskritiska för kundrelationer?' },
+            { type: 'warning', title: 'Underhåll', description: 'Certifieringar kräver löpande underhåll och revisioner.' },
+          ],
+          missingElements: ['Certifikatförteckning', 'Revisionskalender'],
+          recommendations: ['Lista alla certifieringar med giltighetstid', 'Planera för recertifieringar'],
+        },
+
+        // M&A & Värdering
+        'värdering': {
+          category: 'finans',
+          type: 'Värderingsrapport',
+          baseScore: 79,
+          findings: [
+            { type: 'success', title: 'Tidigare värdering', description: 'Värderingsrapport eller indikativ värdering finns.' },
+            { type: 'info', title: 'Värderingsmetod', description: 'Granska vilken metod som använts (DCF, multiplar, etc.).' },
+            { type: 'warning', title: 'Aktualitet', description: 'Hur gammal är värderingen? Marknadsförutsättningar kan ha ändrats.' },
+            { type: 'info', title: 'Antaganden', description: 'Vilka antaganden gjordes? Stämmer de fortfarande?' },
+          ],
+          missingElements: ['Värderingsunderlag', 'Antagandedokumentation'],
+          recommendations: [
+            'Uppdatera värdering med aktuella siffror',
+            'Analysera skillnader mot tidigare värdering',
+            'Förbered för köparens egen värderingsmodell',
+          ],
+        },
+        'information memorandum': {
+          category: 'kommersiellt',
+          type: 'Information Memorandum',
+          baseScore: 81,
+          findings: [
+            { type: 'success', title: 'IM upprättat', description: 'Information Memorandum/säljprospekt finns för transaktionen.' },
+            { type: 'info', title: 'Investment highlights', description: 'Är de viktigaste värdedrivarna tydligt kommunicerade?' },
+            { type: 'warning', title: 'Verifierbarhet', description: 'Alla påståenden i IM måste kunna verifieras i DD-materialet.' },
+            { type: 'warning', title: 'Disclaimer', description: 'Säkerställ att korrekta friskrivningar finns.' },
+          ],
+          missingElements: ['Fullständigt IM', 'Underliggande dataunderlag'],
+          recommendations: [
+            'Säkerställ att alla uppgifter i IM kan styrkas med dokument',
+            'Granska med juridisk rådgivare innan distribution',
+          ],
+        },
+        'im': {
+          category: 'kommersiellt',
+          type: 'Information Memorandum',
+          baseScore: 81,
+          findings: [
+            { type: 'success', title: 'Säljdokumentation', description: 'IM/säljprospekt finns upprättat.' },
+            { type: 'warning', title: 'Verifierbarhet', description: 'Alla påståenden måste kunna backas upp.' },
+          ],
+          missingElements: ['Dataunderlag'],
+          recommendations: ['Verifiera alla siffror mot DD-material'],
+        },
+        'nda': {
+          category: 'juridik',
+          type: 'Sekretessavtal/NDA',
+          baseScore: 84,
+          findings: [
+            { type: 'success', title: 'NDA signerat', description: 'Sekretessavtal finns på plats med motpart.' },
+            { type: 'info', title: 'Omfattning', description: 'Granska vad som omfattas och vad som är undantaget.' },
+            { type: 'info', title: 'Giltighetstid', description: 'Hur länge gäller sekretessen? Normalt 2-5 år.' },
+            { type: 'warning', title: 'Sanktioner', description: 'Vilka är konsekvenserna vid brott mot NDA?' },
+          ],
+          missingElements: ['Signerat NDA', 'Lista över mottagare av konfidentiell info'],
+          recommendations: [
+            'Säkerställ att alla som får DD-info har signerat NDA',
+            'Spåra vilka dokument som delats med vem',
+          ],
+        },
+        'loi': {
+          category: 'juridik',
+          type: 'Letter of Intent/Avsiktsförklaring',
+          baseScore: 82,
+          findings: [
+            { type: 'success', title: 'LOI signerat', description: 'Letter of Intent eller term sheet finns med potentiell köpare.' },
+            { type: 'info', title: 'Bindande vs icke-bindande', description: 'Vilka delar är juridiskt bindande (vanligen exklusivitet, sekretess)?' },
+            { type: 'warning', title: 'Exklusivitet', description: 'Finns exklusivitetsperiod som hindrar parallella förhandlingar?' },
+            { type: 'info', title: 'Villkor', description: 'Vilka förutsättningar (conditions) gäller för att gå vidare?' },
+          ],
+          missingElements: ['Signerat LOI', 'Term sheet'],
+          recommendations: [
+            'Granska LOI med juridisk rådgivare',
+            'Tydliggör vad som är bindande respektive indikativt',
+          ],
+        },
       }
 
       // Find matching document type
