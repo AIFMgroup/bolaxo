@@ -56,9 +56,10 @@ interface Props {
 // LocalStorage key for demo documents
 const DEMO_DOCS_KEY = 'bolaxo_demo_readiness_docs'
 
-// Helper to check if we're in demo mode
-const isDemoMode = () => {
+// Helper to check if we're in demo mode (check both cookie and listingId)
+const isDemoMode = (listingId?: string) => {
   if (typeof window === 'undefined') return false
+  if (listingId?.startsWith('demo')) return true
   const userId = document.cookie.split('; ').find(row => row.startsWith('bolaxo_user_id='))?.split('=')[1]
   return userId?.startsWith('demo') || false
 }
@@ -70,6 +71,7 @@ const saveDemoDocsToStorage = (listingId: string, docs: UploadedDoc[]) => {
     const allDocs = JSON.parse(localStorage.getItem(DEMO_DOCS_KEY) || '{}')
     allDocs[listingId] = docs
     localStorage.setItem(DEMO_DOCS_KEY, JSON.stringify(allDocs))
+    console.log('[Demo] Saved docs to localStorage:', listingId, docs.length)
   } catch (e) {
     console.error('Error saving demo docs:', e)
   }
@@ -80,7 +82,9 @@ const loadDemoDocsFromStorage = (listingId: string): UploadedDoc[] => {
   if (typeof window === 'undefined') return []
   try {
     const allDocs = JSON.parse(localStorage.getItem(DEMO_DOCS_KEY) || '{}')
-    return allDocs[listingId] || []
+    const docs = allDocs[listingId] || []
+    console.log('[Demo] Loaded docs from localStorage:', listingId, docs.length)
+    return docs
   } catch (e) {
     console.error('Error loading demo docs:', e)
     return []
@@ -103,7 +107,7 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
 
   // Save to localStorage whenever docs change (for demo persistence)
   useEffect(() => {
-    if (isDemoMode() && uploadedDocs.length > 0) {
+    if (isDemoMode(listingId) && uploadedDocs.length > 0) {
       saveDemoDocsToStorage(listingId, uploadedDocs)
     }
   }, [uploadedDocs, listingId])
@@ -115,40 +119,53 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
         
         // First, load from localStorage for demo mode
         const storedDocs = loadDemoDocsFromStorage(listingId)
+        const isDemo = isDemoMode(listingId)
         
-        const docsRes = await fetch(`/api/readiness/documents?listingId=${listingId}`)
-        if (docsRes.ok) {
-          const data = await docsRes.json()
-          const apiDocs = data.documents || []
-          
-          // Merge API docs with stored docs (avoid duplicates)
-          const existingIds = new Set(apiDocs.map((d: UploadedDoc) => d.id))
-          const mergedDocs = [
-            ...apiDocs,
-            ...storedDocs.filter(d => !existingIds.has(d.id))
-          ]
-          setUploadedDocs(mergedDocs)
-        } else if (storedDocs.length > 0) {
-          // If API fails, use stored docs
-          setUploadedDocs(storedDocs)
+        console.log('[Readiness] Fetching docs, isDemo:', isDemo, 'storedDocs:', storedDocs.length)
+        
+        let finalDocs: UploadedDoc[] = storedDocs
+        
+        try {
+          const docsRes = await fetch(`/api/readiness/documents?listingId=${listingId}`)
+          if (docsRes.ok) {
+            const data = await docsRes.json()
+            const apiDocs = data.documents || []
+            
+            console.log('[Readiness] API returned docs:', apiDocs.length)
+            
+            // Merge API docs with stored docs (avoid duplicates)
+            const existingIds = new Set(apiDocs.map((d: UploadedDoc) => d.id))
+            finalDocs = [
+              ...apiDocs,
+              ...storedDocs.filter(d => !existingIds.has(d.id))
+            ]
+          }
+        } catch (apiErr) {
+          console.log('[Readiness] API error, using stored docs:', apiErr)
         }
-
-        const gapRes = await fetch('/api/readiness/requirements', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            documents: uploadedDocs.map(d => ({
-              requirementId: d.requirementId,
-              category: REQUIREMENTS.find(r => r.id === d.requirementId)?.category || 'finans',
-              mimeType: 'application/pdf',
-              periodYear: d.periodYear,
-              signed: d.signed,
-            })),
-          }),
-        })
-        if (gapRes.ok) {
-          const gapData = await gapRes.json()
-          setGapResult(gapData)
+        
+        console.log('[Readiness] Final docs count:', finalDocs.length)
+        setUploadedDocs(finalDocs)
+        
+        // Calculate gap with the final docs
+        if (finalDocs.length > 0) {
+          const gapRes = await fetch('/api/readiness/requirements', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              documents: finalDocs.map(d => ({
+                requirementId: d.requirementId,
+                category: REQUIREMENTS.find(r => r.id === d.requirementId)?.category || 'finans',
+                mimeType: 'application/pdf',
+                periodYear: d.periodYear,
+                signed: d.signed,
+              })),
+            }),
+          })
+          if (gapRes.ok) {
+            const gapData = await gapRes.json()
+            setGapResult(gapData)
+          }
         }
       } catch (err) {
         console.error('Error fetching readiness data:', err)

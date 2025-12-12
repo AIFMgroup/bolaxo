@@ -41,30 +41,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Demo mode: return mock upload response
-    if (userId.startsWith('demo') || listingId.startsWith('demo')) {
-      return NextResponse.json({
-        document: {
-          id: `demo-readiness-${Date.now()}`,
-          requirementId,
-          fileName: file.name,
-          fileSize: file.size,
-          uploadedAt: new Date().toISOString(),
-          status: 'uploaded',
-          periodYear: periodYear ? parseInt(periodYear) : undefined,
-          signed: signed === 'true',
-          demo: true,
-        },
+    const isDemo = userId.startsWith('demo') || listingId.startsWith('demo')
+
+    // For non-demo: validate user owns listing
+    if (!isDemo) {
+      const listing = await prisma.listing.findFirst({
+        where: { id: listingId, userId },
       })
-    }
 
-    // Validate user owns listing
-    const listing = await prisma.listing.findFirst({
-      where: { id: listingId, userId },
-    })
-
-    if (!listing) {
-      return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 })
+      if (!listing) {
+        return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 })
+      }
     }
 
     // Validate requirement exists
@@ -145,25 +132,37 @@ export async function POST(request: NextRequest) {
       signed: signed === 'true',
       originalName: file.name,
       uploadedByUserId: userId,
+      isDemo,
     })
 
-    // Save to database
-    // Store requirementId in type field as "READINESS:requirementId"
-    // Store metadata JSON in uploadedByName field (hacky but avoids migration)
-    const document = await prisma.document.create({
-      data: {
-        transactionId: listingId,
-        type: `READINESS:${requirementId}`,
-        title: requirement.title,
-        fileName: file.name,
-        fileSize: file.size,
-        mimeType: file.type,
-        fileUrl,
-        status: 'UPLOADED',
-        uploadedBy: userId,
-        uploadedByName: metadataJson,
-      },
-    })
+    let documentId: string
+    let createdAt: Date = new Date()
+    
+    if (isDemo) {
+      // For demo: generate ID but don't save to database (no valid Transaction)
+      // S3 upload already happened above, so file is stored
+      documentId = `demo-doc-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`
+    } else {
+      // Save to database
+      // Store requirementId in type field as "READINESS:requirementId"
+      // Store metadata JSON in uploadedByName field (hacky but avoids migration)
+      const document = await prisma.document.create({
+        data: {
+          transactionId: listingId,
+          type: `READINESS:${requirementId}`,
+          title: requirement.title,
+          fileName: file.name,
+          fileSize: file.size,
+          mimeType: file.type,
+          fileUrl,
+          status: 'UPLOADED',
+          uploadedBy: userId,
+          uploadedByName: metadataJson,
+        },
+      })
+      documentId = document.id
+      createdAt = document.createdAt
+    }
 
     // Trigger async AI analysis (fire and forget)
     // In a real production app, this would be a background job
@@ -174,23 +173,26 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         fileName: file.name,
         mimeType: file.type,
-        documentId: document.id,
+        documentId,
+        s3Key, // Pass S3 key for demo mode to fetch file
+        isDemo,
       }),
     }).catch(err => console.error('AI analysis trigger failed:', err))
 
     // Return document in expected format
     return NextResponse.json({
       document: {
-        id: document.id,
+        id: documentId,
         requirementId,
         fileName: file.name,
         fileSize: file.size,
-        uploadedAt: document.createdAt.toISOString(),
+        uploadedAt: createdAt.toISOString(),
         status: 'uploaded',
         fileUrl,
         periodYear: periodYear ? parseInt(periodYear) : undefined,
         signed: signed === 'true',
         aiAnalysisPending: true,
+        s3Key, // Include for download
       },
     })
   } catch (error) {

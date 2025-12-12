@@ -17,122 +17,47 @@ export async function GET(
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
     }
 
-    // Demo bypass: return static data without touching DB
-    if (userId.startsWith('demo') || dataRoomId.startsWith('demo')) {
-      const demoFolders = [
-        { id: 'demo-root-folder', name: 'Root', parentId: null, documentCount: 2 },
-        { id: 'demo-finance', name: 'Finansiellt', parentId: 'demo-root-folder', documentCount: 1 },
-        { id: 'demo-legal', name: 'Legal', parentId: 'demo-root-folder', documentCount: 1 },
-      ]
+    const isDemo = userId.startsWith('demo') || dataRoomId.startsWith('demo')
 
-      const demoDocuments = [
-        {
-          id: 'demo-doc-1',
-          name: 'Årsredovisning 2023.pdf',
-          category: 'Finansiellt',
-          requirementId: null,
-          folder: { id: 'demo-finance', name: 'Finansiellt' },
-          currentVersion: {
-            id: 'demo-ver-1',
-            versionNumber: 1,
-            fileName: 'arsredovisning-2023.pdf',
-            fileSize: 1_024_000,
-            mimeType: 'application/pdf',
-            uploadedAt: new Date().toISOString(),
-          },
-          versions: [
-            {
-              id: 'demo-ver-1',
-              versionNumber: 1,
-              fileName: 'arsredovisning-2023.pdf',
-              fileSize: 1_024_000,
-              createdAt: new Date().toISOString(),
-            },
-          ],
-          uploadedBy: 'Demo Säljare',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          id: 'demo-doc-2',
-          name: 'Aktieägaravtal.pdf',
-          category: 'Legal',
-          requirementId: null,
-          folder: { id: 'demo-legal', name: 'Legal' },
-          currentVersion: {
-            id: 'demo-ver-2',
-            versionNumber: 1,
-            fileName: 'aktieagaravtal.pdf',
-            fileSize: 420_000,
-            mimeType: 'application/pdf',
-            uploadedAt: new Date().toISOString(),
-          },
-          versions: [
-            {
-              id: 'demo-ver-2',
-              versionNumber: 1,
-              fileName: 'aktieagaravtal.pdf',
-              fileSize: 420_000,
-              createdAt: new Date().toISOString(),
-            },
-          ],
-          uploadedBy: 'Demo Säljare',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      ]
-
-      return NextResponse.json({
-        dataRoom: {
-          id: 'demo-dataroom-1',
-          listingId: 'demo-listing-1',
-          listingName: 'Demo Företag AB',
-          ndaRequired: false,
-        },
-        folders: demoFolders,
-        documents: demoDocuments,
-        permissions: {
-          role: 'OWNER',
-          canUpload: true,
-          canDelete: true,
-          canInvite: true,
-          canDownload: true,
-        },
-      })
-    }
-
-    // Check permission
-    const permission = await prisma.dataRoomPermission.findFirst({
-      where: {
-        dataRoomId,
-        userId,
-      },
-    })
-
-    if (!permission) {
-      return NextResponse.json(
-        { error: 'Du har inte åtkomst till detta datarum' },
-        { status: 403 }
-      )
-    }
-
-    const isOwner = permission.role === 'OWNER'
-    const isEditor = permission.role === 'EDITOR'
-
-    // For non-owners, check NDA acceptance
-    if (!isOwner) {
-      const ndaAccepted = await prisma.dataRoomNDAAcceptance.findFirst({
+    // For demo: skip permission check but still fetch real data
+    let permission: { role: string } | null = null
+    let isOwner = isDemo // Demo users are treated as owners
+    let isEditor = false
+    
+    if (!isDemo) {
+      // Check permission
+      permission = await prisma.dataRoomPermission.findFirst({
         where: {
           dataRoomId,
           userId,
         },
       })
 
-      if (!ndaAccepted) {
+      if (!permission) {
         return NextResponse.json(
-          { error: 'NDA måste accepteras först', ndaRequired: true },
+          { error: 'Du har inte åtkomst till detta datarum' },
           { status: 403 }
         )
+      }
+
+      isOwner = permission.role === 'OWNER'
+      isEditor = permission.role === 'EDITOR'
+
+      // For non-owners, check NDA acceptance
+      if (!isOwner) {
+        const ndaAccepted = await prisma.dataRoomNDAAcceptance.findFirst({
+          where: {
+            dataRoomId,
+            userId,
+          },
+        })
+
+        if (!ndaAccepted) {
+          return NextResponse.json(
+            { error: 'NDA måste accepteras först', ndaRequired: true },
+            { status: 403 }
+          )
+        }
       }
     }
 
@@ -167,22 +92,44 @@ export async function GET(
     })
 
     if (!dataRoom) {
+      // For demo: return empty dataroom structure
+      if (isDemo) {
+        return NextResponse.json({
+          dataRoom: {
+            id: dataRoomId,
+            listingId: 'demo-listing-1',
+            listingName: 'Demo Företag AB',
+            ndaRequired: false,
+          },
+          folders: [{ id: 'demo-root', name: 'Root', parentId: null, documentCount: 0 }],
+          documents: [],
+          permissions: {
+            role: 'OWNER',
+            canUpload: true,
+            canDelete: true,
+            canInvite: true,
+            canDownload: true,
+          },
+        })
+      }
       return NextResponse.json({ error: 'Datarum hittades inte' }, { status: 404 })
     }
 
-    // Log view audit
-    await prisma.dataRoomAudit.create({
-      data: {
-        dataRoomId,
-        actorId: userId,
-        action: 'VIEW',
-        targetType: 'DATAROOM',
-        targetId: dataRoomId,
-        meta: {
-          ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+    // Log view audit (skip for demo to avoid DB errors)
+    if (!isDemo) {
+      await prisma.dataRoomAudit.create({
+        data: {
+          dataRoomId,
+          actorId: userId,
+          action: 'VIEW',
+          targetType: 'DATAROOM',
+          targetId: dataRoomId,
+          meta: {
+            ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+          },
         },
-      },
-    })
+      })
+    }
 
     // Transform documents for response
     const documents = dataRoom.documents.map((doc) => ({
@@ -233,12 +180,12 @@ export async function GET(
           dataRoom.listing?.anonymousTitle ||
           dataRoom.listing?.companyName ||
           'Okänt företag',
-        ndaRequired: true,
+        ndaRequired: !isDemo,
       },
       folders,
       documents,
       permissions: {
-        role: permission.role,
+        role: isDemo ? 'OWNER' : permission?.role || 'VIEWER',
         canUpload: isOwner || isEditor,
         canDelete: isOwner || isEditor,
         canInvite: isOwner,

@@ -61,30 +61,50 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
     }
 
-    // Demo mode: return mock upload URL (files won't actually be stored)
-    if (userId.startsWith('demo') || listingId.startsWith('demo')) {
-      const demoDocId = `demo-doc-${Date.now()}`
-      const demoVersionId = `demo-ver-${Date.now()}`
-      return NextResponse.json({
-        uploadUrl: 'https://httpbin.org/put', // Mock endpoint that accepts PUT
-        documentId: demoDocId,
-        versionId: demoVersionId,
-        expiresIn: URL_TTL,
-        demo: true,
-      })
-    }
+    const isDemo = userId.startsWith('demo') || listingId.startsWith('demo')
 
-    const dataroom = await prisma.dataRoom.findUnique({
+    // For demo mode, we'll create a dataroom on-the-fly if needed
+    let dataroom = await prisma.dataRoom.findUnique({
       where: { listingId },
       select: { id: true, listing: { select: { userId: true } } },
     })
+    
+    // For demo: create dataroom if it doesn't exist
+    if (!dataroom && isDemo) {
+      dataroom = await prisma.dataRoom.create({
+        data: {
+          listingId,
+          createdBy: userId,
+          ndaRequired: false,
+          folders: {
+            create: {
+              name: 'Root',
+              path: '/',
+              order: 0,
+            },
+          },
+          permissions: {
+            create: {
+              userId,
+              role: 'OWNER',
+              invitedBy: userId,
+            },
+          },
+        },
+        select: { id: true, listing: { select: { userId: true } } },
+      })
+    }
+    
     if (!dataroom) {
       return NextResponse.json({ error: 'Inget datarum skapat' }, { status: 404 })
     }
 
-    const role = (await getUserRole(dataroom.id, userId)) || (dataroom.listing.userId === userId ? 'OWNER' : null)
-    if (!role || (role !== 'OWNER' && role !== 'EDITOR')) {
-      return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 })
+    // For demo: skip role check
+    if (!isDemo) {
+      const role = (await getUserRole(dataroom.id, userId)) || (dataroom.listing?.userId === userId ? 'OWNER' : null)
+      if (!role || (role !== 'OWNER' && role !== 'EDITOR')) {
+        return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 })
+      }
     }
 
     // Ensure folder exists or use root
