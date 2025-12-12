@@ -27,6 +27,12 @@ export async function DELETE(
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
     }
 
+    // Demo mode: demo documents are only stored in localStorage on client
+    // Just return success - client will handle localStorage deletion
+    if (userId.startsWith('demo') || docId.startsWith('demo')) {
+      return NextResponse.json({ success: true, demo: true })
+    }
+
     // Fetch document
     const document = await prisma.document.findUnique({
       where: { id: docId },

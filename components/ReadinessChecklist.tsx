@@ -362,13 +362,30 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
 
   const handleDeleteDoc = async (docId: string) => {
     if (!confirm('Är du säker på att du vill ta bort detta dokument?')) return
-    try {
-      const res = await fetch(`/api/readiness/documents/${docId}`, { method: 'DELETE' })
-      if (res.ok) {
-        setUploadedDocs(prev => prev.filter(d => d.id !== docId))
+    
+    // For demo mode, remove from state immediately (localStorage will be updated via useEffect)
+    const isDemo = isDemoMode(listingId) || docId.startsWith('demo')
+    
+    // Remove from state first for instant feedback
+    setUploadedDocs(prev => prev.filter(d => d.id !== docId))
+    
+    // Also remove from demo files storage
+    if (isDemo) {
+      try {
+        const storedFiles = JSON.parse(localStorage.getItem('bolaxo_demo_files') || '{}')
+        delete storedFiles[docId]
+        localStorage.setItem('bolaxo_demo_files', JSON.stringify(storedFiles))
+      } catch (e) {
+        console.error('Error removing file from localStorage:', e)
       }
+    }
+    
+    // Try to delete from server (for non-demo, or just to clean up)
+    try {
+      await fetch(`/api/readiness/documents/${docId}`, { method: 'DELETE' })
     } catch (err) {
       console.error('Delete error:', err)
+      // For demo mode, we already removed from state, so no rollback needed
     }
   }
 
