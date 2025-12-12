@@ -111,6 +111,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
     }
 
+    // Demo mode: return mock download URL
+    if (userId?.startsWith('demo') || versionId?.startsWith('demo') || documentId?.startsWith('demo')) {
+      return NextResponse.json({
+        url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+        fileName: 'demo-document.pdf',
+        demo: true,
+      })
+    }
+
     // Fetch version
     const version = versionId
       ? await prisma.dataRoomDocumentVersion.findUnique({

@@ -93,10 +93,10 @@ export async function GET(
         documents: demoDocuments,
         permissions: {
           role: 'OWNER',
-          canUpload: false,
-          canDelete: false,
-          canInvite: false,
-          canDownload: false,
+          canUpload: true,
+          canDelete: true,
+          canInvite: true,
+          canDownload: true,
         },
       })
     }

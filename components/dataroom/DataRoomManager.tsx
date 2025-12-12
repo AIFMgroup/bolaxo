@@ -166,7 +166,10 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
   }
 
   const handleUpload = async (files: FileList) => {
-    if (!dataRoom || !permissions?.canUpload) return
+    if (!dataRoom) return
+    // Allow demo uploads even without canUpload permission
+    const isDemo = dataRoom.id.startsWith('demo') || dataRoom.listingId.startsWith('demo')
+    if (!isDemo && !permissions?.canUpload) return
 
     setUploading(true)
     setUploadProgress(0)
@@ -196,19 +199,53 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
           throw new Error(data.error || 'Kunde inte få upload-URL')
         }
 
-        const { uploadUrl, documentId, versionId } = await urlRes.json()
+        const { uploadUrl, documentId, versionId, demo } = await urlRes.json()
 
-        await fetch(uploadUrl, {
-          method: 'PUT',
-          body: file,
-          headers: { 'Content-Type': file.type },
-        })
+        // For demo mode, just simulate the upload
+        if (demo) {
+          // Add mock document to local state
+          const mockDoc: Document = {
+            id: documentId,
+            title: file.name,
+            category: null,
+            requirementId: null,
+            folder: selectedFolder ? folders.find(f => f.id === selectedFolder) ? { id: selectedFolder, name: folders.find(f => f.id === selectedFolder)!.name } : null : null,
+            currentVersion: {
+              id: versionId,
+              version: 1,
+              fileName: file.name,
+              size: file.size,
+              mimeType: file.type || 'application/octet-stream',
+              uploadedAt: new Date().toISOString(),
+            },
+            versions: [{
+              id: versionId,
+              version: 1,
+              fileName: file.name,
+              size: file.size,
+              createdAt: new Date().toISOString(),
+            }],
+            uploadedBy: 'Demo User',
+            createdAt: new Date().toISOString(),
+          }
+          setDocuments(prev => [mockDoc, ...prev])
+        } else {
+          // Real upload to S3
+          await fetch(uploadUrl, {
+            method: 'PUT',
+            body: file,
+            headers: { 'Content-Type': file.type },
+          })
+        }
 
         uploadedVersions.push({ documentId, versionId })
         setUploadProgress(Math.round(((i + 1) / files.length) * 100))
       }
 
-      await loadDocuments(dataRoom.id)
+      // Only reload from server if not demo
+      if (!isDemo) {
+        await loadDocuments(dataRoom.id)
+      }
 
       for (const { versionId } of uploadedVersions) {
         triggerAnalysis(versionId).catch(console.error)

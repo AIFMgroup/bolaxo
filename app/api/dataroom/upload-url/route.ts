@@ -61,6 +61,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
     }
 
+    // Demo mode: return mock upload URL (files won't actually be stored)
+    if (userId.startsWith('demo') || listingId.startsWith('demo')) {
+      const demoDocId = `demo-doc-${Date.now()}`
+      const demoVersionId = `demo-ver-${Date.now()}`
+      return NextResponse.json({
+        uploadUrl: 'https://httpbin.org/put', // Mock endpoint that accepts PUT
+        documentId: demoDocId,
+        versionId: demoVersionId,
+        expiresIn: URL_TTL,
+        demo: true,
+      })
+    }
+
     const dataroom = await prisma.dataRoom.findUnique({
       where: { listingId },
       select: { id: true, listing: { select: { userId: true } } },

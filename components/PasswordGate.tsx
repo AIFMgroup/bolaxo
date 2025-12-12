@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { Lock, ArrowRight, Eye, EyeOff, Check } from 'lucide-react'
 
-const CORRECT_PASSWORD = 'bolaxo'
+const CORRECT_PASSWORD = 'bolaxo123%'
 const STORAGE_KEY = 'bolaxo_auth'
 
 export default function PasswordGate({ children }: { children: React.ReactNode }) {
