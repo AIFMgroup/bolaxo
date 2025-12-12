@@ -70,6 +70,33 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
     }
 
+    // Demo mode: return mock gap report
+    if (userId.startsWith('demo') || listingId.startsWith('demo')) {
+      return NextResponse.json({
+        report: {
+          listingTitle: 'Demo Företag AB',
+          generatedAt: new Date().toISOString(),
+          overallScore: 65,
+          fulfilledMandatory: 8,
+          totalMandatory: 12,
+          categorySummaries: [
+            { categoryLabel: 'Finansiellt', fulfilled: 3, total: 4, score: 75 },
+            { categoryLabel: 'Juridik', fulfilled: 2, total: 3, score: 67 },
+            { categoryLabel: 'HR', fulfilled: 1, total: 2, score: 50 },
+            { categoryLabel: 'Kommersiellt', fulfilled: 2, total: 3, score: 67 },
+          ],
+          missingMandatory: [
+            { categoryLabel: 'Finansiellt', title: 'Huvudbok senaste 3 år', description: 'Komplett huvudbok för de senaste 3 åren' },
+            { categoryLabel: 'HR', title: 'Personalhandbok', description: 'Aktuell personalhandbok' },
+          ],
+          recommendations: [
+            'Komplettera med huvudbok för att förbättra poängen',
+            'Lägg till personalhandbok för fullständig HR-dokumentation',
+          ],
+        },
+      })
+    }
+
     // Check ownership
     const listing = await prisma.listing.findFirst({
       where: { id: listingId, userId },

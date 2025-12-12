@@ -50,6 +50,32 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
     }
 
+    // Demo mode: return mock documents
+    if (userId.startsWith('demo') || listingId.startsWith('demo')) {
+      return NextResponse.json({
+        documents: [
+          {
+            id: 'demo-readiness-doc-1',
+            requirementId: 'annual-report',
+            fileName: 'arsredovisning-2023.pdf',
+            fileSize: 1_200_000,
+            uploadedAt: new Date().toISOString(),
+            status: 'uploaded',
+            periodYear: 2023,
+          },
+          {
+            id: 'demo-readiness-doc-2',
+            requirementId: 'balance-sheet',
+            fileName: 'balansrapport-q3-2024.xlsx',
+            fileSize: 450_000,
+            uploadedAt: new Date().toISOString(),
+            status: 'verified',
+            periodYear: 2024,
+          },
+        ],
+      })
+    }
+
     // Check if user owns the listing
     const listing = await prisma.listing.findFirst({
       where: {

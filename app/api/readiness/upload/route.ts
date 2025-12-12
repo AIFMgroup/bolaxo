@@ -41,6 +41,23 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Demo mode: return mock upload response
+    if (userId.startsWith('demo') || listingId.startsWith('demo')) {
+      return NextResponse.json({
+        document: {
+          id: `demo-readiness-${Date.now()}`,
+          requirementId,
+          fileName: file.name,
+          fileSize: file.size,
+          uploadedAt: new Date().toISOString(),
+          status: 'uploaded',
+          periodYear: periodYear ? parseInt(periodYear) : undefined,
+          signed: signed === 'true',
+          demo: true,
+        },
+      })
+    }
+
     // Validate user owns listing
     const listing = await prisma.listing.findFirst({
       where: { id: listingId, userId },
