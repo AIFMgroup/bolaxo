@@ -862,83 +862,179 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
         </div>
       )}
 
-      {/* Score Card */}
+      {/* Score Dashboard */}
       {gapResult && (
-        <div className="bg-white rounded-3xl p-8 border border-gray-100 animate-pulse-shadow">
-          <div className="flex items-start justify-between mb-8">
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-1">Säljberedskap</h2>
-              <p className="text-gray-500 text-sm">
-                Baserat på {REQUIREMENTS.filter(r => r.mandatory).length} obligatoriska krav
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={handleDownloadGapReport}
-                disabled={generatingReport}
-                className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 rounded-xl text-sm font-medium text-gray-700 transition-all disabled:opacity-50"
-              >
-                {generatingReport ? 'Genererar...' : 'Ladda ner rapport'}
-              </button>
-              <div className="text-right">
-                <div className="text-5xl font-bold text-gray-900 tracking-tight">
-                  {Math.round(gapResult.totalScore * 100)}%
+        <div className="space-y-6">
+          {/* Main Score Card */}
+          <div className="bg-gradient-to-br from-white via-white to-gray-50 rounded-3xl border border-gray-100 overflow-hidden animate-pulse-shadow">
+            <div className="p-8">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-1">DD-beredskap</h2>
+                  <p className="text-gray-500">
+                    {REQUIREMENTS.filter(r => r.mandatory).length} obligatoriska dokument för due diligence
+                  </p>
                 </div>
-                <p className="text-gray-500 text-sm mt-1">
-                  {gapResult.totalScore >= 0.8 ? 'Redo för DD' : gapResult.totalScore >= 0.5 ? 'På god väg' : 'Behöver kompletteras'}
-                </p>
+                <button
+                  onClick={handleDownloadGapReport}
+                  disabled={generatingReport}
+                  className="px-6 py-3 bg-navy text-white rounded-2xl text-sm font-medium hover:bg-navy/90 transition-all disabled:opacity-50 hover:shadow-lg hover:shadow-navy/20"
+                >
+                  {generatingReport ? 'Genererar...' : 'Ladda ner rapport'}
+                </button>
+              </div>
+
+              {/* Score Display */}
+              <div className="flex items-center gap-12 mb-8">
+                {/* Circular Progress */}
+                <div className="relative w-44 h-44 flex-shrink-0">
+                  <svg className="w-full h-full transform -rotate-90">
+                    <circle
+                      cx="88"
+                      cy="88"
+                      r="78"
+                      fill="none"
+                      stroke="#f3f4f6"
+                      strokeWidth="12"
+                    />
+                    <circle
+                      cx="88"
+                      cy="88"
+                      r="78"
+                      fill="none"
+                      stroke={gapResult.totalScore >= 0.8 ? '#10b981' : gapResult.totalScore >= 0.5 ? '#f59e0b' : '#ef4444'}
+                      strokeWidth="12"
+                      strokeLinecap="round"
+                      strokeDasharray={`${gapResult.totalScore * 490} 490`}
+                      className="transition-all duration-1000 ease-out"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-5xl font-bold text-gray-900">{Math.round(gapResult.totalScore * 100)}</span>
+                    <span className="text-gray-400 text-lg">%</span>
+                  </div>
+                </div>
+
+                {/* Status & Stats */}
+                <div className="flex-1">
+                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4 ${
+                    gapResult.totalScore >= 0.8 
+                      ? 'bg-emerald-50 text-emerald-700' 
+                      : gapResult.totalScore >= 0.5 
+                        ? 'bg-amber-50 text-amber-700' 
+                        : 'bg-rose-50 text-rose-700'
+                  }`}>
+                    <span className={`w-2 h-2 rounded-full ${
+                      gapResult.totalScore >= 0.8 ? 'bg-emerald-500' : gapResult.totalScore >= 0.5 ? 'bg-amber-500' : 'bg-rose-500'
+                    }`} />
+                    {gapResult.totalScore >= 0.8 ? 'Redo för due diligence' : gapResult.totalScore >= 0.5 ? 'På god väg' : 'Behöver kompletteras'}
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-6">
+                    <div>
+                      <div className="text-3xl font-bold text-emerald-600">{uploadedDocs.filter(d => d.status === 'verified' || d.status === 'uploaded').length}</div>
+                      <div className="text-sm text-gray-500">Uppladdade</div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-amber-600">{gapResult.gaps?.length || 0}</div>
+                      <div className="text-sm text-gray-500">Saknas</div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-gray-900">{REQUIREMENTS.filter(r => r.mandatory).length}</div>
+                      <div className="text-sm text-gray-500">Totalt krav</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Category Progress Cards */}
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                {categories.map(cat => {
+                  const stats = getCategoryStats(cat)
+                  const pct = stats.total > 0 ? (stats.fulfilled / stats.total) * 100 : 0
+                  const isActive = activeTab === cat
+                  const meta = CATEGORY_META[cat]
+                  
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setActiveTab(cat)}
+                      className={`group relative p-4 rounded-2xl text-left transition-all duration-300 ${
+                        isActive 
+                          ? 'bg-white shadow-lg ring-2 ring-navy/20 scale-[1.02]' 
+                          : 'bg-gray-50/80 hover:bg-white hover:shadow-md'
+                      }`}
+                    >
+                      {/* Progress bar background */}
+                      <div className="absolute inset-x-0 bottom-0 h-1 bg-gray-100 rounded-b-2xl overflow-hidden">
+                        <div 
+                          className={`h-full transition-all duration-700 ${
+                            pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : pct > 0 ? 'bg-rose-400' : 'bg-gray-200'
+                          }`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      
+                      <div className="text-xs font-medium text-gray-500 mb-2 truncate">{meta.label}</div>
+                      <div className="flex items-end justify-between">
+                        <span className={`text-2xl font-bold ${
+                          pct >= 80 ? 'text-emerald-600' : pct >= 50 ? 'text-amber-600' : pct > 0 ? 'text-rose-500' : 'text-gray-300'
+                        }`}>
+                          {Math.round(pct)}%
+                        </span>
+                        <span className="text-xs text-gray-400">
+                          {stats.fulfilled}/{stats.total}
+                        </span>
+                      </div>
+                    </button>
+                  )
+                })}
               </div>
             </div>
           </div>
-          {/* Progress bar */}
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div
-              className={`h-full transition-all duration-700 rounded-full ${
-                gapResult.totalScore >= 0.8 ? 'bg-emerald-500' : gapResult.totalScore >= 0.5 ? 'bg-amber-500' : 'bg-rose-500'
-              }`}
-              style={{ width: `${gapResult.totalScore * 100}%` }}
-            />
-          </div>
-          {/* Category mini-stats */}
-          <div className="grid grid-cols-7 gap-4 mt-6">
-            {categories.map(cat => {
-              const stats = getCategoryStats(cat)
-              const pct = stats.total > 0 ? (stats.fulfilled / stats.total) * 100 : 0
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setActiveTab(cat)}
-                  className={`text-center p-3 rounded-xl transition-all hover:bg-gray-50 ${
-                    activeTab === cat ? 'bg-gray-50 ring-1 ring-gray-200' : ''
-                  }`}
-                >
-                  <div className="text-xs font-medium text-gray-500 mb-1">{CATEGORY_META[cat].label}</div>
-                  <div className="text-lg font-semibold text-gray-900">{Math.round(pct)}%</div>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      )}
 
-      {/* Gap Summary */}
-      {gapResult && gapResult.gaps?.length > 0 && (
-        <div className="bg-white rounded-3xl p-6 border border-rose-100 animate-pulse-shadow">
-          <h3 className="font-semibold text-gray-900 mb-4">
-            {gapResult.gaps.length} obligatoriska krav saknas
-          </h3>
-          <div className="space-y-2">
-            {gapResult.gaps.slice(0, 5).map((gap: any) => (
-              <div key={gap.requirementId} className="flex items-center gap-3 text-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
-                <span className="text-gray-700">{gap.title}</span>
-                {gap.reason && <span className="text-gray-400 text-xs">({gap.reason})</span>}
+          {/* Missing Requirements Alert */}
+          {gapResult.gaps?.length > 0 && (
+            <div className="bg-gradient-to-r from-rose-50 to-orange-50 rounded-3xl p-6 border border-rose-100">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center flex-shrink-0">
+                  <span className="text-2xl font-bold text-rose-500">{gapResult.gaps.length}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-gray-900 mb-3">
+                    Obligatoriska dokument saknas
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {gapResult.gaps.slice(0, 6).map((gap: any) => {
+                      const req = REQUIREMENTS.find(r => r.id === gap.requirementId)
+                      const cat = req?.category as RequirementCategory
+                      const meta = cat ? CATEGORY_META[cat] : null
+                      return (
+                        <button
+                          key={gap.requirementId}
+                          onClick={() => {
+                            if (cat) setActiveTab(cat)
+                            setExpandedReq(gap.requirementId)
+                          }}
+                          className="flex items-center gap-3 p-3 bg-white/60 hover:bg-white rounded-xl text-left transition-all group"
+                        >
+                          <span className={`w-2 h-2 rounded-full ${meta?.color.replace('text-', 'bg-') || 'bg-gray-400'}`} />
+                          <span className="text-sm text-gray-700 truncate flex-1">{gap.title}</span>
+                          <span className="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">Gå till →</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                  {gapResult.gaps.length > 6 && (
+                    <p className="text-sm text-gray-500 mt-3">
+                      + {gapResult.gaps.length - 6} fler dokument saknas
+                    </p>
+                  )}
+                </div>
               </div>
-            ))}
-            {gapResult.gaps.length > 5 && (
-              <p className="text-gray-400 text-sm pl-4">... och {gapResult.gaps.length - 5} till</p>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 
