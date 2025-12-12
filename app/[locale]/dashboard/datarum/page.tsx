@@ -106,27 +106,27 @@ export default function DataRoomPage() {
 
   return (
     <ClientDashboardLayout>
-      <div className="max-w-7xl mx-auto">
-        {/* Header - Centered */}
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3 tracking-tight">Datarum</h1>
-          <p className="text-gray-500 max-w-lg mx-auto leading-relaxed">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header - Responsive */}
+        <div className="mb-8 sm:mb-12 text-center">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 tracking-tight">Datarum</h1>
+          <p className="text-sm sm:text-base text-gray-500 max-w-lg mx-auto leading-relaxed px-4">
             Säker dokumenthantering för din företagsförsäljning
           </p>
-          <div className="mt-4 inline-flex px-5 py-2.5 bg-white border border-gray-100 rounded-2xl text-sm text-gray-600 animate-pulse-shadow">
+          <div className="mt-3 sm:mt-4 inline-flex px-4 py-2 sm:px-5 sm:py-2.5 bg-white border border-gray-100 rounded-xl sm:rounded-2xl text-xs sm:text-sm text-gray-600 animate-pulse-shadow">
             Privat tills du delar
           </div>
         </div>
 
-        {/* Listing Tabs - Centered */}
+        {/* Listing Tabs - Horizontal scroll on mobile */}
         {listings.length > 1 && (
-          <div className="flex justify-center mb-8">
-            <div className="flex gap-2 p-1.5 bg-gray-50 rounded-2xl">
+          <div className="flex justify-start sm:justify-center mb-6 sm:mb-8 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto">
+            <div className="flex gap-2 p-1.5 bg-gray-50 rounded-xl sm:rounded-2xl">
               {listings.map(listing => (
                 <button
                   key={listing.id}
                   onClick={() => setSelectedListing(listing.id)}
-                  className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
+                  className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                     selectedListing === listing.id
                       ? 'bg-white text-gray-900 shadow-lg animate-pulse-shadow'
                       : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
@@ -139,12 +139,12 @@ export default function DataRoomPage() {
           </div>
         )}
 
-        {/* View Mode Tabs - Centered and Prominent */}
-        <div className="flex justify-center mb-10">
-          <div className="flex gap-2 p-2 bg-white rounded-3xl shadow-lg border border-gray-100 animate-pulse-shadow-strong">
+        {/* View Mode Tabs - Responsive */}
+        <div className="flex justify-center mb-6 sm:mb-10">
+          <div className="flex gap-1 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-gray-100 animate-pulse-shadow-strong w-full sm:w-auto max-w-md">
             <button
               onClick={() => setViewMode('dataroom')}
-              className={`px-10 py-4 rounded-2xl text-base font-semibold transition-all duration-300 ${
+              className={`flex-1 sm:flex-none px-4 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold transition-all duration-300 ${
                 viewMode === 'dataroom'
                   ? 'bg-navy text-white shadow-xl shadow-navy/30'
                   : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
@@ -154,7 +154,7 @@ export default function DataRoomPage() {
             </button>
             <button
               onClick={() => setViewMode('checklist')}
-              className={`px-10 py-4 rounded-2xl text-base font-semibold transition-all duration-300 ${
+              className={`flex-1 sm:flex-none px-4 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold transition-all duration-300 ${
                 viewMode === 'checklist'
                   ? 'bg-navy text-white shadow-xl shadow-navy/30'
                   : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
@@ -165,25 +165,25 @@ export default function DataRoomPage() {
           </div>
         </div>
 
-        {/* Content with enhanced boxes */}
+        {/* Content with enhanced boxes - Responsive padding */}
         {selectedListing && (
           <div className="animate-fade-in">
             {viewMode === 'dataroom' ? (
-              <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-xl animate-pulse-shadow-strong">
+              <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-4 sm:p-6 lg:p-8 shadow-xl animate-pulse-shadow-strong">
                 <DataRoomManager
                   listingId={selectedListing}
                   listingName={currentListing?.anonymousTitle || currentListing?.title}
                 />
               </div>
             ) : (
-              <div className="space-y-6">
-                <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-xl animate-pulse-shadow-strong">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">DD-kravlista</h3>
-                  <p className="text-gray-500 leading-relaxed">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-4 sm:p-6 lg:p-8 shadow-xl animate-pulse-shadow-strong">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">DD-kravlista</h3>
+                  <p className="text-sm sm:text-base text-gray-500 leading-relaxed">
                     Strukturerad mall för alla due diligence-kategorier. Ladda upp per krav och följ din status.
                   </p>
                 </div>
-                <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-xl animate-pulse-shadow-strong">
+                <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-4 sm:p-6 lg:p-8 shadow-xl animate-pulse-shadow-strong">
                   <ReadinessChecklist
                     listingId={selectedListing}
                     onComplete={() => alert('Alla obligatoriska dokument är på plats!')}
