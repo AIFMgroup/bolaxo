@@ -107,112 +107,140 @@ export default function DataRoomPage() {
   return (
     <ClientDashboardLayout>
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-10">
-          <div className="flex flex-wrap items-start gap-6 justify-between">
-            <div>
-              <h1 className="text-3xl font-semibold text-gray-900 mb-2 tracking-tight">Datarum</h1>
-              <p className="text-gray-500 max-w-lg leading-relaxed">
-                Säker dokumenthantering för din företagsförsäljning
-              </p>
-            </div>
-            <div className="px-5 py-2.5 bg-white border border-gray-100 rounded-2xl text-sm text-gray-600 animate-pulse-shadow">
-              Privat tills du delar
-            </div>
+        {/* Header - Centered */}
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-3 tracking-tight">Datarum</h1>
+          <p className="text-gray-500 max-w-lg mx-auto leading-relaxed">
+            Säker dokumenthantering för din företagsförsäljning
+          </p>
+          <div className="mt-4 inline-flex px-5 py-2.5 bg-white border border-gray-100 rounded-2xl text-sm text-gray-600 animate-pulse-shadow">
+            Privat tills du delar
           </div>
         </div>
 
-        {/* Listing Tabs */}
+        {/* Listing Tabs - Centered */}
         {listings.length > 1 && (
-          <div className="flex gap-2 mb-8 p-1 bg-gray-50 rounded-2xl w-fit">
-            {listings.map(listing => (
-              <button
-                key={listing.id}
-                onClick={() => setSelectedListing(listing.id)}
-                className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
-                  selectedListing === listing.id
-                    ? 'bg-white text-gray-900 shadow-sm animate-pulse-shadow'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {listing.anonymousTitle || listing.title}
-              </button>
-            ))}
+          <div className="flex justify-center mb-8">
+            <div className="flex gap-2 p-1.5 bg-gray-50 rounded-2xl">
+              {listings.map(listing => (
+                <button
+                  key={listing.id}
+                  onClick={() => setSelectedListing(listing.id)}
+                  className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
+                    selectedListing === listing.id
+                      ? 'bg-white text-gray-900 shadow-lg animate-pulse-shadow'
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                  }`}
+                >
+                  {listing.anonymousTitle || listing.title}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
-        {/* View Mode Tabs */}
-        <div className="flex gap-1 p-1.5 bg-gray-50 rounded-2xl w-fit mb-8">
-          <button
-            onClick={() => setViewMode('dataroom')}
-            className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
-              viewMode === 'dataroom'
-                ? 'bg-white text-gray-900 shadow-sm animate-pulse-shadow'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Datarum
-          </button>
-          <button
-            onClick={() => setViewMode('checklist')}
-            className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
-              viewMode === 'checklist'
-                ? 'bg-white text-gray-900 shadow-sm animate-pulse-shadow'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            DD-checklista
-          </button>
+        {/* View Mode Tabs - Centered and Prominent */}
+        <div className="flex justify-center mb-10">
+          <div className="flex gap-2 p-2 bg-white rounded-3xl shadow-lg border border-gray-100 animate-pulse-shadow-strong">
+            <button
+              onClick={() => setViewMode('dataroom')}
+              className={`px-10 py-4 rounded-2xl text-base font-semibold transition-all duration-300 ${
+                viewMode === 'dataroom'
+                  ? 'bg-navy text-white shadow-xl shadow-navy/30'
+                  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              Datarum
+            </button>
+            <button
+              onClick={() => setViewMode('checklist')}
+              className={`px-10 py-4 rounded-2xl text-base font-semibold transition-all duration-300 ${
+                viewMode === 'checklist'
+                  ? 'bg-navy text-white shadow-xl shadow-navy/30'
+                  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              DD-checklista
+            </button>
+          </div>
         </div>
 
-        {/* Content */}
+        {/* Content with enhanced boxes */}
         {selectedListing && (
-          <>
+          <div className="animate-fade-in">
             {viewMode === 'dataroom' ? (
-              <DataRoomManager
-                listingId={selectedListing}
-                listingName={currentListing?.anonymousTitle || currentListing?.title}
-              />
+              <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-xl animate-pulse-shadow-strong">
+                <DataRoomManager
+                  listingId={selectedListing}
+                  listingName={currentListing?.anonymousTitle || currentListing?.title}
+                />
+              </div>
             ) : (
               <div className="space-y-6">
-                <div className="bg-white rounded-3xl border border-gray-100 p-6 animate-pulse-shadow">
-                  <h3 className="font-semibold text-gray-900 mb-2">DD-kravlista</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">
+                <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-xl animate-pulse-shadow-strong">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">DD-kravlista</h3>
+                  <p className="text-gray-500 leading-relaxed">
                     Strukturerad mall för alla due diligence-kategorier. Ladda upp per krav och följ din status.
                   </p>
                 </div>
-                <ReadinessChecklist
-                  listingId={selectedListing}
-                  onComplete={() => alert('Alla obligatoriska dokument är på plats!')}
-                />
+                <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-xl animate-pulse-shadow-strong">
+                  <ReadinessChecklist
+                    listingId={selectedListing}
+                    onComplete={() => alert('Alla obligatoriska dokument är på plats!')}
+                  />
+                </div>
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
 
       <style jsx global>{`
         @keyframes pulse-shadow {
           0%, 100% {
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
           }
           50% {
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+          }
+        }
+        @keyframes pulse-shadow-strong {
+          0%, 100% {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02);
+          }
+          50% {
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.03);
           }
         }
         @keyframes pulse-shadow-navy {
           0%, 100% {
-            box-shadow: 0 0 0 0 rgba(30, 58, 95, 0.2);
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.2);
           }
           50% {
-            box-shadow: 0 8px 40px rgba(30, 58, 95, 0.3);
+            box-shadow: 0 12px 50px rgba(30, 58, 95, 0.35);
+          }
+        }
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
           }
         }
         .animate-pulse-shadow {
           animation: pulse-shadow 3s ease-in-out infinite;
         }
+        .animate-pulse-shadow-strong {
+          animation: pulse-shadow-strong 4s ease-in-out infinite;
+        }
         .animate-pulse-shadow-navy {
-          animation: pulse-shadow-navy 2s ease-in-out infinite;
+          animation: pulse-shadow-navy 2.5s ease-in-out infinite;
+        }
+        .animate-fade-in {
+          animation: fade-in 0.4s ease-out forwards;
         }
       `}</style>
     </ClientDashboardLayout>
