@@ -53,6 +53,40 @@ interface Props {
   readOnly?: boolean
 }
 
+// LocalStorage key for demo documents
+const DEMO_DOCS_KEY = 'bolaxo_demo_readiness_docs'
+
+// Helper to check if we're in demo mode
+const isDemoMode = () => {
+  if (typeof window === 'undefined') return false
+  const userId = document.cookie.split('; ').find(row => row.startsWith('bolaxo_user_id='))?.split('=')[1]
+  return userId?.startsWith('demo') || false
+}
+
+// Save docs to localStorage for demo persistence
+const saveDemoDocsToStorage = (listingId: string, docs: UploadedDoc[]) => {
+  if (typeof window === 'undefined') return
+  try {
+    const allDocs = JSON.parse(localStorage.getItem(DEMO_DOCS_KEY) || '{}')
+    allDocs[listingId] = docs
+    localStorage.setItem(DEMO_DOCS_KEY, JSON.stringify(allDocs))
+  } catch (e) {
+    console.error('Error saving demo docs:', e)
+  }
+}
+
+// Load docs from localStorage for demo
+const loadDemoDocsFromStorage = (listingId: string): UploadedDoc[] => {
+  if (typeof window === 'undefined') return []
+  try {
+    const allDocs = JSON.parse(localStorage.getItem(DEMO_DOCS_KEY) || '{}')
+    return allDocs[listingId] || []
+  } catch (e) {
+    console.error('Error loading demo docs:', e)
+    return []
+  }
+}
+
 export default function ReadinessChecklist({ listingId, onComplete, readOnly = false }: Props) {
   const [activeTab, setActiveTab] = useState<TabCategory>('all')
   const [uploadedDocs, setUploadedDocs] = useState<UploadedDoc[]>([])
@@ -67,14 +101,36 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
   const [analysisModalTab, setAnalysisModalTab] = useState<'summary' | 'details' | 'actions'>('summary')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Save to localStorage whenever docs change (for demo persistence)
+  useEffect(() => {
+    if (isDemoMode() && uploadedDocs.length > 0) {
+      saveDemoDocsToStorage(listingId, uploadedDocs)
+    }
+  }, [uploadedDocs, listingId])
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true)
+        
+        // First, load from localStorage for demo mode
+        const storedDocs = loadDemoDocsFromStorage(listingId)
+        
         const docsRes = await fetch(`/api/readiness/documents?listingId=${listingId}`)
         if (docsRes.ok) {
           const data = await docsRes.json()
-          setUploadedDocs(data.documents || [])
+          const apiDocs = data.documents || []
+          
+          // Merge API docs with stored docs (avoid duplicates)
+          const existingIds = new Set(apiDocs.map((d: UploadedDoc) => d.id))
+          const mergedDocs = [
+            ...apiDocs,
+            ...storedDocs.filter(d => !existingIds.has(d.id))
+          ]
+          setUploadedDocs(mergedDocs)
+        } else if (storedDocs.length > 0) {
+          // If API fails, use stored docs
+          setUploadedDocs(storedDocs)
         }
 
         const gapRes = await fetch('/api/readiness/requirements', {
@@ -157,6 +213,75 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
     }
   }
 
+  // Store file content in localStorage for demo download
+  const storeFileForDemo = async (docId: string, file: File) => {
+    if (typeof window === 'undefined') return
+    try {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const fileData = {
+          name: file.name,
+          type: file.type,
+          data: reader.result as string, // base64
+        }
+        const storedFiles = JSON.parse(localStorage.getItem('bolaxo_demo_files') || '{}')
+        storedFiles[docId] = fileData
+        localStorage.setItem('bolaxo_demo_files', JSON.stringify(storedFiles))
+      }
+      reader.readAsDataURL(file)
+    } catch (e) {
+      console.error('Error storing file for demo:', e)
+    }
+  }
+
+  // Download handler for demo mode
+  const handleDownloadDoc = async (doc: UploadedDoc) => {
+    try {
+      // First, try to get from localStorage (for demo uploads)
+      const storedFiles = JSON.parse(localStorage.getItem('bolaxo_demo_files') || '{}')
+      const storedFile = storedFiles[doc.id]
+      
+      if (storedFile) {
+        // Download from stored data
+        const link = document.createElement('a')
+        link.href = storedFile.data
+        link.download = storedFile.name || doc.fileName
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        return
+      }
+      
+      // Fallback: try API download
+      const res = await fetch(`/api/readiness/documents/${doc.id}/download`)
+      if (res.ok) {
+        const blob = await res.blob()
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = doc.fileName
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+      } else {
+        // Demo fallback: create a sample text file
+        const blob = new Blob([`Demo dokument: ${doc.fileName}\n\nDetta är en demo-fil.`], { type: 'text/plain' })
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = doc.fileName.replace(/\.[^.]+$/, '.txt')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+      }
+    } catch (err) {
+      console.error('Download error:', err)
+      alert('Kunde inte ladda ner filen')
+    }
+  }
+
   const handleFileSelect = async (requirementId: string, files: FileList | null) => {
     if (!files || files.length === 0) return
     setUploading(requirementId)
@@ -191,10 +316,17 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
 
         if (res.ok) {
           const data = await res.json()
-          setUploadedDocs(prev => [...prev, data.document])
+          const newDoc = data.document
+          
+          // Store file content for demo downloads
+          if (isDemoMode()) {
+            await storeFileForDemo(newDoc.id, file)
+          }
+          
+          setUploadedDocs(prev => [...prev, newDoc])
           
           // Auto-trigger analysis for the uploaded document
-          setTimeout(() => handleAnalyzeDoc(data.document), 500)
+          setTimeout(() => handleAnalyzeDoc(newDoc), 500)
         }
         
         // Brief pause to show 100% completion
@@ -890,26 +1022,34 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
                               <p className="text-xs text-gray-400">{formatFileSize(doc.fileSize)}</p>
                             </div>
                           </div>
-                          {!readOnly && (
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={(e) => { e.stopPropagation(); handleAnalyzeDoc(doc) }}
-                                disabled={analyzingDoc === doc.id}
-                                className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
-                              >
-                                {analyzingDoc === doc.id && (
-                                  <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-                                )}
-                                {analyzingDoc === doc.id ? 'Analyserar...' : 'DD-coach'}
-                              </button>
-                              <button
-                                onClick={(e) => { e.stopPropagation(); handleDeleteDoc(doc.id) }}
-                                className="px-3 py-1.5 text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors"
-                              >
-                                Ta bort
-                              </button>
-                            </div>
-                          )}
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDownloadDoc(doc) }}
+                              className="px-3 py-1.5 text-xs font-medium text-navy hover:text-navy/70 hover:bg-navy/5 rounded-lg transition-colors"
+                            >
+                              Ladda ner
+                            </button>
+                            {!readOnly && (
+                              <>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handleAnalyzeDoc(doc) }}
+                                  disabled={analyzingDoc === doc.id}
+                                  className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                                >
+                                  {analyzingDoc === doc.id && (
+                                    <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                                  )}
+                                  {analyzingDoc === doc.id ? 'Analyserar...' : 'DD-coach'}
+                                </button>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handleDeleteDoc(doc.id) }}
+                                  className="px-3 py-1.5 text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors"
+                                >
+                                  Ta bort
+                                </button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       ))}
                     </div>

@@ -80,6 +80,55 @@ interface Props {
 
 type Tab = 'documents' | 'sharing'
 
+// LocalStorage key for demo documents
+const DEMO_DATAROOM_DOCS_KEY = 'bolaxo_demo_dataroom_docs'
+const DEMO_DATAROOM_FILES_KEY = 'bolaxo_demo_dataroom_files'
+
+// Save docs to localStorage for demo persistence
+const saveDemoDocsToStorage = (listingId: string, docs: Document[]) => {
+  if (typeof window === 'undefined') return
+  try {
+    const allDocs = JSON.parse(localStorage.getItem(DEMO_DATAROOM_DOCS_KEY) || '{}')
+    allDocs[listingId] = docs
+    localStorage.setItem(DEMO_DATAROOM_DOCS_KEY, JSON.stringify(allDocs))
+  } catch (e) {
+    console.error('Error saving demo docs:', e)
+  }
+}
+
+// Load docs from localStorage for demo
+const loadDemoDocsFromStorage = (listingId: string): Document[] => {
+  if (typeof window === 'undefined') return []
+  try {
+    const allDocs = JSON.parse(localStorage.getItem(DEMO_DATAROOM_DOCS_KEY) || '{}')
+    return allDocs[listingId] || []
+  } catch (e) {
+    console.error('Error loading demo docs:', e)
+    return []
+  }
+}
+
+// Store file content for demo download
+const storeFileForDemoDataroom = async (docId: string, file: File) => {
+  if (typeof window === 'undefined') return
+  try {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const fileData = {
+        name: file.name,
+        type: file.type,
+        data: reader.result as string, // base64
+      }
+      const storedFiles = JSON.parse(localStorage.getItem(DEMO_DATAROOM_FILES_KEY) || '{}')
+      storedFiles[docId] = fileData
+      localStorage.setItem(DEMO_DATAROOM_FILES_KEY, JSON.stringify(storedFiles))
+    }
+    reader.readAsDataURL(file)
+  } catch (e) {
+    console.error('Error storing file for demo:', e)
+  }
+}
+
 export default function DataRoomManager({ listingId, listingName }: Props) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -109,10 +158,29 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Check if demo mode
+  const isDemo = listingId?.startsWith('demo') || (typeof window !== 'undefined' && document.cookie.includes('bolaxo_user_id=demo'))
+
+  // Save to localStorage whenever docs change (for demo persistence)
+  useEffect(() => {
+    if (isDemo && documents.length > 0) {
+      saveDemoDocsToStorage(listingId, documents)
+    }
+  }, [documents, listingId, isDemo])
+
   useEffect(() => {
     const initDataRoom = async () => {
       try {
         setLoading(true)
+
+        // Load stored documents first for demo mode
+        if (isDemo) {
+          const storedDocs = loadDemoDocsFromStorage(listingId)
+          if (storedDocs.length > 0) {
+            setDocuments(storedDocs)
+          }
+        }
+
         const initRes = await fetch('/api/dataroom/init', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -152,8 +220,22 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
       const data = await res.json()
       setDataRoom(data.dataRoom)
       setFolders(data.folders || [])
-      setDocuments(data.documents || [])
       setPermissions(data.permissions)
+      
+      // For demo mode, merge API docs with stored docs
+      const apiDocs = data.documents || []
+      const storedDocs = loadDemoDocsFromStorage(listingId)
+      
+      if (storedDocs.length > 0) {
+        const existingIds = new Set(apiDocs.map((d: Document) => d.id))
+        const mergedDocs = [
+          ...apiDocs,
+          ...storedDocs.filter((d: Document) => !existingIds.has(d.id))
+        ]
+        setDocuments(mergedDocs)
+      } else {
+        setDocuments(apiDocs)
+      }
     }
   }
 
@@ -203,6 +285,9 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
         // For demo mode, just simulate the upload
         if (demo) {
+          // Store file content for later download
+          await storeFileForDemoDataroom(documentId, file)
+          
           // Add mock document to local state
           const mockDoc: Document = {
             id: documentId,
@@ -331,6 +416,22 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
     setDownloading(doc.id)
     try {
+      // First, check localStorage for demo files
+      const storedFiles = JSON.parse(localStorage.getItem(DEMO_DATAROOM_FILES_KEY) || '{}')
+      const storedFile = storedFiles[doc.id]
+      
+      if (storedFile) {
+        // Download from stored data
+        const link = document.createElement('a')
+        link.href = storedFile.data
+        link.download = storedFile.name || doc.currentVersion?.fileName || 'dokument'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        return
+      }
+
+      // Fallback: try API download
       const res = await fetch(
         `/api/dataroom/download-url?documentId=${doc.id}&versionId=${vid}`
       )
@@ -339,7 +440,16 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
       if (res.ok && data.url) {
         window.open(data.url, '_blank')
       } else {
-        alert(data.error || 'Kunde inte ladda ner fil')
+        // Demo fallback: create a sample text file
+        const blob = new Blob([`Demo dokument: ${doc.title}\n\nDetta är en demo-fil.`], { type: 'text/plain' })
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = (doc.currentVersion?.fileName || doc.title).replace(/\.[^.]+$/, '.txt')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
       }
     } catch (err) {
       console.error('Download error:', err)
