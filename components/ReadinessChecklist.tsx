@@ -17,18 +17,6 @@ const CATEGORY_META: Record<RequirementCategory, { label: string; color: string;
 type DocumentStatus = 'missing' | 'uploaded' | 'verified' | 'incomplete'
 type TabCategory = RequirementCategory | 'all'
 
-interface UploadedDoc {
-  id: string
-  requirementId: string
-  fileName: string
-  fileSize: number
-  uploadedAt: string
-  status: DocumentStatus
-  fileUrl?: string
-  periodYear?: number
-  signed?: boolean
-}
-
 interface AnalysisFinding {
   type: 'success' | 'warning' | 'error' | 'info'
   title: string
@@ -45,6 +33,20 @@ interface AnalysisResult {
   isSigned: boolean
   missingElements: string[]
   recommendations: string[]
+}
+
+interface UploadedDoc {
+  id: string
+  requirementId: string
+  fileName: string
+  fileSize: number
+  uploadedAt: string
+  status: DocumentStatus
+  fileUrl?: string
+  periodYear?: number
+  signed?: boolean
+  analysis?: AnalysisResult // Cached DD-coach analysis
+  analyzedAt?: string // When the analysis was performed
 }
 
 interface Props {
@@ -415,9 +417,18 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
     }
   }
 
-  const handleAnalyzeDoc = async (doc: UploadedDoc) => {
-    setAnalyzingDoc(doc.id)
+  const handleAnalyzeDoc = async (doc: UploadedDoc, forceReanalyze = false) => {
     setAnalysisModalTab('summary')
+    
+    // Check if we have a cached analysis and don't need to re-analyze
+    if (doc.analysis && !forceReanalyze) {
+      console.log('[DD-coach] Using cached analysis for:', doc.fileName)
+      setAnalysisResult({ doc, result: doc.analysis })
+      return
+    }
+    
+    // Need to run analysis
+    setAnalyzingDoc(doc.id)
     try {
       const res = await fetch('/api/readiness/analyze', {
         method: 'POST',
@@ -430,32 +441,36 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
       if (res.ok) {
         const data = await res.json()
         
-        // Show analysis result in modal
-        setAnalysisResult({
-          doc,
-          result: data.analysis || {
-            score: 80,
-            status: 'needs_review',
-            summary: 'Dokumentet analyserades men kunde inte tolkas fullständigt.',
-            findings: [{ type: 'info', title: 'Analys slutförd', description: 'DD-coach har granskat dokumentet.' }],
-            suggestedCategory: null,
-            suggestedPeriodYear: null,
-            isSigned: false,
-            missingElements: [],
-            recommendations: ['Kontrollera dokumentet manuellt'],
-          },
-        })
-        
-        // Refresh documents list
-        const docsRes = await fetch(`/api/readiness/documents?listingId=${listingId}`)
-        if (docsRes.ok) {
-          const docsData = await docsRes.json()
-          setUploadedDocs(docsData.documents || [])
+        const analysisResult: AnalysisResult = data.analysis || {
+          score: 80,
+          status: 'needs_review',
+          summary: 'Dokumentet analyserades men kunde inte tolkas fullständigt.',
+          findings: [{ type: 'info', title: 'Analys slutförd', description: 'DD-coach har granskat dokumentet.' }],
+          suggestedCategory: null,
+          suggestedPeriodYear: null,
+          isSigned: false,
+          missingElements: [],
+          recommendations: ['Kontrollera dokumentet manuellt'],
         }
+        
+        // Update the document with the analysis result
+        const updatedDoc: UploadedDoc = {
+          ...doc,
+          analysis: analysisResult,
+          analyzedAt: new Date().toISOString(),
+        }
+        
+        // Update the docs list with the cached analysis
+        setUploadedDocs(prev => prev.map(d => d.id === doc.id ? updatedDoc : d))
+        
+        // Show analysis result in modal
+        setAnalysisResult({ doc: updatedDoc, result: analysisResult })
+        
+        console.log('[DD-coach] Analysis complete and cached for:', doc.fileName)
       }
     } catch (err) {
       console.error('Analysis error:', err)
-      // Show error result
+      // Show error result (but don't cache errors)
       setAnalysisResult({
         doc,
         result: {
@@ -832,8 +847,8 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
                     </button>
                     <button
                       onClick={() => {
-                        handleAnalyzeDoc(analysisResult.doc)
                         setAnalysisResult(null)
+                        handleAnalyzeDoc(analysisResult.doc, true) // Force re-analyze
                       }}
                       className="px-5 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all"
                     >
@@ -1056,7 +1071,10 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
                                   {analyzingDoc === doc.id && (
                                     <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
                                   )}
-                                  {analyzingDoc === doc.id ? 'Analyserar...' : 'DD-coach'}
+                                  {doc.analysis && (
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500" title="Analyserad" />
+                                  )}
+                                  {analyzingDoc === doc.id ? 'Analyserar...' : doc.analysis ? 'Visa analys' : 'DD-coach'}
                                 </button>
                                 <button
                                   onClick={(e) => { e.stopPropagation(); handleDeleteDoc(doc.id) }}
