@@ -1526,6 +1526,494 @@ export async function POST(request: NextRequest) {
             'Tydliggör vad som är bindande respektive indikativt',
           ],
         },
+
+        // ===== ÄNNU FLER ANALYSTYPER =====
+
+        // Revision & Internkontroll
+        'revisionsrapport': {
+          category: 'finans',
+          type: 'Revisionsrapport/Intern revision',
+          baseScore: 78,
+          findings: [
+            { type: 'success', title: 'Revisionsunderlag', description: 'Revisionsrapport eller management letter finns tillgänglig.' },
+            { type: 'info', title: 'Observationer', description: 'Granska revisorns observationer och rekommendationer.' },
+            { type: 'warning', title: 'Väsentliga brister', description: 'Finns det allvarliga brister i intern kontroll som rapporterats?' },
+            { type: 'info', title: 'Uppföljning', description: 'Hur har tidigare års observationer åtgärdats?' },
+            { type: 'warning', title: 'Going concern', description: 'Har revisorn uttryckt tvivel om fortsatt drift?' },
+          ],
+          missingElements: ['Management letters 3 år', 'Åtgärdsplan för brister'],
+          recommendations: [
+            'Begär management letters för de senaste 3 åren',
+            'Dokumentera åtgärder för rapporterade brister',
+            'Analysera mönster i återkommande observationer',
+          ],
+        },
+        'internkontroll': {
+          category: 'finans',
+          type: 'Internkontroll',
+          baseScore: 76,
+          findings: [
+            { type: 'success', title: 'Kontrollramverk', description: 'Dokumentation av interna kontroller finns.' },
+            { type: 'info', title: 'Segregation of duties', description: 'Granska uppdelning av arbetsuppgifter för att förhindra bedrägerier.' },
+            { type: 'warning', title: 'Manuella kontroller', description: 'Manuella kontroller är mer riskfyllda än automatiserade.' },
+            { type: 'info', title: 'Attestrutiner', description: 'Finns tydliga attestgränser och behörigheter?' },
+          ],
+          missingElements: ['Kontrollmatris', 'Behörighetstabell'],
+          recommendations: [
+            'Dokumentera samtliga väsentliga kontroller',
+            'Analysera automatiseringspotential',
+            'Granska behörigheter i ekonomisystem',
+          ],
+        },
+
+        // Rapportering
+        'kvartalsrapport': {
+          category: 'finans',
+          type: 'Kvartalsrapport/Delårsrapport',
+          baseScore: 82,
+          findings: [
+            { type: 'success', title: 'Periodisk rapportering', description: 'Kvartalsvis finansiell rapport finns tillgänglig.' },
+            { type: 'info', title: 'Jämförelser', description: 'Analysera utveckling kvartal-över-kvartal och mot föregående år.' },
+            { type: 'info', title: 'Säsongsmönster', description: 'Kvartalsdata visar säsongsvariationer i verksamheten.' },
+            { type: 'warning', title: 'Ej reviderad', description: 'Kvartalsrapporter är normalt ej reviderade - verifiera nyckeltal.' },
+          ],
+          missingElements: ['Kvartalsrapporter 2-3 år', 'Segmentuppdelning'],
+          recommendations: [
+            'Beräkna LTM från kvartalsdata',
+            'Analysera kvartalstrender för värderingsunderlag',
+          ],
+        },
+        'kpi': {
+          category: 'finans',
+          type: 'KPI-rapport/Dashboard',
+          baseScore: 79,
+          findings: [
+            { type: 'success', title: 'KPI-uppföljning', description: 'Nyckeltal och KPIer följs upp regelbundet.' },
+            { type: 'info', title: 'Relevanta mått', description: 'Granska vilka KPIer som används och om de är branschrelevanta.' },
+            { type: 'info', title: 'Målvärden', description: 'Finns mål för respektive KPI och hur väl uppnås de?' },
+            { type: 'warning', title: 'Datakvalitet', description: 'Verifiera att KPI-beräkningar är korrekta och konsekventa.' },
+          ],
+          missingElements: ['KPI-definitioner', 'Historiska värden', 'Branschjämförelse'],
+          recommendations: [
+            'Dokumentera hur varje KPI beräknas',
+            'Jämför KPIer med branschsnitt',
+            'Identifiera ledande vs eftersläpande indikatorer',
+          ],
+        },
+        'styrelserapport': {
+          category: 'finans',
+          type: 'Styrelserapport/Ledningsrapport',
+          baseScore: 77,
+          findings: [
+            { type: 'success', title: 'Ledningsrapportering', description: 'Rapportering till styrelse/ledning finns dokumenterad.' },
+            { type: 'info', title: 'Innehåll', description: 'Vilken information rapporteras? Finansiellt, operativt, strategiskt?' },
+            { type: 'warning', title: 'Frekvens', description: 'Hur ofta rapporteras? Månatlig rapportering är standard.' },
+            { type: 'info', title: 'Beslutsunderlag', description: 'Används rapporterna för aktiv styrning av verksamheten?' },
+          ],
+          missingElements: ['Rapportmall', 'Historiska rapporter'],
+          recommendations: [
+            'Granska kvaliteten på ledningsrapportering',
+            'Analysera hur snabbt avvikelser identifieras och hanteras',
+          ],
+        },
+
+        // Strategi & Affärsplan
+        'affärsplan': {
+          category: 'kommersiellt',
+          type: 'Affärsplan/Business Plan',
+          baseScore: 75,
+          findings: [
+            { type: 'success', title: 'Strategisk planering', description: 'Affärsplan eller strategidokument finns.' },
+            { type: 'info', title: 'Vision och mål', description: 'Är vision, mission och strategiska mål tydligt definierade?' },
+            { type: 'warning', title: 'Aktualitet', description: 'Är affärsplanen uppdaterad och relevant för nuläget?' },
+            { type: 'info', title: 'Genomförbarhet', description: 'Analysera realismen i tillväxtplaner och finansiella prognoser.' },
+          ],
+          missingElements: ['Uppdaterad affärsplan', 'Handlingsplan'],
+          recommendations: [
+            'Verifiera att planen reflekterar aktuell strategi',
+            'Analysera historisk träffsäkerhet i prognoser',
+            'Identifiera synergier med potentiella köpare',
+          ],
+        },
+        'strategi': {
+          category: 'kommersiellt',
+          type: 'Strategidokument',
+          baseScore: 74,
+          findings: [
+            { type: 'success', title: 'Strategisk riktning', description: 'Strategidokumentation finns tillgänglig.' },
+            { type: 'info', title: 'Tillväxtstrategi', description: 'Organisk vs förvärvsdriven tillväxt - vad är planen?' },
+            { type: 'warning', title: 'Marknadsposition', description: 'Hur ser konkurrenslandskapet ut och vad är bolagets position?' },
+            { type: 'info', title: 'Differentiering', description: 'Vad är bolagets unika säljargument (USP)?' },
+          ],
+          missingElements: ['SWOT-analys', 'Konkurrentanalys'],
+          recommendations: ['Uppdatera med aktuell marknadsanalys', 'Definiera tydliga strategiska initiativ'],
+        },
+        'swot': {
+          category: 'kommersiellt',
+          type: 'SWOT-analys',
+          baseScore: 73,
+          findings: [
+            { type: 'success', title: 'Situationsanalys', description: 'SWOT-analys av styrkor, svagheter, möjligheter och hot finns.' },
+            { type: 'info', title: 'Styrkor', description: 'Vilka är bolagets viktigaste konkurrensfördelar?' },
+            { type: 'warning', title: 'Svagheter', description: 'Är svagheterna väl identifierade och finns åtgärdsplaner?' },
+            { type: 'info', title: 'Externa faktorer', description: 'Möjligheter och hot ger kontext för framtida potential.' },
+          ],
+          missingElements: ['Handlingsplan baserad på SWOT'],
+          recommendations: ['Koppla SWOT till konkreta strategiska initiativ', 'Prioritera åtgärder för svagheter'],
+        },
+        'marknadsanalys': {
+          category: 'kommersiellt',
+          type: 'Marknadsanalys',
+          baseScore: 76,
+          findings: [
+            { type: 'success', title: 'Marknadsöversikt', description: 'Analys av målmarknaden finns dokumenterad.' },
+            { type: 'info', title: 'Marknadsstorlek', description: 'TAM/SAM/SOM - hur stor är den adresserbara marknaden?' },
+            { type: 'info', title: 'Tillväxttakt', description: 'Vilken tillväxt förväntas i marknaden de kommande åren?' },
+            { type: 'warning', title: 'Källa', description: 'Är marknadsdata från trovärdiga källor (branschrapporter, analys)?' },
+          ],
+          missingElements: ['Marknadsdata med källor', 'Segmentanalys'],
+          recommendations: [
+            'Använd tredjepartskällor för att validera marknadsantaganden',
+            'Analysera marknadsandel och positionering',
+          ],
+        },
+        'konkurrent': {
+          category: 'kommersiellt',
+          type: 'Konkurrentanalys',
+          baseScore: 74,
+          findings: [
+            { type: 'success', title: 'Konkurrensbild', description: 'Analys av konkurrenter finns dokumenterad.' },
+            { type: 'info', title: 'Huvudkonkurrenter', description: 'Vilka är de viktigaste konkurrenterna och deras styrkor?' },
+            { type: 'warning', title: 'Prisjämförelse', description: 'Hur förhåller sig bolagets priser till konkurrenternas?' },
+            { type: 'info', title: 'Marknadsandelar', description: 'Hur stora är konkurrenternas marknadsandelar?' },
+          ],
+          missingElements: ['Detaljerad konkurrentmatris', 'Win/loss-analys'],
+          recommendations: ['Dokumentera konkurrensfördelar', 'Analysera win/loss mot konkurrenter'],
+        },
+
+        // Avtal - utökade typer
+        'franchiseavtal': {
+          category: 'juridik',
+          type: 'Franchiseavtal',
+          baseScore: 74,
+          findings: [
+            { type: 'success', title: 'Franchiseupplägg', description: 'Franchiseavtal med villkor finns dokumenterat.' },
+            { type: 'info', title: 'Avgifter', description: 'Granska franchiseavgifter (royalty, marknadsföring, etc.).' },
+            { type: 'warning', title: 'Territoriella rättigheter', description: 'Vilka geografiska begränsningar gäller?' },
+            { type: 'warning', title: 'Change of control', description: 'Kan franchisen överlåtas vid ägarförändring?' },
+            { type: 'info', title: 'Uppsägning', description: 'Under vilka villkor kan avtalet sägas upp?' },
+          ],
+          missingElements: ['Franchisemanual', 'Ekonomisk historik'],
+          recommendations: ['Verifiera överlåtbarhet', 'Granska lojalitetskrav och konkurrensförbud'],
+        },
+        'distributör': {
+          category: 'juridik',
+          type: 'Distributörsavtal',
+          baseScore: 76,
+          findings: [
+            { type: 'success', title: 'Distributionsavtal', description: 'Avtal med distributörer finns dokumenterade.' },
+            { type: 'info', title: 'Exklusivitet', description: 'Finns exklusiva distributörer för vissa marknader?' },
+            { type: 'warning', title: 'Minimikrav', description: 'Finns minimiköpkrav eller prestationsmål?' },
+            { type: 'warning', title: 'Lagerhållning', description: 'Vem äger lagret hos distributören?' },
+          ],
+          missingElements: ['Distributörsmatris', 'Försäljningsstatistik per distributör'],
+          recommendations: ['Kartlägg alla distributörsavtal', 'Analysera beroendegrad'],
+        },
+        'agentavtal': {
+          category: 'juridik',
+          type: 'Agentavtal',
+          baseScore: 75,
+          findings: [
+            { type: 'success', title: 'Agentrelationer', description: 'Agentavtal finns dokumenterade.' },
+            { type: 'info', title: 'Provision', description: 'Vilka provisionsnivåer gäller och på vilka affärer?' },
+            { type: 'warning', title: 'Avgångsvederlag', description: 'OBS! Handelsagenturlagen ger agenter rätt till avgångsvederlag vid uppsägning.' },
+            { type: 'warning', title: 'Konkurrensbegränsning', description: 'Gäller konkurrensförbud efter avtalets upphörande?' },
+          ],
+          missingElements: ['Agentförteckning', 'Provisionsstruktur'],
+          recommendations: [
+            'Beräkna potentiellt avgångsvederlag vid uppsägning',
+            'Granska geografiska rättigheter och överlappningar',
+          ],
+        },
+        'outsourcing': {
+          category: 'operation',
+          type: 'Outsourcingavtal',
+          baseScore: 74,
+          findings: [
+            { type: 'success', title: 'Outsourcingrelationer', description: 'Avtal för outsourcade funktioner finns.' },
+            { type: 'info', title: 'Omfattning', description: 'Vilka funktioner är outsourcade (IT, lön, produktion, etc.)?' },
+            { type: 'warning', title: 'Beroende', description: 'Hur kritiska är de outsourcade funktionerna för verksamheten?' },
+            { type: 'warning', title: 'Exit-klausuler', description: 'Vad kostar det att avsluta eller byta leverantör?' },
+            { type: 'info', title: 'Dataskydd', description: 'Behandlar leverantören personuppgifter? Finns biträdesavtal?' },
+          ],
+          missingElements: ['Leverantörsbedömning', 'SLA-uppföljning'],
+          recommendations: [
+            'Dokumentera alla outsourcade funktioner och leverantörer',
+            'Analysera lock-in-effekter och byteskostnader',
+            'Granska GDPR-compliance hos leverantörer',
+          ],
+        },
+        'ramavtal': {
+          category: 'juridik',
+          type: 'Ramavtal',
+          baseScore: 79,
+          findings: [
+            { type: 'success', title: 'Ramavtal', description: 'Ramavtal med kunder eller leverantörer finns.' },
+            { type: 'info', title: 'Avtalsperiod', description: 'Hur lång är avtalsperioden och eventuella förlängningar?' },
+            { type: 'warning', title: 'Volymåtaganden', description: 'Finns volymåtaganden som måste uppfyllas?' },
+            { type: 'info', title: 'Prismekanismer', description: 'Hur justeras priser under avtalsperioden?' },
+          ],
+          missingElements: ['Avtalssammanställning', 'Volymuppföljning'],
+          recommendations: ['Kartlägg alla ramavtal med värde och löptid', 'Analysera förnyelsesannolikhet'],
+        },
+        'offentlig upphandling': {
+          category: 'kommersiellt',
+          type: 'Offentlig upphandling',
+          baseScore: 77,
+          findings: [
+            { type: 'success', title: 'Offentliga kontrakt', description: 'Avtal från offentlig upphandling finns.' },
+            { type: 'info', title: 'LOU-villkor', description: 'Avtal lyder under Lagen om offentlig upphandling med särskilda villkor.' },
+            { type: 'warning', title: 'Överlåtelse', description: 'Upphandlade avtal kan normalt inte överlåtas fritt - verifiera med myndigheten.' },
+            { type: 'warning', title: 'Förnyelserisk', description: 'Vid ny upphandling finns risk att förlora kontraktet.' },
+          ],
+          missingElements: ['Upphandlingsdokumentation', 'Förnyelsekalender'],
+          recommendations: [
+            'Kontakta upphandlande myndigheter om tillåtlighet av överlåtelse',
+            'Analysera förnyelsedatum och konkurrenssituation',
+          ],
+        },
+
+        // Personal - utökat
+        'personalomsättning': {
+          category: 'hr',
+          type: 'Personalomsättning/Retention',
+          baseScore: 77,
+          findings: [
+            { type: 'success', title: 'Personalomsättningsdata', description: 'Statistik över personalomsättning finns.' },
+            { type: 'info', title: 'Branschjämförelse', description: 'Hur förhåller sig omsättningen till branschsnitt?' },
+            { type: 'warning', title: 'Nyckelpersoner', description: 'Har nyckelpersoner lämnat bolaget nyligen? Varför?' },
+            { type: 'info', title: 'Kostnad', description: 'Beräkna kostnad för rekrytering och upplärning.' },
+          ],
+          missingElements: ['Historisk omsättning', 'Exit-intervju-sammanställning'],
+          recommendations: [
+            'Analysera orsaker till uppsägningar',
+            'Identifiera avdelningar/roller med hög omsättning',
+            'Implementera retention-program för nyckelpersoner',
+          ],
+        },
+        'medarbetarundersökning': {
+          category: 'hr',
+          type: 'Medarbetarundersökning',
+          baseScore: 76,
+          findings: [
+            { type: 'success', title: 'Medarbetarengagemang', description: 'Undersökning av medarbetarnöjdhet finns.' },
+            { type: 'info', title: 'Svarsfrekvens', description: 'Hög svarsfrekvens indikerar engagemang.' },
+            { type: 'warning', title: 'Problemområden', description: 'Vilka områden får låga betyg? Finns åtgärdsplaner?' },
+            { type: 'info', title: 'Trend', description: 'Hur har resultaten utvecklats över tid?' },
+          ],
+          missingElements: ['Undersökningsresultat', 'Handlingsplan'],
+          recommendations: ['Analysera trend i medarbetarnöjdhet', 'Prioritera åtgärder för lågt rankade områden'],
+        },
+        'successionsplan': {
+          category: 'hr',
+          type: 'Successionsplanering',
+          baseScore: 73,
+          findings: [
+            { type: 'success', title: 'Successionsplan', description: 'Planering för efterträdare till nyckelroller finns.' },
+            { type: 'warning', title: 'Kritiska roller', description: 'Finns identifierade efterträdare för alla kritiska positioner?' },
+            { type: 'info', title: 'Utvecklingsprogram', description: 'Hur förbereds interna kandidater för avancemang?' },
+            { type: 'warning', title: 'Ägarberoende', description: 'Om ägare har operativ roll - finns succession planerad?' },
+          ],
+          missingElements: ['Successionsmatris', 'Utvecklingsplaner'],
+          recommendations: [
+            'Identifiera kritiska roller utan backup',
+            'Särskilt viktigt att planera för övergång från ägare/grundare',
+          ],
+        },
+        'utbildning': {
+          category: 'hr',
+          type: 'Utbildning/Kompetensutveckling',
+          baseScore: 75,
+          findings: [
+            { type: 'success', title: 'Utbildningsdokumentation', description: 'Utbildningsplaner och genomförd utbildning finns.' },
+            { type: 'info', title: 'Obligatorisk utbildning', description: 'Finns branschspecifika certifieringar som krävs?' },
+            { type: 'warning', title: 'Kompetensrisk', description: 'Finns kritisk kompetens hos enskilda individer?' },
+            { type: 'info', title: 'Budget', description: 'Vilken budget avsätts för kompetensutveckling?' },
+          ],
+          missingElements: ['Utbildningsmatris', 'Certifieringsregister'],
+          recommendations: ['Dokumentera kritiska kompetenser', 'Säkerställ att nödvändiga certifieringar är aktuella'],
+        },
+
+        // R&D och Produktutveckling
+        'rd': {
+          category: 'it',
+          type: 'R&D/Utveckling',
+          baseScore: 74,
+          findings: [
+            { type: 'success', title: 'Utvecklingsverksamhet', description: 'Dokumentation av R&D-aktiviteter finns.' },
+            { type: 'info', title: 'Investeringar', description: 'Hur stor andel av omsättningen investeras i R&D?' },
+            { type: 'info', title: 'Projekt', description: 'Vilka utvecklingsprojekt pågår och vad är deras status?' },
+            { type: 'warning', title: 'IP-skydd', description: 'Skyddas utvecklingsresultat genom patent eller annan IP?' },
+            { type: 'info', title: 'Bidrag', description: 'Erhålls FoU-bidrag eller skattelättnader?' },
+          ],
+          missingElements: ['Projektportfölj', 'R&D-budget', 'Patentansökningar'],
+          recommendations: [
+            'Dokumentera alla pågående utvecklingsprojekt',
+            'Analysera konkurrensfördel från R&D-aktiviteter',
+            'Granska möjligheter till FoU-avdrag',
+          ],
+        },
+        'roadmap': {
+          category: 'it',
+          type: 'Produktroadmap',
+          baseScore: 76,
+          findings: [
+            { type: 'success', title: 'Produktplanering', description: 'Roadmap för produktutveckling finns.' },
+            { type: 'info', title: 'Prioriteringar', description: 'Hur prioriteras nya features och produkter?' },
+            { type: 'warning', title: 'Resursbehov', description: 'Finns tillräckliga resurser för att leverera enligt plan?' },
+            { type: 'info', title: 'Kunddriven', description: 'Baseras roadmap på kundfeedback och marknadsbehov?' },
+          ],
+          missingElements: ['Detaljerad roadmap', 'Resursplan'],
+          recommendations: ['Validera roadmap mot kundefterfrågan', 'Koppla roadmap till affärsmål'],
+        },
+        'produktportfölj': {
+          category: 'kommersiellt',
+          type: 'Produktportfölj',
+          baseScore: 78,
+          findings: [
+            { type: 'success', title: 'Produktöversikt', description: 'Dokumentation av produkter/tjänster finns.' },
+            { type: 'info', title: 'Livscykelstatus', description: 'I vilken fas befinner sig respektive produkt (tillväxt, mognad, nedgång)?' },
+            { type: 'warning', title: 'Koncentration', description: 'Hur stor andel av intäkterna kommer från en enskild produkt?' },
+            { type: 'info', title: 'Marginaler', description: 'Vilka produkter har högst/lägst marginal?' },
+          ],
+          missingElements: ['Produktmatris med omsättning/marginal', 'Livscykelanalys'],
+          recommendations: ['Analysera produktportföljens balans', 'Identifiera tillväxtprodukter vs cash cows'],
+        },
+
+        // Risk & Kontinuitet
+        'riskanalys': {
+          category: 'operation',
+          type: 'Riskanalys/Riskregister',
+          baseScore: 75,
+          findings: [
+            { type: 'success', title: 'Riskhantering', description: 'Riskanalys eller riskregister finns upprättat.' },
+            { type: 'info', title: 'Riskbedömning', description: 'Är risker klassificerade efter sannolikhet och påverkan?' },
+            { type: 'warning', title: 'Mitigering', description: 'Finns åtgärdsplaner för identifierade risker?' },
+            { type: 'info', title: 'Uppföljning', description: 'Hur ofta uppdateras riskregistret?' },
+          ],
+          missingElements: ['Riskmatris', 'Åtgärdsplaner per risk'],
+          recommendations: ['Säkerställ att DD-specifika risker är identifierade', 'Uppdatera inför transaktion'],
+        },
+        'kontinuitet': {
+          category: 'operation',
+          type: 'Business Continuity/Kontinuitetsplan',
+          baseScore: 73,
+          findings: [
+            { type: 'success', title: 'Kontinuitetsplanering', description: 'Business Continuity Plan (BCP) finns dokumenterad.' },
+            { type: 'info', title: 'Kritiska funktioner', description: 'Vilka verksamhetsfunktioner är mest kritiska vid avbrott?' },
+            { type: 'warning', title: 'Testning', description: 'Har planen testats? När senast?' },
+            { type: 'info', title: 'RTO/RPO', description: 'Finns definierade Recovery Time/Point Objectives?' },
+          ],
+          missingElements: ['Testprotokoll', 'Kontaktlistor'],
+          recommendations: ['Testa kontinuitetsplan regelbundet', 'Uppdatera kontaktlistor och rutiner'],
+        },
+        'krishantering': {
+          category: 'operation',
+          type: 'Krishantering',
+          baseScore: 72,
+          findings: [
+            { type: 'success', title: 'Krisplan', description: 'Dokumentation för krishantering finns.' },
+            { type: 'info', title: 'Kristeam', description: 'Är roller och ansvar definierade vid kris?' },
+            { type: 'warning', title: 'Kommunikation', description: 'Finns plan för intern och extern kommunikation vid kris?' },
+            { type: 'info', title: 'Erfarenheter', description: 'Har bolaget hanterat kriser tidigare? Vad lärdes?' },
+          ],
+          missingElements: ['Krismanual', 'Kommunikationsplan'],
+          recommendations: ['Definiera krisnivåer och eskaleringsrutiner', 'Genomför krisövning'],
+        },
+
+        // Bidrag och stöd
+        'bidrag': {
+          category: 'finans',
+          type: 'Bidrag/Stöd',
+          baseScore: 76,
+          findings: [
+            { type: 'success', title: 'Erhållna bidrag', description: 'Dokumentation av bidrag och stöd finns.' },
+            { type: 'info', title: 'Villkor', description: 'Vilka villkor gäller för bidraget? Återbetalningskrav?' },
+            { type: 'warning', title: 'Change of control', description: 'Kan bidrag behöva återbetalas vid ägarförändring?' },
+            { type: 'info', title: 'Framtida bidrag', description: 'Finns pågående ansökningar eller möjligheter?' },
+          ],
+          missingElements: ['Bidragsbeslut', 'Villkorsuppföljning'],
+          recommendations: [
+            'Kontrollera om bidrag påverkas av transaktionen',
+            'Dokumentera alla erhållna bidrag och återbetalningsvillkor',
+          ],
+        },
+        'subvention': {
+          category: 'finans',
+          type: 'Statligt stöd/Subventioner',
+          baseScore: 75,
+          findings: [
+            { type: 'success', title: 'Stöddokumentation', description: 'Statliga stöd eller subventioner finns dokumenterade.' },
+            { type: 'warning', title: 'Statsstödsregler', description: 'EU:s statsstödsregler kan påverka giltigheten.' },
+            { type: 'warning', title: 'Återkrav', description: 'Finns risk för återkrav vid regelbrott?' },
+          ],
+          missingElements: ['Stödbeslut', 'Rapportering till myndighet'],
+          recommendations: ['Verifiera compliance med stödvillkor', 'Analysera påverkan av transaktion'],
+        },
+
+        // Aktieägarrelaterat
+        'aktieägaravtal': {
+          category: 'juridik',
+          type: 'Aktieägaravtal',
+          baseScore: 83,
+          findings: [
+            { type: 'success', title: 'Ägaravtal', description: 'Aktieägaravtal mellan ägarna finns.' },
+            { type: 'warning', title: 'Förköpsrätt', description: 'Finns förköpsrätt eller hembud som påverkar försäljningen?' },
+            { type: 'warning', title: 'Tag-along/Drag-along', description: 'Vilka rättigheter har minoritetsägare vid försäljning?' },
+            { type: 'info', title: 'Rösträttsavtal', description: 'Finns avtal om hur aktieägare ska rösta i vissa frågor?' },
+            { type: 'warning', title: 'Deadlock', description: 'Hur löses situationer där ägare inte kan enas?' },
+          ],
+          missingElements: ['Komplett aktieägaravtal', 'Cap table med alla optioner'],
+          recommendations: [
+            'Säkerställ att alla ägare är införstådda med försäljningen',
+            'Granska tag-along-rättigheter som kan påverka pris',
+            'Analysera eventuella minoritetsskydd',
+          ],
+        },
+        'option': {
+          category: 'hr',
+          type: 'Optionsprogram/Incitament',
+          baseScore: 76,
+          findings: [
+            { type: 'success', title: 'Optionsprogram', description: 'Aktiebaserat incitamentsprogram finns dokumenterat.' },
+            { type: 'info', title: 'Utestående optioner', description: 'Hur många optioner är utställda och till vilket pris?' },
+            { type: 'warning', title: 'Acceleration', description: 'Triggas automatisk inlösen vid change of control?' },
+            { type: 'warning', title: 'Utspädning', description: 'Vilken utspädning innebär full konvertering?' },
+            { type: 'info', title: 'Skattekonsekvenser', description: 'Hur beskattas optionerna vid inlösen?' },
+          ],
+          missingElements: ['Optionsvillkor', 'Förteckning över innehavare'],
+          recommendations: [
+            'Beräkna total utspädning vid full konvertering',
+            'Analysera skattekonsekvenser för optionsinnehavare',
+            'Hantera optioner i transaktionsstrukturen',
+          ],
+        },
+        'utdelning': {
+          category: 'finans',
+          type: 'Utdelningspolicy/Vinstdisposition',
+          baseScore: 79,
+          findings: [
+            { type: 'success', title: 'Utdelningshistorik', description: 'Information om historiska utdelningar finns.' },
+            { type: 'info', title: 'Utdelningspolicy', description: 'Finns formell policy för utdelning?' },
+            { type: 'warning', title: 'Lånevillkor', description: 'Begränsar låneavtal möjligheten till utdelning?' },
+            { type: 'info', title: 'Likviditet', description: 'Hur påverkar utdelningar bolagets likviditet?' },
+          ],
+          missingElements: ['Utdelningshistorik', 'Stämmoprotokoll med vinstdisposition'],
+          recommendations: [
+            'Dokumentera historiska utdelningar för att förstå ägarnas förväntningar',
+            'Analysera utdelningskapacitet baserat på fritt eget kapital',
+          ],
+        },
       }
 
       // Find matching document type
