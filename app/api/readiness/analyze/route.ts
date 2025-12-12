@@ -486,6 +486,602 @@ export async function POST(request: NextRequest) {
             'Analysera om försäkringspremier kan optimeras efter förvärv',
           ],
         },
+        // Månadsbokslut
+        'månadsbokslut': {
+          category: 'finans',
+          type: 'Månadsbokslut',
+          baseScore: 81,
+          findings: [
+            { type: 'success', title: 'Periodisk rapportering', description: 'Månadsvisa resultat- och balansrapporter finns tillgängliga.' },
+            { type: 'info', title: 'Jämförelse mot budget', description: 'Analysera avvikelser mot budget för varje månad - detta visar verksamhetens förutsägbarhet.' },
+            { type: 'info', title: 'Trendanalys möjlig', description: 'Med månadsvisa siffror kan LTM (Last Twelve Months) och YTD beräknas korrekt.' },
+            { type: 'warning', title: 'Periodiseringar', description: 'Kontrollera att månadsbokslutet är korrekt periodiserat (intäkter/kostnader allokerade till rätt period).' },
+            { type: 'warning', title: 'Säsongsvariationer', description: 'Analysera säsongsmönster - viktigt för rörelsekapital och likviditetsbehov.' },
+          ],
+          missingElements: [
+            'Budget-jämförelse per månad',
+            'Kommentarer till väsentliga avvikelser',
+            'Rullande 12-månaders prognos',
+          ],
+          recommendations: [
+            'Inkludera budgetjämförelse och avvikelseanalys',
+            'Lägg till ledningens kommentarer för månader med stora avvikelser',
+            'Beräkna LTM EBITDA för varje månad som grund för värdering',
+            'Identifiera engångsposter månad för månad',
+            'Analysera rörelsekapitalcykeln månadsvis',
+          ],
+        },
+        'månadsrapport': {
+          category: 'finans',
+          type: 'Månadsbokslut',
+          baseScore: 81,
+          findings: [
+            { type: 'success', title: 'Periodisk rapportering', description: 'Månadsvisa resultat- och balansrapporter finns tillgängliga.' },
+            { type: 'info', title: 'Jämförelse mot budget', description: 'Analysera avvikelser mot budget för varje månad - detta visar verksamhetens förutsägbarhet.' },
+            { type: 'warning', title: 'Periodiseringar', description: 'Kontrollera att månadsbokslutet är korrekt periodiserat.' },
+          ],
+          missingElements: ['Budget-jämförelse', 'Avvikelsekommentarer'],
+          recommendations: ['Inkludera budget och analys av avvikelser', 'Beräkna LTM EBITDA'],
+        },
+        // Kundreskontra / AR Aging
+        'kundreskontra': {
+          category: 'finans',
+          type: 'Kundreskontra (AR Aging)',
+          baseScore: 79,
+          findings: [
+            { type: 'success', title: 'Kundfordringar dokumenterade', description: 'Fullständig kundreskontra med förfallostruktur finns.' },
+            { type: 'info', title: 'Åldersfördelning', description: 'Kundfordringar kan analyseras per ålderskategori (0-30, 31-60, 61-90, >90 dagar).' },
+            { type: 'warning', title: 'Gamla fordringar', description: 'VIKTIGT: Fordringar äldre än 90 dagar bör ha reservering för osäkra kundfordringar.' },
+            { type: 'warning', title: 'Kundkoncentration', description: 'Analysera om enskilda kunder har oproportionerligt stora utestående belopp.' },
+            { type: 'info', title: 'DSO-beräkning', description: 'Days Sales Outstanding kan beräknas - jämför mot branschsnitt och historik.' },
+          ],
+          missingElements: [
+            'Reservering för osäkra kundfordringar per kund',
+            'Historisk inkassoförlust-statistik',
+            'Kreditlimiter per kund',
+          ],
+          recommendations: [
+            'Granska alla fordringar > 60 dagar och bedöm indrivningsmöjlighet',
+            'Verifiera att reservering för osäkra fordringar är tillräcklig (ofta 50-100% för >90 dagar)',
+            'Jämför DSO mot föregående period för att identifiera trend',
+            'Kontrollera kreditförsäkring för stora kunder',
+            'Analysera betalningshistorik för topp-20 kunder',
+          ],
+        },
+        'aging': {
+          category: 'finans',
+          type: 'Reskontra (AR/AP Aging)',
+          baseScore: 79,
+          findings: [
+            { type: 'success', title: 'Åldersfördelning', description: 'Fordringar/skulder kan analyseras per ålderskategori.' },
+            { type: 'warning', title: 'Gamla poster', description: 'Poster äldre än 90 dagar kräver särskild granskning.' },
+            { type: 'info', title: 'Rörelsekapital', description: 'Används för beräkning av rörelsekapitalbehov vid transaktion.' },
+          ],
+          missingElements: ['Reservering för osäkra fordringar', 'Historisk statistik'],
+          recommendations: ['Granska gamla poster', 'Beräkna DSO/DPO'],
+        },
+        // Leverantörsreskontra / AP Aging
+        'leverantörsreskontra': {
+          category: 'finans',
+          type: 'Leverantörsreskontra (AP Aging)',
+          baseScore: 78,
+          findings: [
+            { type: 'success', title: 'Leverantörsskulder dokumenterade', description: 'Fullständig leverantörsreskontra med förfallostruktur.' },
+            { type: 'info', title: 'Betalningsdisciplin', description: 'Förfallostrukturen visar bolagets betalningsdisciplin - viktigt för leverantörsrelationer.' },
+            { type: 'warning', title: 'Förfallna skulder', description: 'Granska skulder som passerat förfallodatum - kan indikera likviditetsproblem.' },
+            { type: 'info', title: 'DPO-beräkning', description: 'Days Payables Outstanding indikerar hur länge bolaget tar på sig att betala.' },
+            { type: 'warning', title: 'Leverantörskoncentration', description: 'Analysera beroende av enskilda leverantörer med stora utestående skulder.' },
+          ],
+          missingElements: [
+            'Avtalade betalningsvillkor per leverantör',
+            'Historik över förseningsavgifter/räntor',
+            'Bedömning av kritiska leverantörsrelationer',
+          ],
+          recommendations: [
+            'Verifiera att inga leverantörer har hotat att stoppa leveranser pga förseningar',
+            'Analysera om långa betalningstider kan bibehållas efter ägarförändring',
+            'Kontrollera eventuella dold skulder (fakturor som inte bokförts)',
+            'Jämför DPO mot branschsnitt och avtalade villkor',
+            'Identifiera leverantörer med change of control-klausuler',
+          ],
+        },
+        // EBITDA-bridge
+        'ebitda': {
+          category: 'finans',
+          type: 'EBITDA-bridge / Normalisering',
+          baseScore: 84,
+          findings: [
+            { type: 'success', title: 'EBITDA-beräkning', description: 'Resultat före räntor, skatt, av- och nedskrivningar är beräknat.' },
+            { type: 'info', title: 'Justeringsposter identifierade', description: 'Engångsposter och normaliseringsposer är specificerade med belopp.' },
+            { type: 'warning', title: 'Ägarrelaterade kostnader', description: 'Granska justeringar för ägarlöner, bilförmåner och andra ägarrelaterade kostnader - ofta föremål för förhandling.' },
+            { type: 'warning', title: 'Engångsposter', description: 'KRITISKT: Varje justeringspost måste ha tillräcklig dokumentation och vara förklarad.' },
+            { type: 'info', title: 'Pro forma-effekter', description: 'Beräkna effekt av planerade förändringar (t.ex. personal som ska avslutas).' },
+          ],
+          missingElements: [
+            'Underlag för varje justeringspost',
+            'Historisk jämförelse av normaliserad EBITDA',
+            'Pro forma-beräkning för planerade förändringar',
+          ],
+          recommendations: [
+            'Dokumentera varje justeringspost med faktura/avtal som stöd',
+            'Beräkna normaliserad EBITDA för 3 år för trendanalys',
+            'Separera engångsposter (one-off) från återkommande justeringar (run-rate)',
+            'Inkludera endast justeringar som köpare kan acceptera',
+            'Var konservativ - överambitiösa justeringar skapar konflikter',
+          ],
+        },
+        // Kassaflöde/Budget
+        'kassaflöde': {
+          category: 'finans',
+          type: 'Kassaflödesprognos',
+          baseScore: 80,
+          findings: [
+            { type: 'success', title: 'Likviditetsprognos', description: 'Kassaflödesprognos finns med in- och utflöden specificerade.' },
+            { type: 'info', title: 'Antaganden', description: 'Granska underliggande antaganden - är de realistiska baserat på historik?' },
+            { type: 'warning', title: 'Rörelsekapitalvariationer', description: 'Kontrollera att säsongsvariationer i rörelsekapital är beaktade.' },
+            { type: 'info', title: 'Investeringsbehov', description: 'CapEx och underhållsinvesteringar bör vara inkluderade.' },
+            { type: 'warning', title: 'Känslighetsanalys', description: 'Vad händer om intäkterna minskar 10-20%? Stress-test prognosen.' },
+          ],
+          missingElements: [
+            'Känslighetsanalys (best/base/worst case)',
+            'Koppling till resultat- och balansbudget',
+            'Detaljerade antaganden per post',
+          ],
+          recommendations: [
+            'Skapa scenarios: best case, base case, worst case',
+            'Koppla kassaflödet till resultat- och balansbudget för konsistens',
+            'Dokumentera alla antaganden explicit',
+            'Jämför historisk träffsäkerhet på budgetar',
+            'Inkludera eventuella earn-out-betalningar om tillämpligt',
+          ],
+        },
+        'budget': {
+          category: 'finans',
+          type: 'Budget/Prognos',
+          baseScore: 78,
+          findings: [
+            { type: 'success', title: 'Budget upprättad', description: 'Årsbudget eller prognos finns dokumenterad.' },
+            { type: 'warning', title: 'Realism', description: 'Jämför budget mot historiskt utfall - är antaganden rimliga?' },
+            { type: 'info', title: 'Delårsuppföljning', description: 'Hur väl har bolaget träffat tidigare budgetar?' },
+          ],
+          missingElements: ['Historisk jämförelse', 'Antaganden dokumenterade'],
+          recommendations: ['Jämför mot historiskt utfall', 'Dokumentera antaganden'],
+        },
+        // Lagerlista
+        'lager': {
+          category: 'finans',
+          type: 'Lagerlista/Lagervärdering',
+          baseScore: 77,
+          findings: [
+            { type: 'success', title: 'Lagerförteckning', description: 'Artiklar och lagerplatser finns dokumenterade.' },
+            { type: 'info', title: 'Värderingsmetod', description: 'Kontrollera vilken metod som används: FIFU, vägt genomsnitt, eller annan.' },
+            { type: 'warning', title: 'Inkurans', description: 'VIKTIGT: Granska lågfrekventa artiklar och bedöm inkuransrisk. Artiklar >12 månader utan rörelse bör ha reservering.' },
+            { type: 'warning', title: 'Fysisk inventering', description: 'När genomfördes senaste fysiska inventering? Inventerings-differenser?' },
+            { type: 'info', title: 'Lageromsättning', description: 'Beräkna lageromsättningshastighet - låg hastighet kan indikera problem.' },
+          ],
+          missingElements: [
+            'Åldersanalys per artikel',
+            'Inkuransreservering',
+            'Inventerings-protokoll',
+            'Värdering per artikelgrupp',
+          ],
+          recommendations: [
+            'Genomför fysisk lagerinventering före transaktion',
+            'Beräkna inkurans baserat på omsättningshastighet per artikel',
+            'Granska lager på konsignation eller hos tredje part',
+            'Analysera säsongsvariationer i lagernivåer',
+            'Verifiera att lagervärdering överensstämmer med nettorealisationsvärde',
+          ],
+        },
+        // Anläggningsregister
+        'anläggning': {
+          category: 'finans',
+          type: 'Anläggningsregister',
+          baseScore: 79,
+          findings: [
+            { type: 'success', title: 'Tillgångsregister', description: 'Anläggningstillgångar är förtecknade med anskaffningsvärde och ackumulerade avskrivningar.' },
+            { type: 'info', title: 'Avskrivningsplan', description: 'Kontrollera att avskrivningstider speglar ekonomisk livslängd.' },
+            { type: 'warning', title: 'Nedskrivningsbehov', description: 'Finns det tillgångar som behöver skrivas ned? Särskilt goodwill och immateriella tillgångar.' },
+            { type: 'info', title: 'Underhållsstatus', description: 'Granska skick på maskiner och utrustning - behövs reinvesteringar?' },
+            { type: 'warning', title: 'Lease vs. Ägt', description: 'Särskilj leasade tillgångar från ägda - leasingavtal bör granskas separat.' },
+          ],
+          missingElements: [
+            'Underhållshistorik och -plan',
+            'Bedömning av marknadsvärde vs. bokfört värde',
+            'Leasingavtal för hyrda tillgångar',
+          ],
+          recommendations: [
+            'Jämför bokfört värde med marknadsvärde/försäkringsvärde',
+            'Identifiera reinvesteringsbehov de kommande 3-5 åren',
+            'Granska avskrivningsprinciper mot branschstandard',
+            'Kontrollera pantsättningar av tillgångar',
+            'Planera för teknisk besiktning av väsentliga tillgångar',
+          ],
+        },
+        // Skuld/Finansieringsöversikt
+        'skuld': {
+          category: 'finans',
+          type: 'Skuld-/Finansieringsöversikt',
+          baseScore: 82,
+          findings: [
+            { type: 'success', title: 'Låneöversikt', description: 'Befintliga lån och krediter är dokumenterade med belopp och villkor.' },
+            { type: 'info', title: 'Räntekostnader', description: 'Räntenivåer och räntebindning framgår - viktigt för cashflow-analys.' },
+            { type: 'warning', title: 'Covenants', description: 'KRITISKT: Granska finansiella covenants och aktuell covenant-status. Brott mot covenants kan trigga accelereringsklausuler.' },
+            { type: 'warning', title: 'Change of control', description: 'De flesta låneavtal har change of control-klausuler som kan kräva förtida återbetalning vid försäljning.' },
+            { type: 'info', title: 'Säkerheter', description: 'Dokumentera pantsättningar: företagsinteckning, fastigheter, aktier i dotterbolag.' },
+          ],
+          missingElements: [
+            'Amorteringsplaner',
+            'Senaste covenant-beräkning',
+            'Panträttsinnehavare och belopp',
+          ],
+          recommendations: [
+            'Kontakta långivare tidigt för att diskutera förtida återbetalning eller övertagande',
+            'Beräkna net debt korrekt (lån minus kassa, plus/minus rörelsekapitaljusteringar)',
+            'Granska eventuella garantier och borgensåtaganden',
+            'Analysera refinansieringsbehov och möjligheter',
+            'Inkludera pensionsskulder och leasingskulder i skuldbegreppet om relevant',
+          ],
+        },
+        // Deklarationer
+        'deklaration': {
+          category: 'skatt',
+          type: 'Skattedeklaration',
+          baseScore: 83,
+          findings: [
+            { type: 'success', title: 'Deklaration komplett', description: 'Skattedeklaration med bilagor finns dokumenterad.' },
+            { type: 'info', title: 'Avstämning mot ÅR', description: 'Skattemässigt resultat kan avstämmas mot bokfört resultat.' },
+            { type: 'warning', title: 'Underskottsavdrag', description: 'Kontrollera tidigare års underskott och hur de påverkas av ägarförändring (beloppsspärr).' },
+            { type: 'warning', title: 'Transferpricing', description: 'Om koncerninterna transaktioner finns - är internprissättningen dokumenterad?' },
+            { type: 'info', title: 'Skattemässiga justeringar', description: 'Granska ej avdragsgilla kostnader och skattemässiga justeringar.' },
+          ],
+          missingElements: ['Skattekontoutdrag', 'Slutskattebesked', 'TP-dokumentation om relevant'],
+          recommendations: [
+            'Begär skattekontoutdrag för att verifiera inga obetalda skatter',
+            'Analysera underskottsavdrag och hur de påverkas vid förvärv',
+            'Granska skattemässiga reserveringar (periodiseringsfond, etc.)',
+          ],
+        },
+        // Transfer Pricing
+        'transfer': {
+          category: 'skatt',
+          type: 'Transfer Pricing-dokumentation',
+          baseScore: 76,
+          findings: [
+            { type: 'success', title: 'TP-dokumentation finns', description: 'Internprissättningsdokumentation är upprättad.' },
+            { type: 'info', title: 'Armlängdsprincipen', description: 'Granska att prissättning motsvarar marknadspris mellan oberoende parter.' },
+            { type: 'warning', title: 'Jämförelseanalys', description: 'Dokumentationen bör innehålla benchmarking mot jämförbara transaktioner.' },
+            { type: 'warning', title: 'Årlig uppdatering', description: 'TP-dokumentation bör uppdateras årligen - kontrollera aktualitet.' },
+          ],
+          missingElements: ['Jämförelsestudie/benchmarking', 'Master file', 'Local file'],
+          recommendations: [
+            'Säkerställ att TP-dokumentation uppfyller Skatteverkets krav',
+            'Granska prissättning av management fees, royalties, koncernlån',
+            'Analysera risk för TP-justeringar vid granskning',
+          ],
+        },
+        // Bolagsdokument
+        'bolagsordning': {
+          category: 'juridik',
+          type: 'Bolagsdokument',
+          baseScore: 85,
+          findings: [
+            { type: 'success', title: 'Grunddokument', description: 'Bolagsordning och registreringsbevis finns.' },
+            { type: 'info', title: 'Aktiebok', description: 'Kontrollera att aktieboken är uppdaterad och stämmer med Bolagsverket.' },
+            { type: 'warning', title: 'Ägaravtal', description: 'Finns aktieägaravtal med hembudsklausuler eller förköpsrätt som påverkar försäljningen?' },
+            { type: 'info', title: 'Firmateckning', description: 'Verifiera aktuella firmatecknare hos Bolagsverket.' },
+          ],
+          missingElements: ['Aktiebok', 'Eventuella ägaravtal', 'Fullmakter'],
+          recommendations: [
+            'Hämta färskt registreringsbevis från Bolagsverket',
+            'Verifiera att aktiebok stämmer med registrerad information',
+            'Granska ägaravtal för restriktioner vid försäljning',
+          ],
+        },
+        'registreringsbevis': {
+          category: 'juridik',
+          type: 'Registreringsbevis',
+          baseScore: 88,
+          findings: [
+            { type: 'success', title: 'Officiell dokumentation', description: 'Registreringsbevis från Bolagsverket bekräftar bolagets legala status.' },
+            { type: 'info', title: 'Firmatecknare', description: 'Aktuella firmatecknare framgår av dokumentet.' },
+            { type: 'info', title: 'Aktualitet', description: 'Kontrollera att registreringsbeviset är aktuellt (max 3 månader gammalt för transaktion).' },
+          ],
+          missingElements: [],
+          recommendations: ['Hämta nytt registreringsbevis nära closing-datum', 'Verifiera mot aktiebok'],
+        },
+        'aktiebok': {
+          category: 'juridik',
+          type: 'Aktiebok/Cap Table',
+          baseScore: 84,
+          findings: [
+            { type: 'success', title: 'Ägarlista', description: 'Aktiebok visar samtliga aktieägare och deras innehav.' },
+            { type: 'warning', title: 'Aktualitet', description: 'Kontrollera att aktieboken är uppdaterad och stämmer med Bolagsverkets register.' },
+            { type: 'info', title: 'Aktieslag', description: 'Om flera aktieslag finns - granska rösträttsfördelning och preferenser.' },
+            { type: 'warning', title: 'Överlåtelserestriktioner', description: 'Finns hembudsklausuler i bolagsordningen som påverkar försäljningen?' },
+          ],
+          missingElements: ['Eventuella optionsavtal', 'Ägaravtal med restriktioner'],
+          recommendations: ['Stäm av mot Bolagsverket', 'Granska hembudsklausuler', 'Identifiera alla potentiella sellers'],
+        },
+        // Protokoll
+        'protokoll': {
+          category: 'juridik',
+          type: 'Styrelse-/Stämmoprotokoll',
+          baseScore: 80,
+          findings: [
+            { type: 'success', title: 'Beslutsdokumentation', description: 'Protokoll från styrelsemöten och bolagsstämmor finns.' },
+            { type: 'info', title: 'Beslutsunderlag', description: 'Granska att väsentliga beslut har dokumenterat underlag.' },
+            { type: 'warning', title: 'Signatur', description: 'Kontrollera att alla protokoll är justerade och signerade.' },
+            { type: 'warning', title: 'Särskilda beslut', description: 'Sök efter beslut om lån, pantförskrivning, emissioner som kan påverka transaktionen.' },
+          ],
+          missingElements: ['Komplett protokollserie', 'Beslutsunderlag för väsentliga beslut'],
+          recommendations: [
+            'Skapa kronologisk lista över alla väsentliga beslut',
+            'Identifiera eventuella formfel i historiska beslut',
+            'Kontrollera att inga beslut kräver stämmogodkännande som saknas',
+          ],
+        },
+        // GDPR
+        'gdpr': {
+          category: 'juridik',
+          type: 'GDPR/Privacy-dokumentation',
+          baseScore: 75,
+          findings: [
+            { type: 'success', title: 'Dataskyddsdokumentation', description: 'GDPR-relaterad dokumentation finns upprättad.' },
+            { type: 'info', title: 'Registerförteckning', description: 'Artikel 30-register över personuppgiftsbehandling bör finnas.' },
+            { type: 'warning', title: 'Personuppgiftsbiträden', description: 'Kontrollera att biträdesavtal finns med alla underleverantörer som behandlar personuppgifter.' },
+            { type: 'warning', title: 'Samtycken och laglig grund', description: 'Verifiera att laglig grund finns för all behandling - särskilt vid marknadsföring.' },
+            { type: 'info', title: 'Incidenthantering', description: 'Finns rutiner för hantering och rapportering av personuppgiftsincidenter?' },
+          ],
+          missingElements: [
+            'Artikel 30-register',
+            'Biträdesavtal med alla underleverantörer',
+            'Dataskyddspolicy',
+            'Incidentlogg',
+          ],
+          recommendations: [
+            'Kartlägg all personuppgiftsbehandling och verifiera laglig grund',
+            'Inventera alla IT-system och underleverantörer som behandlar personuppgifter',
+            'Granska historiska incidenter och hur de hanterats',
+            'Analysera risk för sanktioner vid bristande efterlevnad',
+            'Säkerställ att samtycken är giltiga vid ändrat ändamål efter förvärv',
+          ],
+        },
+        'privacy': {
+          category: 'juridik',
+          type: 'GDPR/Privacy-dokumentation',
+          baseScore: 75,
+          findings: [
+            { type: 'success', title: 'Integritetspolicy', description: 'Dokumentation om dataskydd finns.' },
+            { type: 'warning', title: 'Biträdesavtal', description: 'Verifiera att alla underleverantörer har avtal.' },
+            { type: 'info', title: 'Registerförteckning', description: 'Artikel 30-register bör finnas.' },
+          ],
+          missingElements: ['Komplett biträdesavtalsserie', 'Registerförteckning'],
+          recommendations: ['Kartlägg all personuppgiftsbehandling', 'Granska samtycken'],
+        },
+        // Tvister
+        'tvist': {
+          category: 'juridik',
+          type: 'Tvister/Claims',
+          baseScore: 72,
+          findings: [
+            { type: 'info', title: 'Tvistelista', description: 'Dokumentation av pågående eller hotande tvister.' },
+            { type: 'warning', title: 'Reservering', description: 'KRITISKT: Är tillräcklig reservering gjord i bokföringen för potentiella förluster?' },
+            { type: 'warning', title: 'Försäkringstäckning', description: 'Kontrollera om tvisterna täcks av ansvarsförsäkring.' },
+            { type: 'info', title: 'Historiska tvister', description: 'Granska även avslutade tvister för mönster och risker.' },
+          ],
+          missingElements: ['Juridisk bedömning av utfall', 'Kostnadsuppskattning', 'Försäkringsanalys'],
+          recommendations: [
+            'Inhämta juridisk second opinion på väsentliga tvister',
+            'Analysera om tvister kan avgöras före transaktion',
+            'Överväg escrow eller indemnity för pågående tvister i SPA',
+          ],
+        },
+        // HR - Löne/Bonus
+        'löne': {
+          category: 'hr',
+          type: 'Löne-/Bonusstruktur',
+          baseScore: 79,
+          findings: [
+            { type: 'success', title: 'Kompensationsöversikt', description: 'Löne- och bonusstrukturer är dokumenterade.' },
+            { type: 'info', title: 'Marknadsmässighet', description: 'Jämför lönenivåer mot branschsnitt för att bedöma retention-risk.' },
+            { type: 'warning', title: 'Bonusförpliktelser', description: 'Granska utestående bonusåtaganden - dessa blir ofta föremål för förhandling vid closing.' },
+            { type: 'warning', title: 'Förändringskostnader', description: 'Vad kostar det att säga upp nyckelpersoner (avgångsvederlag, uppsägningstid)?' },
+            { type: 'info', title: 'Optionsprogram', description: 'Finns aktie- eller optionsprogram som triggas vid ägarförändring?' },
+          ],
+          missingElements: [
+            'Individuell lönelista',
+            'Pågående bonusprogram med beräknad utbetalning',
+            'Optionsvillkor vid change of control',
+          ],
+          recommendations: [
+            'Identifiera "stay bonus"-möjligheter för nyckelpersoner',
+            'Analysera kostnader för befintliga optionsprogram vid transaktion',
+            'Jämför lönenivåer med marknad för att bedöma retention',
+            'Planera kommunikation till personal vid transaktion',
+          ],
+        },
+        'bonus': {
+          category: 'hr',
+          type: 'Bonusstruktur',
+          baseScore: 78,
+          findings: [
+            { type: 'success', title: 'Bonusprogram', description: 'Bonusstruktur och villkor dokumenterade.' },
+            { type: 'warning', title: 'Utestående åtaganden', description: 'Beräkna upplupen bonus vid transaktionsdatum.' },
+            { type: 'info', title: 'Måluppfyllelse', description: 'Analysera historisk utfallsnivå på bonusar.' },
+          ],
+          missingElements: ['Aktuell accrued bonus', 'Målformulering'],
+          recommendations: ['Beräkna bonusskuld vid closing', 'Definiera ansvarsfördelning i SPA'],
+        },
+        // Pension
+        'pension': {
+          category: 'hr',
+          type: 'Pensionsåtaganden',
+          baseScore: 76,
+          findings: [
+            { type: 'success', title: 'Pensionsplan', description: 'Dokumentation av pensionsåtaganden finns.' },
+            { type: 'info', title: 'ITP/Tjänstepension', description: 'Granska typ av pensionslösning - avgiftsbestämd eller förmånsbestämd.' },
+            { type: 'warning', title: 'Förmånsbestämda planer', description: 'KRITISKT: Förmånsbestämda pensioner kan innebära betydande skulder som inte syns i balansräkningen.' },
+            { type: 'warning', title: 'Direktpension', description: 'Finns direktpensionsåtaganden som måste övertas av köpare?' },
+          ],
+          missingElements: [
+            'Aktuariell beräkning av pensionsskuld',
+            'Försäkringsbesked',
+            'Lista över direktpensioner',
+          ],
+          recommendations: [
+            'Begär aktuariell värdering om förmånsbestämda planer finns',
+            'Analysera kostnader för att lösa ut direktpensioner',
+            'Verifiera att premier är betalda och försäkringar aktiva',
+          ],
+        },
+        // IT/System
+        'system': {
+          category: 'it',
+          type: 'Systemkarta/IT-översikt',
+          baseScore: 77,
+          findings: [
+            { type: 'success', title: 'Systemlandskap', description: 'Översikt över IT-system och integrationer finns dokumenterad.' },
+            { type: 'info', title: 'Licenser', description: 'Granska licensvillkor - är de överförbara vid ägarförändring?' },
+            { type: 'warning', title: 'Teknisk skuld', description: 'Bedöm föråldrade system och reinvesteringsbehov.' },
+            { type: 'warning', title: 'Molntjänster', description: 'Kartlägg alla SaaS/molntjänster och deras avtalsvillkor vid exit.' },
+            { type: 'info', title: 'Integrationer', description: 'Dokumentera beroenden mellan system - risk vid förändring.' },
+          ],
+          missingElements: [
+            'Komplett licensförteckning',
+            'Avtalsvillkor för molntjänster',
+            'Roadmap för teknisk utveckling',
+          ],
+          recommendations: [
+            'Inventera alla licenser och verifiera överlåtbarhet',
+            'Analysera molntjänsters change of control-villkor',
+            'Bedöm kostnad för nödvändiga IT-uppgraderingar',
+            'Dokumentera nyckelpersoner för kritiska system',
+          ],
+        },
+        'licens': {
+          category: 'it',
+          type: 'Licenser/Programvara',
+          baseScore: 76,
+          findings: [
+            { type: 'success', title: 'Licensdokumentation', description: 'Programvarulicenser finns dokumenterade.' },
+            { type: 'warning', title: 'Överlåtbarhet', description: 'Verifiera att licenser kan överföras vid ägarförändring.' },
+            { type: 'info', title: 'Compliance', description: 'Stämmer antal användare/installationer med licensvillkoren?' },
+          ],
+          missingElements: ['Licensavtal', 'Användarsstatistik'],
+          recommendations: ['Inventera alla licenser', 'Kontrollera överlåtbarhet', 'Verifiera compliance'],
+        },
+        // Infosec
+        'infosec': {
+          category: 'it',
+          type: 'Informationssäkerhet',
+          baseScore: 74,
+          findings: [
+            { type: 'success', title: 'Säkerhetsdokumentation', description: 'Policy och rutiner för informationssäkerhet finns.' },
+            { type: 'info', title: 'Accesskontroll', description: 'Granska behörighetsstyrning och åtkomstloggning.' },
+            { type: 'warning', title: 'Incidenthistorik', description: 'Har det skett säkerhetsincidenter? Hur hanterades de?' },
+            { type: 'warning', title: 'Backup/DR', description: 'Finns testad backup och disaster recovery-plan?' },
+            { type: 'info', title: 'Certifieringar', description: 'ISO 27001 eller SOC 2-certifiering är meriterande.' },
+          ],
+          missingElements: [
+            'Penetrationstest-rapport',
+            'Incidentlogg',
+            'DR-testprotokoll',
+          ],
+          recommendations: [
+            'Genomför penetrationstest före transaktion',
+            'Verifiera att backup faktiskt fungerar (test-restore)',
+            'Granska tredjepartsleverantörers säkerhetsnivå',
+            'Analysera cyberförsäkringsskydd',
+          ],
+        },
+        // IP/Kod
+        'källkod': {
+          category: 'it',
+          type: 'Källkod/IP',
+          baseScore: 73,
+          findings: [
+            { type: 'success', title: 'Koddokumentation', description: 'Dokumentation om mjukvara och källkod finns.' },
+            { type: 'warning', title: 'Ägarskap', description: 'KRITISKT: Verifiera att bolaget äger all källkod. Kontrollera anställningsavtal för IP-överlåtelse.' },
+            { type: 'warning', title: 'Open source', description: 'Inventera open source-komponenter och deras licenser (GPL, MIT, etc.). GPL kan tvinga till öppning av egen kod.' },
+            { type: 'info', title: 'Dokumentation', description: 'Finns teknisk dokumentation som möjliggör vidareutveckling?' },
+          ],
+          missingElements: [
+            'Open source-inventering',
+            'Anställningsavtal med IP-klausul',
+            'Teknisk dokumentation',
+          ],
+          recommendations: [
+            'Genomför open source-scanning av kodbasen',
+            'Verifiera IP-överlåtelse i konsultavtal och anställningsavtal',
+            'Dokumentera beroenden av nyckelpersoner för kodutveckling',
+          ],
+        },
+        'open source': {
+          category: 'it',
+          type: 'Open Source Compliance',
+          baseScore: 71,
+          findings: [
+            { type: 'info', title: 'OSS-inventering', description: 'Lista över open source-komponenter finns.' },
+            { type: 'warning', title: 'Copyleft-licenser', description: 'KRITISKT: GPL och liknande licenser kan kräva att egen kod öppnas - verifiera compliance.' },
+            { type: 'warning', title: 'Licensvillkor', description: 'Säkerställ att alla villkor följs (attribution, etc.).' },
+          ],
+          missingElements: ['Komplett OSS-inventering', 'Licensanalys'],
+          recommendations: ['Använd verktyg för OSS-scanning', 'Analysera licensrisker', 'Dokumentera compliance'],
+        },
+        // ESG/HSE
+        'esg': {
+          category: 'operation',
+          type: 'ESG/Hållbarhet',
+          baseScore: 75,
+          findings: [
+            { type: 'success', title: 'Hållbarhetsdokumentation', description: 'ESG-relaterad dokumentation finns upprättad.' },
+            { type: 'info', title: 'Miljöarbete', description: 'Granska miljöpolicy och eventuella miljötillstånd.' },
+            { type: 'warning', title: 'Miljöskulder', description: 'Finns risk för historisk miljöförorening som kan medföra kostnader?' },
+            { type: 'info', title: 'Socialt ansvar', description: 'Dokumentation kring arbetsvillkor och mänskliga rättigheter i leverantörskedjan.' },
+            { type: 'info', title: 'Certifieringar', description: 'ISO 14001 eller liknande miljöcertifiering är meriterande.' },
+          ],
+          missingElements: [
+            'Miljöutredning om relevant',
+            'Hållbarhetsrapport',
+            'Miljötillstånd',
+          ],
+          recommendations: [
+            'Genomför miljöutredning för fastigheter vid behov',
+            'Analysera krav på hållbarhetsrapportering (CSRD om tillämpligt)',
+            'Kartlägg leverantörskedjan ur ESG-perspektiv',
+          ],
+        },
+        'miljö': {
+          category: 'operation',
+          type: 'Miljö/HSE',
+          baseScore: 76,
+          findings: [
+            { type: 'success', title: 'Miljödokumentation', description: 'Miljö- och arbetsmiljödokumentation finns.' },
+            { type: 'warning', title: 'Miljötillstånd', description: 'Verifiera att alla nödvändiga tillstånd är giltiga.' },
+            { type: 'warning', title: 'Historisk förorening', description: 'Finns risk för saneringsansvar?' },
+          ],
+          missingElements: ['Miljötillstånd', 'Arbetsmiljöplan'],
+          recommendations: ['Verifiera tillstånd', 'Genomför miljöutredning om behov finns'],
+        },
+        // Processer
+        'process': {
+          category: 'operation',
+          type: 'Processdokumentation',
+          baseScore: 74,
+          findings: [
+            { type: 'success', title: 'Processdokumentation', description: 'Kärnprocesser finns dokumenterade.' },
+            { type: 'info', title: 'O2C-process', description: 'Order-to-cash-processen bör vara tydligt dokumenterad.' },
+            { type: 'info', title: 'P2P-process', description: 'Procure-to-pay-processen påverkar rörelsekapitalet.' },
+            { type: 'warning', title: 'Nyckelpersonsberoende', description: 'Finns processer som endast behärskas av enskilda individer?' },
+          ],
+          missingElements: ['Processkartor', 'Rollbeskrivningar', 'Kontrollpunkter'],
+          recommendations: [
+            'Dokumentera kritiska processer med ansvariga',
+            'Identifiera nyckelpersonsberoenden och succession-plan',
+            'Analysera automatiseringsmöjligheter post-transaktion',
+          ],
+        },
       }
 
       // Find matching document type
