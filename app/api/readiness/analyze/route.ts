@@ -8,6 +8,16 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
 })
 
+const CATEGORY_META_LABELS: Record<RequirementCategory, string> = {
+  finans: 'Finansiellt',
+  skatt: 'Skatte-relaterat',
+  juridik: 'Juridiskt',
+  hr: 'HR-relaterat',
+  kommersiellt: 'Kommersiellt',
+  it: 'IT-relaterat',
+  operation: 'Operationellt',
+}
+
 interface AnalysisResult {
   suggestedRequirementId: string | null
   suggestedCategory: RequirementCategory | null
@@ -34,6 +44,48 @@ export async function POST(request: NextRequest) {
 
     if (!fileName) {
       return NextResponse.json({ error: 'fileName krävs' }, { status: 400 })
+    }
+
+    // Demo mode: return mock analysis
+    if (userId.startsWith('demo') || documentId?.startsWith('demo')) {
+      const mockCategories: Record<string, RequirementCategory> = {
+        'arsredovisning': 'finans',
+        'årsredovisning': 'finans',
+        'huvudbok': 'finans',
+        'balans': 'finans',
+        'resultat': 'finans',
+        'skatt': 'skatt',
+        'avtal': 'juridik',
+        'anställning': 'hr',
+        'kund': 'kommersiellt',
+        'it': 'it',
+      }
+
+      // Detect category from filename
+      let detectedCategory: RequirementCategory = 'finans'
+      const lowerFileName = fileName.toLowerCase()
+      for (const [keyword, category] of Object.entries(mockCategories)) {
+        if (lowerFileName.includes(keyword)) {
+          detectedCategory = category
+          break
+        }
+      }
+
+      // Detect year from filename
+      const yearMatch = fileName.match(/20[0-9]{2}/)
+      const detectedYear = yearMatch ? parseInt(yearMatch[0]) : null
+
+      return NextResponse.json({
+        analysis: {
+          suggestedRequirementId: null,
+          suggestedCategory: detectedCategory,
+          suggestedPeriodYear: detectedYear,
+          isSigned: lowerFileName.includes('sign') || lowerFileName.includes('under'),
+          confidence: 82 + Math.floor(Math.random() * 15),
+          reasoning: `Dokumentet "${fileName}" analyserades av DD-coach. Baserat på filnamn och struktur verkar detta vara ett ${CATEGORY_META_LABELS[detectedCategory] || 'finansiellt'} dokument${detectedYear ? ` för år ${detectedYear}` : ''}. Dokumentet uppfyller grundläggande DD-krav och kan användas vid företagsförsäljning.`,
+          documentSummary: `${CATEGORY_META_LABELS[detectedCategory] || 'Finansiellt'} dokument${detectedYear ? ` (${detectedYear})` : ''} för DD-granskning`,
+        },
+      })
     }
 
     // Build the requirements context for GPT
