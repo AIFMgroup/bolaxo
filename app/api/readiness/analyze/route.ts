@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import OpenAI from 'openai'
 import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { REQUIREMENTS, RequirementCategory } from '@/lib/readiness/requirements'
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
-})
+import { callLLM, parseJSONResponse, getLLMProviderInfo } from '@/lib/llm-client'
+import { extractTextFromDocument, splitTextForGPT } from '@/lib/universal-document-reader'
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
 
 const CATEGORY_META_LABELS: Record<RequirementCategory, string> = {
   finans: 'Finansiellt',
@@ -18,18 +16,121 @@ const CATEGORY_META_LABELS: Record<RequirementCategory, string> = {
   operation: 'Operationellt',
 }
 
+const s3Client = new S3Client({
+  region: process.env.AWS_S3_REGION || 'eu-north-1',
+  credentials: {
+    accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY || '',
+  },
+})
+
+const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || 'trestor-dataroom-prod'
+
+interface AnalysisFinding {
+  type: 'success' | 'warning' | 'error' | 'info'
+  title: string
+  description: string
+}
+
 interface AnalysisResult {
-  suggestedRequirementId: string | null
+  score: number // 0-100
+  status: 'approved' | 'needs_review' | 'rejected'
+  summary: string
+  findings: AnalysisFinding[]
   suggestedCategory: RequirementCategory | null
   suggestedPeriodYear: number | null
   isSigned: boolean
-  confidence: number // 0-100
-  reasoning: string
-  documentSummary: string
+  missingElements: string[]
+  recommendations: string[]
+}
+
+// Build the DD expert prompt
+function buildSystemPrompt(): string {
+  const requirementsContext = REQUIREMENTS.map(r => ({
+    id: r.id,
+    category: r.category,
+    title: r.title,
+    description: r.description,
+    mandatory: r.mandatory,
+  }))
+
+  return `Du är en erfaren Due Diligence-expert specialiserad på företagsförsäljningar i Sverige. Din uppgift är att granska dokument som företagare laddar upp inför en potentiell försäljning.
+
+Du ska:
+1. Analysera dokumentets innehåll noggrant
+2. Identifiera vad dokumentet är (årsredovisning, huvudbok, avtal, etc.)
+3. Bedöma om dokumentet är komplett och uppfyller DD-krav
+4. Ge konkret feedback på vad som saknas eller behöver förbättras
+5. Ge ett poäng (0-100) baserat på dokumentets DD-kvalitet
+
+Viktiga DD-krav för svenska företag:
+${JSON.stringify(requirementsContext, null, 2)}
+
+Var konstruktiv och specifik i din feedback. Fokusera på:
+- Saknas någon viktig information?
+- Är perioderna/datumen korrekta och aktuella?
+- Är dokumentet signerat (om det krävs)?
+- Stämmer siffrorna överens?
+- Finns det några varningssignaler?
+
+Svara ALLTID på svenska.`
+}
+
+function buildUserPrompt(fileName: string, mimeType: string, textContent: string): string {
+  return `Analysera följande dokument för Due Diligence:
+
+**Filnamn:** ${fileName}
+**Filtyp:** ${mimeType}
+
+**Dokumentinnehåll:**
+${textContent.substring(0, 15000)}
+${textContent.length > 15000 ? '\n\n[...dokumentet trunkerat, visa endast de första 15000 tecknen...]' : ''}
+
+Ge din analys i följande JSON-format:
+{
+  "score": <0-100 poäng>,
+  "status": "<approved|needs_review|rejected>",
+  "summary": "<kort sammanfattning av dokumentet på 1-2 meningar>",
+  "findings": [
+    {"type": "<success|warning|error|info>", "title": "<kort titel>", "description": "<beskrivning>"}
+  ],
+  "suggestedCategory": "<finans|skatt|juridik|hr|kommersiellt|it|operation eller null>",
+  "suggestedPeriodYear": <årtal eller null>,
+  "isSigned": <true|false>,
+  "missingElements": ["<sak som saknas 1>", "<sak som saknas 2>"],
+  "recommendations": ["<rekommendation 1>", "<rekommendation 2>"]
+}
+
+Var noggrann och specifik. Om du hittar problem, förklara exakt vad som är fel och hur det kan åtgärdas.`
+}
+
+// Fetch file from S3
+async function fetchFileFromS3(s3Key: string): Promise<Buffer> {
+  const key = s3Key.startsWith('s3://') 
+    ? s3Key.replace(`s3://${BUCKET_NAME}/`, '')
+    : s3Key
+
+  const command = new GetObjectCommand({
+    Bucket: BUCKET_NAME,
+    Key: key,
+  })
+
+  const response = await s3Client.send(command)
+  
+  if (!response.Body) {
+    throw new Error('Empty file from S3')
+  }
+
+  // Convert stream to buffer
+  const chunks: Uint8Array[] = []
+  for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
+    chunks.push(chunk)
+  }
+  return Buffer.concat(chunks)
 }
 
 // POST /api/readiness/analyze
-// Analyze a document's filename and content to suggest classification
+// Analyze a document's content using AI
 export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies()
@@ -40,13 +141,13 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { fileName, fileContent, mimeType, documentId } = body
+    const { fileName, documentId, fileContent: directContent, mimeType } = body
 
     if (!fileName) {
       return NextResponse.json({ error: 'fileName krävs' }, { status: 400 })
     }
 
-    // Demo mode: return mock analysis
+    // Demo mode: return intelligent mock analysis
     if (userId.startsWith('demo') || documentId?.startsWith('demo')) {
       const mockCategories: Record<string, RequirementCategory> = {
         'arsredovisning': 'finans',
@@ -61,7 +162,6 @@ export async function POST(request: NextRequest) {
         'it': 'it',
       }
 
-      // Detect category from filename
       let detectedCategory: RequirementCategory = 'finans'
       const lowerFileName = fileName.toLowerCase()
       for (const [keyword, category] of Object.entries(mockCategories)) {
@@ -71,155 +171,156 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // Detect year from filename
       const yearMatch = fileName.match(/20[0-9]{2}/)
-      const detectedYear = yearMatch ? parseInt(yearMatch[0]) : null
+      const detectedYear = yearMatch ? parseInt(yearMatch[0]) : 2024
 
+      const score = 75 + Math.floor(Math.random() * 20)
+      
       return NextResponse.json({
         analysis: {
-          suggestedRequirementId: null,
+          score,
+          status: score >= 80 ? 'approved' : 'needs_review',
+          summary: `${CATEGORY_META_LABELS[detectedCategory]} dokument för ${detectedYear}. Dokumentet innehåller grundläggande information men behöver kompletteras med vissa detaljer.`,
+          findings: [
+            { type: 'success', title: 'Rätt format', description: 'Dokumentet är i rätt format och läsbart.' },
+            { type: 'success', title: 'Korrekt period', description: `Dokumentet avser ${detectedYear} vilket är aktuellt.` },
+            { type: 'info', title: 'Identifierad typ', description: `Klassificerat som ${CATEGORY_META_LABELS[detectedCategory]}.` },
+            ...(score < 85 ? [{ type: 'warning' as const, title: 'Ofullständig information', description: 'Vissa detaljer saknas för komplett DD-underlag.' }] : []),
+          ],
           suggestedCategory: detectedCategory,
           suggestedPeriodYear: detectedYear,
-          isSigned: lowerFileName.includes('sign') || lowerFileName.includes('under'),
-          confidence: 82 + Math.floor(Math.random() * 15),
-          reasoning: `Dokumentet "${fileName}" analyserades av DD-coach. Baserat på filnamn och struktur verkar detta vara ett ${CATEGORY_META_LABELS[detectedCategory] || 'finansiellt'} dokument${detectedYear ? ` för år ${detectedYear}` : ''}. Dokumentet uppfyller grundläggande DD-krav och kan användas vid företagsförsäljning.`,
-          documentSummary: `${CATEGORY_META_LABELS[detectedCategory] || 'Finansiellt'} dokument${detectedYear ? ` (${detectedYear})` : ''} för DD-granskning`,
+          isSigned: lowerFileName.includes('sign'),
+          missingElements: score < 85 ? ['Detaljerade noter', 'Jämförelsetal'] : [],
+          recommendations: score < 85 
+            ? ['Lägg till noter som förklarar större poster', 'Inkludera jämförelsetal från föregående år']
+            : ['Dokumentet uppfyller DD-kraven'],
         },
       })
     }
 
-    // Build the requirements context for GPT
-    const requirementsContext = REQUIREMENTS.map(r => ({
-      id: r.id,
-      category: r.category,
-      title: r.title,
-      description: r.description,
-      docTypes: r.docTypes,
-      mandatory: r.mandatory,
-      minYears: r.minYears,
-      requiresSignature: r.requiresSignature,
-    }))
+    let textContent = ''
+    let extractedMimeType = mimeType || 'application/octet-stream'
 
-    // Prepare prompt
-    const systemPrompt = `Du är en expert på Due Diligence för företagsförsäljningar i Sverige. 
-Din uppgift är att analysera filnamn (och eventuellt filinnehåll) och klassificera dokumentet enligt en checklista för säljberedskap.
+    // Try to get file content
+    if (directContent) {
+      // Content was passed directly (from upload)
+      textContent = directContent
+    } else if (documentId) {
+      // Fetch from database and S3
+      try {
+        const document = await prisma.document.findUnique({
+          where: { id: documentId },
+        })
 
-Här är de tillgängliga krav-kategorierna och specifika krav:
-
-${JSON.stringify(requirementsContext, null, 2)}
-
-Kategorier:
-- finans: Finansiella dokument (årsredovisningar, bokslut, huvudbok, reskontra etc.)
-- skatt: Skattedeklarationer, tax rulings, TP-dokumentation
-- juridik: Bolagsdokument, avtal, protokoll, GDPR
-- hr: Anställningsavtal, lönestruktur, pensioner
-- kommersiellt: Kundlistor, pipeline, SLA, partneravtal
-- it: Systemkartor, IT-policyer, IP-dokumentation
-- operation: Processdokumentation, ESG, leasingavtal`
-
-    const userPrompt = `Analysera följande dokument:
-
-Filnamn: ${fileName}
-MIME-typ: ${mimeType || 'okänd'}
-${fileContent ? `\nFilinnehåll (utdrag):\n${fileContent.substring(0, 3000)}` : ''}
-
-Svara i följande JSON-format:
-{
-  "suggestedRequirementId": "<bästa matchande requirement id eller null>",
-  "suggestedCategory": "<kategori: finans/skatt/juridik/hr/kommersiellt/it/operation>",
-  "suggestedPeriodYear": <år som dokumentet gäller för, t.ex. 2023, eller null>,
-  "isSigned": <true/false - verkar dokumentet vara signerat baserat på namn/innehåll>,
-  "confidence": <0-100 - hur säker är du på klassificeringen>,
-  "reasoning": "<kort förklaring på svenska av varför du klassificerade så>",
-  "documentSummary": "<kort sammanfattning av dokumentet på svenska, max 100 tecken>"
-}`
-
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4.1-mini',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.3,
-      max_tokens: 1000,
-      response_format: { type: 'json_object' },
-    })
-
-    const rawContent = response.choices[0]?.message?.content || '{}'
-    let analysis: AnalysisResult
-
-    try {
-      const parsed = JSON.parse(rawContent)
-      analysis = {
-        suggestedRequirementId: parsed.suggestedRequirementId || null,
-        suggestedCategory: parsed.suggestedCategory || null,
-        suggestedPeriodYear: parsed.suggestedPeriodYear || null,
-        isSigned: parsed.isSigned === true,
-        confidence: typeof parsed.confidence === 'number' ? parsed.confidence : 50,
-        reasoning: parsed.reasoning || '',
-        documentSummary: parsed.documentSummary || '',
-      }
-    } catch {
-      analysis = {
-        suggestedRequirementId: null,
-        suggestedCategory: null,
-        suggestedPeriodYear: null,
-        isSigned: false,
-        confidence: 0,
-        reasoning: 'Kunde inte analysera dokumentet',
-        documentSummary: '',
+        if (document?.fileUrl) {
+          extractedMimeType = document.mimeType || extractedMimeType
+          
+          // Fetch file from S3
+          const fileBuffer = await fetchFileFromS3(document.fileUrl)
+          
+          // Extract text from the document
+          const extraction = await extractTextFromDocument(fileBuffer, fileName, extractedMimeType)
+          textContent = extraction.text
+          
+          console.log(`[Analyze] Extracted ${textContent.length} chars from ${fileName} (${extraction.format}, confidence: ${extraction.confidence})`)
+        }
+      } catch (fetchError) {
+        console.error('Error fetching document:', fetchError)
+        // Continue with just filename analysis if S3 fails
       }
     }
 
-    // If documentId is provided, update the document with suggested classification
-    if (documentId && analysis.confidence >= 70) {
+    // If we couldn't extract text, still analyze based on filename
+    if (!textContent || textContent.length < 50) {
+      textContent = `[Kunde inte extrahera fullständigt textinnehåll från filen. Analyserar baserat på filnamn: ${fileName}]`
+    }
+
+    // Call LLM for analysis
+    const { provider } = getLLMProviderInfo()
+    console.log(`[Analyze] Using LLM provider: ${provider}`)
+
+    const systemPrompt = buildSystemPrompt()
+    const userPrompt = buildUserPrompt(fileName, extractedMimeType, textContent)
+
+    const llmResponse = await callLLM(
+      [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      {
+        temperature: 0.2,
+        maxTokens: 2000,
+        jsonMode: true,
+      }
+    )
+
+    // Parse the response
+    let analysis: AnalysisResult
+    try {
+      analysis = parseJSONResponse(llmResponse.content)
+    } catch (parseError) {
+      console.error('Failed to parse LLM response:', llmResponse.content)
+      // Return a fallback analysis
+      analysis = {
+        score: 60,
+        status: 'needs_review',
+        summary: 'Dokumentet kunde analyseras men resultatet kunde inte tolkas korrekt.',
+        findings: [
+          { type: 'info', title: 'Analys slutförd', description: 'DD-coach har granskat dokumentet.' },
+          { type: 'warning', title: 'Manuell granskning rekommenderas', description: 'Automatisk analys kunde inte slutföras helt.' },
+        ],
+        suggestedCategory: null,
+        suggestedPeriodYear: null,
+        isSigned: false,
+        missingElements: [],
+        recommendations: ['Kontrollera dokumentet manuellt'],
+      }
+    }
+
+    // Update document metadata in database if documentId provided
+    if (documentId && !documentId.startsWith('demo')) {
       try {
-        // Fetch existing document
         const existingDoc = await prisma.document.findUnique({
           where: { id: documentId },
         })
 
-        if (existingDoc && existingDoc.type.startsWith('READINESS:')) {
-          // Update metadata in uploadedByName
+        if (existingDoc) {
           const existingMeta = existingDoc.uploadedByName?.startsWith('{')
             ? JSON.parse(existingDoc.uploadedByName)
             : {}
 
           const updatedMeta = {
             ...existingMeta,
-            aiSuggestedRequirementId: analysis.suggestedRequirementId,
-            aiSuggestedCategory: analysis.suggestedCategory,
-            aiSuggestedPeriodYear: analysis.suggestedPeriodYear,
+            aiScore: analysis.score,
+            aiStatus: analysis.status,
+            aiSummary: analysis.summary,
+            aiFindings: analysis.findings,
+            aiCategory: analysis.suggestedCategory,
+            aiPeriodYear: analysis.suggestedPeriodYear,
             aiIsSigned: analysis.isSigned,
-            aiConfidence: analysis.confidence,
+            aiMissingElements: analysis.missingElements,
+            aiRecommendations: analysis.recommendations,
             aiAnalyzedAt: new Date().toISOString(),
+            aiProvider: provider,
           }
 
-          // If confidence is very high (90+), auto-update the type
-          if (analysis.confidence >= 90 && analysis.suggestedRequirementId) {
-            await prisma.document.update({
-              where: { id: documentId },
-              data: {
-                type: `READINESS:${analysis.suggestedRequirementId}`,
-                uploadedByName: JSON.stringify(updatedMeta),
-              },
-            })
-          } else {
-            // Just store the suggestion
-            await prisma.document.update({
-              where: { id: documentId },
-              data: {
-                uploadedByName: JSON.stringify(updatedMeta),
-              },
-            })
-          }
+          await prisma.document.update({
+            where: { id: documentId },
+            data: {
+              uploadedByName: JSON.stringify(updatedMeta),
+              status: analysis.status === 'approved' ? 'APPROVED' : 'UPLOADED',
+            },
+          })
         }
       } catch (dbError) {
         console.error('Error updating document with AI analysis:', dbError)
       }
     }
 
-    return NextResponse.json({ analysis })
+    return NextResponse.json({ 
+      analysis,
+      provider,
+    })
   } catch (error) {
     console.error('Error analyzing document:', error)
     return NextResponse.json(
@@ -228,4 +329,3 @@ Svara i följande JSON-format:
     )
   }
 }
-

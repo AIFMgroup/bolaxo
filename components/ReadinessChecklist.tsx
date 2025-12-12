@@ -29,14 +29,22 @@ interface UploadedDoc {
   signed?: boolean
 }
 
+interface AnalysisFinding {
+  type: 'success' | 'warning' | 'error' | 'info'
+  title: string
+  description: string
+}
+
 interface AnalysisResult {
-  suggestedRequirementId: string | null
+  score: number
+  status: 'approved' | 'needs_review' | 'rejected'
+  summary: string
+  findings: AnalysisFinding[]
   suggestedCategory: RequirementCategory | null
   suggestedPeriodYear: number | null
   isSigned: boolean
-  confidence: number
-  reasoning: string
-  documentSummary: string
+  missingElements: string[]
+  recommendations: string[]
 }
 
 interface Props {
@@ -277,13 +285,15 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
         setAnalysisResult({
           doc,
           result: data.analysis || {
-            suggestedRequirementId: null,
+            score: 80,
+            status: 'needs_review',
+            summary: 'Dokumentet analyserades men kunde inte tolkas fullständigt.',
+            findings: [{ type: 'info', title: 'Analys slutförd', description: 'DD-coach har granskat dokumentet.' }],
             suggestedCategory: null,
             suggestedPeriodYear: null,
             isSigned: false,
-            confidence: 85,
-            reasoning: 'Dokumentet ser komplett ut och uppfyller grundläggande DD-krav.',
-            documentSummary: 'Finansiellt dokument analyserat',
+            missingElements: [],
+            recommendations: ['Kontrollera dokumentet manuellt'],
           },
         })
         
@@ -296,17 +306,19 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
       }
     } catch (err) {
       console.error('Analysis error:', err)
-      // Show mock result for demo
+      // Show error result
       setAnalysisResult({
         doc,
         result: {
-          suggestedRequirementId: doc.requirementId,
-          suggestedCategory: 'finans',
-          suggestedPeriodYear: 2024,
+          score: 0,
+          status: 'needs_review',
+          summary: 'Kunde inte analysera dokumentet. Försök igen eller kontakta support.',
+          findings: [{ type: 'error', title: 'Analysfel', description: 'Ett tekniskt fel uppstod vid analysen.' }],
+          suggestedCategory: null,
+          suggestedPeriodYear: null,
           isSigned: false,
-          confidence: 85,
-          reasoning: 'Dokumentet analyserades framgångsrikt. Det verkar vara ett finansiellt dokument som uppfyller grundläggande DD-krav.',
-          documentSummary: 'Finansiellt dokument för DD-granskning',
+          missingElements: [],
+          recommendations: ['Försök igen eller ladda upp dokumentet på nytt'],
         },
       })
     } finally {
@@ -346,18 +358,6 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
         <div className="w-8 h-8 border-2 border-navy border-t-transparent rounded-full animate-spin" />
       </div>
     )
-  }
-
-  const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 80) return 'text-emerald-600 bg-emerald-50'
-    if (confidence >= 60) return 'text-amber-600 bg-amber-50'
-    return 'text-rose-600 bg-rose-50'
-  }
-
-  const getConfidenceLabel = (confidence: number) => {
-    if (confidence >= 80) return 'Hög'
-    if (confidence >= 60) return 'Medium'
-    return 'Låg'
   }
 
   return (
@@ -458,28 +458,86 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
             <div className="p-6 overflow-y-auto max-h-[calc(90vh-220px)]">
               {analysisModalTab === 'summary' && (
                 <div className="space-y-6">
-                  {/* Confidence Score */}
+                  {/* Score and Status */}
                   <div className="flex items-center justify-between p-5 bg-gray-50 rounded-2xl">
                     <div>
-                      <p className="text-sm text-gray-500 mb-1">Säkerhetsnivå</p>
-                      <p className="text-3xl font-bold text-gray-900">{analysisResult.result.confidence}%</p>
+                      <p className="text-sm text-gray-500 mb-1">DD-poäng</p>
+                      <p className="text-4xl font-bold text-gray-900">{analysisResult.result.score}/100</p>
                     </div>
-                    <div className={`px-4 py-2 rounded-xl text-sm font-medium ${getConfidenceColor(analysisResult.result.confidence)}`}>
-                      {getConfidenceLabel(analysisResult.result.confidence)} konfidens
+                    <div className={`px-4 py-2 rounded-xl text-sm font-medium ${
+                      analysisResult.result.status === 'approved' 
+                        ? 'bg-emerald-50 text-emerald-700'
+                        : analysisResult.result.status === 'rejected'
+                        ? 'bg-rose-50 text-rose-700'
+                        : 'bg-amber-50 text-amber-700'
+                    }`}>
+                      {analysisResult.result.status === 'approved' ? 'Godkänt' 
+                        : analysisResult.result.status === 'rejected' ? 'Underkänt' 
+                        : 'Behöver granskning'}
                     </div>
                   </div>
 
                   {/* Summary */}
                   <div className="p-5 bg-gray-50 rounded-2xl">
-                    <p className="text-sm text-gray-500 mb-2">Dokumentsammanfattning</p>
-                    <p className="text-gray-900 leading-relaxed">{analysisResult.result.documentSummary || 'Ingen sammanfattning tillgänglig'}</p>
+                    <p className="text-sm text-gray-500 mb-2">Sammanfattning</p>
+                    <p className="text-gray-900 leading-relaxed">{analysisResult.result.summary}</p>
                   </div>
 
-                  {/* Reasoning */}
-                  <div className="p-5 bg-gray-50 rounded-2xl">
-                    <p className="text-sm text-gray-500 mb-2">DD-coach bedömning</p>
-                    <p className="text-gray-900 leading-relaxed">{analysisResult.result.reasoning || 'Dokumentet ser korrekt ut för DD-ändamål.'}</p>
-                  </div>
+                  {/* Findings */}
+                  {analysisResult.result.findings && analysisResult.result.findings.length > 0 && (
+                    <div className="space-y-3">
+                      <p className="text-sm text-gray-500">Resultat av granskningen</p>
+                      {analysisResult.result.findings.map((finding, idx) => (
+                        <div
+                          key={idx}
+                          className={`p-4 rounded-xl flex items-start gap-3 ${
+                            finding.type === 'success' ? 'bg-emerald-50' :
+                            finding.type === 'error' ? 'bg-rose-50' :
+                            finding.type === 'warning' ? 'bg-amber-50' : 'bg-sky-50'
+                          }`}
+                        >
+                          <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            finding.type === 'success' ? 'bg-emerald-100' :
+                            finding.type === 'error' ? 'bg-rose-100' :
+                            finding.type === 'warning' ? 'bg-amber-100' : 'bg-sky-100'
+                          }`}>
+                            {finding.type === 'success' && (
+                              <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                            {finding.type === 'error' && (
+                              <svg className="w-4 h-4 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            )}
+                            {finding.type === 'warning' && (
+                              <svg className="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01" />
+                              </svg>
+                            )}
+                            {finding.type === 'info' && (
+                              <svg className="w-4 h-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                            )}
+                          </div>
+                          <div>
+                            <p className={`font-medium ${
+                              finding.type === 'success' ? 'text-emerald-900' :
+                              finding.type === 'error' ? 'text-rose-900' :
+                              finding.type === 'warning' ? 'text-amber-900' : 'text-sky-900'
+                            }`}>{finding.title}</p>
+                            <p className={`text-sm mt-0.5 ${
+                              finding.type === 'success' ? 'text-emerald-700' :
+                              finding.type === 'error' ? 'text-rose-700' :
+                              finding.type === 'warning' ? 'text-amber-700' : 'text-sky-700'
+                            }`}>{finding.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -508,14 +566,32 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
                       </p>
                     </div>
                     <div className="p-4 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-gray-500 mb-1">Matchat krav</p>
-                      <p className="font-medium text-gray-900">
-                        {analysisResult.result.suggestedRequirementId 
-                          ? REQUIREMENTS.find(r => r.id === analysisResult.result.suggestedRequirementId)?.title || analysisResult.result.suggestedRequirementId
-                          : 'Ej matchat'}
+                      <p className="text-xs text-gray-500 mb-1">DD-status</p>
+                      <p className={`font-medium ${
+                        analysisResult.result.status === 'approved' ? 'text-emerald-600' :
+                        analysisResult.result.status === 'rejected' ? 'text-rose-600' : 'text-amber-600'
+                      }`}>
+                        {analysisResult.result.status === 'approved' ? 'Godkänt' 
+                          : analysisResult.result.status === 'rejected' ? 'Underkänt' 
+                          : 'Behöver granskning'}
                       </p>
                     </div>
                   </div>
+
+                  {/* Missing Elements */}
+                  {analysisResult.result.missingElements && analysisResult.result.missingElements.length > 0 && (
+                    <div className="p-4 bg-rose-50 rounded-xl">
+                      <p className="text-xs text-rose-600 font-medium mb-2">Saknade element</p>
+                      <ul className="space-y-1">
+                        {analysisResult.result.missingElements.map((item, idx) => (
+                          <li key={idx} className="flex items-center gap-2 text-sm text-rose-700">
+                            <span className="w-1 h-1 rounded-full bg-rose-400 flex-shrink-0" />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   {/* File Info */}
                   <div className="p-4 bg-gray-50 rounded-xl">
@@ -535,7 +611,8 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
 
               {analysisModalTab === 'actions' && (
                 <div className="space-y-4">
-                  {analysisResult.result.confidence >= 80 ? (
+                  {/* Status Message */}
+                  {analysisResult.result.status === 'approved' ? (
                     <div className="p-5 bg-emerald-50 rounded-2xl border border-emerald-100">
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
@@ -549,7 +626,21 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
                         </div>
                       </div>
                     </div>
-                  ) : analysisResult.result.confidence >= 60 ? (
+                  ) : analysisResult.result.status === 'rejected' ? (
+                    <div className="p-5 bg-rose-50 rounded-2xl border border-rose-100">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center flex-shrink-0">
+                          <svg className="w-5 h-5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="font-medium text-rose-900 mb-1">Åtgärd krävs</p>
+                          <p className="text-sm text-rose-700">Dokumentet behöver kompletteras eller bytas ut för att uppfylla DD-kraven.</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
                     <div className="p-5 bg-amber-50 rounded-2xl border border-amber-100">
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
@@ -563,19 +654,22 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
                         </div>
                       </div>
                     </div>
-                  ) : (
-                    <div className="p-5 bg-rose-50 rounded-2xl border border-rose-100">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center flex-shrink-0">
-                          <svg className="w-5 h-5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-medium text-rose-900 mb-1">Åtgärd krävs</p>
-                          <p className="text-sm text-rose-700">Dokumentet behöver kompletteras eller bytas ut för att uppfylla DD-kraven.</p>
-                        </div>
-                      </div>
+                  )}
+
+                  {/* Recommendations */}
+                  {analysisResult.result.recommendations && analysisResult.result.recommendations.length > 0 && (
+                    <div className="p-5 bg-sky-50 rounded-2xl border border-sky-100">
+                      <p className="font-medium text-sky-900 mb-3">Rekommendationer från DD-coach</p>
+                      <ul className="space-y-2">
+                        {analysisResult.result.recommendations.map((rec, idx) => (
+                          <li key={idx} className="flex items-start gap-2 text-sm text-sky-800">
+                            <span className="w-5 h-5 rounded-full bg-sky-100 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-medium text-sky-600">
+                              {idx + 1}
+                            </span>
+                            {rec}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   )}
 
