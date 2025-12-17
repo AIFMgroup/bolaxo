@@ -743,6 +743,42 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                                 v{doc.currentVersion?.version}
                               </span>
                             )}
+                            {/* Analysis status indicator */}
+                            {doc.currentVersion?.analysis && (
+                              <button
+                                onClick={() => loadAnalysis(doc)}
+                                className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full transition-all ${
+                                  doc.currentVersion.analysis.status === 'analyzing' || doc.currentVersion.analysis.status === 'pending'
+                                    ? 'bg-blue-50 text-blue-600 animate-pulse'
+                                    : doc.currentVersion.analysis.status === 'failed'
+                                    ? 'bg-rose-50 text-rose-600 hover:bg-rose-100'
+                                    : doc.currentVersion.analysis.score !== undefined && doc.currentVersion.analysis.score >= 80
+                                    ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+                                    : doc.currentVersion.analysis.score !== undefined && doc.currentVersion.analysis.score >= 60
+                                    ? 'bg-amber-50 text-amber-600 hover:bg-amber-100'
+                                    : 'bg-violet-50 text-violet-600 hover:bg-violet-100'
+                                }`}
+                              >
+                                {doc.currentVersion.analysis.status === 'analyzing' || doc.currentVersion.analysis.status === 'pending' ? (
+                                  <>
+                                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+                                    Analyserar...
+                                  </>
+                                ) : doc.currentVersion.analysis.status === 'failed' ? (
+                                  <>
+                                    <span>⚠️</span>
+                                    Misslyckad
+                                  </>
+                                ) : (
+                                  <>
+                                    <span>✓</span>
+                                    {doc.currentVersion.analysis.score !== undefined 
+                                      ? `${doc.currentVersion.analysis.score}/100` 
+                                      : 'Analyserad'}
+                                  </>
+                                )}
+                              </button>
+                            )}
                           </div>
                           <div className="flex items-center gap-3 mt-1">
                             <span className="text-sm text-gray-400">{doc.currentVersion?.fileName}</span>

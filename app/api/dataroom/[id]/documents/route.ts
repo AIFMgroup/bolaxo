@@ -98,7 +98,20 @@ export async function GET(
         },
         documents: {
           include: {
-            currentVersion: true,
+            currentVersion: {
+              select: {
+                id: true,
+                version: true,
+                fileName: true,
+                size: true,
+                mimeType: true,
+                uploadedAt: true,
+                analysisStatus: true,
+                analysisSummary: true,
+                analysisScore: true,
+                analysisFindings: true,
+              },
+            },
             versions: {
               orderBy: { version: 'desc' },
               take: 5, // Last 5 versions
@@ -134,6 +147,7 @@ export async function GET(
     const documents = dataRoom.documents.map((doc) => ({
       id: doc.id,
       name: doc.title,
+      title: doc.title,
       category: null,
       requirementId: doc.requirementId,
       folder: doc.folder
@@ -142,18 +156,31 @@ export async function GET(
       currentVersion: doc.currentVersion
         ? {
             id: doc.currentVersion.id,
+            version: doc.currentVersion.version,
             versionNumber: doc.currentVersion.version,
             fileName: doc.currentVersion.fileName,
+            size: doc.currentVersion.size,
             fileSize: doc.currentVersion.size,
             mimeType: doc.currentVersion.mimeType,
             uploadedAt: doc.currentVersion.uploadedAt,
+            // Include analysis data
+            analysis: doc.currentVersion.analysisStatus ? {
+              status: doc.currentVersion.analysisStatus as string,
+              summary: doc.currentVersion.analysisSummary || undefined,
+              score: doc.currentVersion.analysisScore || undefined,
+              findings: doc.currentVersion.analysisFindings 
+                ? (doc.currentVersion.analysisFindings as Array<{ type: string; message: string }>)
+                : undefined,
+            } : undefined,
           }
         : null,
       versions: isOwner || isEditor
         ? doc.versions.map((v) => ({
             id: v.id,
+            version: v.version,
             versionNumber: v.version,
             fileName: v.fileName,
+            size: v.size,
             fileSize: v.size,
             createdAt: v.uploadedAt,
           }))
