@@ -1,27 +1,61 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Save, Check } from 'lucide-react'
+import { ArrowLeft, Save, Check, Loader2 } from 'lucide-react'
 import AvatarUpload from '@/components/AvatarUpload'
+import { useAuth } from '@/contexts/AuthContext'
+import { useToast } from '@/contexts/ToastContext'
 
 export default function BuyerSettingsPage() {
+  const { user: authUser } = useAuth()
+  const { success: showSuccess, error: showError } = useToast()
+  
   const [currentUser, setCurrentUser] = useState({
-    id: 'buyer-123',
-    name: 'Johan Andersson',
-    email: 'johan@example.com',
-    phone: '+46 70 123 4567',
-    company: 'Investment Group AB',
-    avatarUrl: null
+    id: '',
+    name: '',
+    email: '',
+    phone: '',
+    companyName: '',
+    avatarUrl: null as string | null
   })
+  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  const handleAvatarUpload = async (file: File) => {
-    // TODO: Upload to storage and update user
-    console.log('Upload avatar:', file)
+  // Fetch user profile on mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch('/api/user/profile')
+        if (response.ok) {
+          const data = await response.json()
+          if (data.user) {
+            setCurrentUser({
+              id: data.user.id || '',
+              name: data.user.name || '',
+              email: data.user.email || '',
+              phone: data.user.phone || '',
+              companyName: data.user.companyName || '',
+              avatarUrl: data.user.avatarUrl || null
+            })
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
     
-    // Create form data
+    if (authUser) {
+      fetchProfile()
+    } else {
+      setLoading(false)
+    }
+  }, [authUser])
+
+  const handleAvatarUpload = async (file: File) => {
     const formData = new FormData()
     formData.append('image', file)
     
@@ -34,9 +68,19 @@ export default function BuyerSettingsPage() {
       if (response.ok) {
         const data = await response.json()
         setCurrentUser({ ...currentUser, avatarUrl: data.url })
+        
+        // Also save to profile
+        await fetch('/api/user/profile', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ avatarUrl: data.url })
+        })
+        
+        showSuccess('Profilbild uppdaterad!')
       }
     } catch (error) {
       console.error('Avatar upload error:', error)
+      showError('Kunde inte ladda upp bilden')
     }
   }
 
@@ -44,12 +88,39 @@ export default function BuyerSettingsPage() {
     e.preventDefault()
     setSaving(true)
     
-    // TODO: Call API to update user profile
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+    try {
+      const response = await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: currentUser.name,
+          phone: currentUser.phone,
+          companyName: currentUser.companyName
+        })
+      })
+      
+      if (response.ok) {
+        setSaved(true)
+        showSuccess('Profilen har sparats!')
+        setTimeout(() => setSaved(false), 3000)
+      } else {
+        const data = await response.json()
+        showError(data.error || 'Kunde inte spara profilen')
+      }
+    } catch (error) {
+      console.error('Save error:', error)
+      showError('Ett fel uppstod vid sparning')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary-navy" />
+      </div>
+    )
   }
 
   return (
@@ -104,9 +175,7 @@ export default function BuyerSettingsPage() {
                 type="email"
                 id="email"
                 value={currentUser.email}
-                onChange={(e) => setCurrentUser({ ...currentUser, email: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-navy"
-                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
                 disabled
               />
               <p className="text-xs text-gray-500 mt-1">E-postadress kan inte ändras</p>
@@ -134,9 +203,10 @@ export default function BuyerSettingsPage() {
               <input
                 type="text"
                 id="company"
-                value={currentUser.company}
-                onChange={(e) => setCurrentUser({ ...currentUser, company: e.target.value })}
+                value={currentUser.companyName}
+                onChange={(e) => setCurrentUser({ ...currentUser, companyName: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-navy"
+                placeholder="Ditt företag (valfritt)"
               />
             </div>
           </div>
@@ -160,10 +230,15 @@ export default function BuyerSettingsPage() {
                   <Check className="w-4 h-4" />
                   Sparad!
                 </>
+              ) : saving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Sparar...
+                </>
               ) : (
                 <>
                   <Save className="w-4 h-4" />
-                  {saving ? 'Sparar...' : 'Spara ändringar'}
+                  Spara ändringar
                 </>
               )}
             </button>

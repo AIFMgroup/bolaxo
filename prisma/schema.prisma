@@ -1430,3 +1430,16 @@ model EarnoutPayment {
   @@index([year])
 }
 
+model Waitlist {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  source      String?  // where they signed up from
+  status      String   @default("pending") // pending, contacted, converted
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([status])
+  @@index([createdAt])
+}
