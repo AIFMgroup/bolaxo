@@ -141,8 +141,8 @@ export async function generateIndustryAnalysisPDF(data: IndustryAnalysisPdfData)
       // Document metadata
       doc.info.Title = `Branschanalys - ${data.companyName}`
       doc.info.Subject = `Branschspecifik analys för ${INDUSTRY_LABELS[data.industryId] || data.industryId}`
-      doc.info.Author = 'Trestor Group'
-      doc.info.Creator = 'Trestor Group Industry Analysis'
+      doc.info.Author = 'Afterfounder'
+      doc.info.Creator = 'Afterfounder Industry Analysis'
 
       // Cover page
       addCoverPage(doc, data)
@@ -245,9 +245,9 @@ function addCoverPage(doc: PDFDocumentType, data: IndustryAnalysisPdfData) {
   doc.fillColor(COLORS.lightGray)
   doc.text('För auktoriserade mottagare endast', 50, pageHeight - 65, { align: 'center', width: pageWidth - 100 })
 
-  // Trestor Group branding
+  // Afterfounder branding
   doc.fontSize(10).fillColor(COLORS.gray)
-  doc.text('Powered by Trestor Group', 50, pageHeight - 40, { align: 'center', width: pageWidth - 100 })
+  doc.text('Powered by Afterfounder', 50, pageHeight - 40, { align: 'center', width: pageWidth - 100 })
 }
 
 function addTableOfContents(doc: PDFDocumentType) {
@@ -622,7 +622,7 @@ function addSourcesAndConfidence(doc: PDFDocumentType, data: IndustryAnalysisPdf
   doc.moveDown(0.3)
   doc.text('Denna analys är baserad på offentligt tillgänglig information och användarinput. ' +
     'Den utgör inte finansiell rådgivning och bör inte användas som enda beslutsunderlag. ' +
-    'Trestor Group tar inget ansvar för beslut fattade baserat på denna analys.', { lineGap: 2 })
+    'Afterfounder tar inget ansvar för beslut fattade baserat på denna analys.', { lineGap: 2 })
 }
 
 function addSectionHeader(doc: PDFDocumentType, title: string) {

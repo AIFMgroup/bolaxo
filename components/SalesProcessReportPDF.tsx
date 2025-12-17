@@ -416,7 +416,7 @@ export default function SalesProcessReportPDF({
     <Document>
       {/* Cover Page */}
       <Page size="A4" style={styles.coverPage}>
-        <Text style={styles.coverLogo}>Trestor Group</Text>
+        <Text style={styles.coverLogo}>Afterfounder</Text>
         <Text style={styles.coverTitle}>Försäljningsförberedande</Text>
         <Text style={styles.coverTitle}>Analys & Rapport</Text>
         <Text style={styles.coverSubtitle}>En komplett genomgång av ditt företag</Text>
@@ -438,7 +438,7 @@ export default function SalesProcessReportPDF({
       {/* Page 2: Table of Contents */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 2</Text>
         </View>
 
@@ -478,14 +478,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 3: Executive Summary + Key Metrics */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 3</Text>
         </View>
 
@@ -546,14 +546,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 4: Övergripande Bedömning */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 4</Text>
         </View>
 
@@ -601,14 +601,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 5: Company Overview */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 5</Text>
         </View>
 
@@ -663,14 +663,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 6: Financial Analysis - Part 2 */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 6</Text>
         </View>
 
@@ -726,14 +726,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 7: Financial Analysis - Part 3 */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 7</Text>
         </View>
 
@@ -806,14 +806,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 8: Business Relations - Customers */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 8</Text>
         </View>
 
@@ -863,14 +863,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 9: Business Relations - Suppliers & Agreements */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 9</Text>
         </View>
 
@@ -926,14 +926,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 10: Organization & Management */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 10</Text>
         </View>
 
@@ -973,14 +973,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 11: Key Persons & Succession */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 11</Text>
         </View>
 
@@ -1049,14 +1049,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 12: Balance Sheet - Assets */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 12</Text>
         </View>
 
@@ -1091,14 +1091,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 13: Balance Sheet - Liabilities & Adjustments */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 13</Text>
         </View>
 
@@ -1159,14 +1159,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 14: Legal Documentation */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 14</Text>
         </View>
 
@@ -1209,14 +1209,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 15: Legal Due Diligence Readiness */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 15</Text>
         </View>
 
@@ -1293,14 +1293,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 16: Risk Assessment - Overview */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 16</Text>
         </View>
 
@@ -1339,14 +1339,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 17: Risk Assessment - Detail */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 17</Text>
         </View>
 
@@ -1416,14 +1416,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 18: SWOT Analysis */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 18</Text>
         </View>
 
@@ -1468,14 +1468,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 19: Industry Specific Analysis */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 19</Text>
         </View>
 
@@ -1493,7 +1493,7 @@ export default function SalesProcessReportPDF({
 
           <View style={styles.highlightBox}>
             <Text style={styles.boldText}>Typiska värderingsmultiplar i branschen</Text>
-            <Text style={styles.text}>{analysis.industrySpecific?.typicalMultiples || 'Värderingsmultiplar varierar beroende på bransch, storlek och tillväxt. Kontakta Trestor Group för branschspecifik information.'}</Text>
+            <Text style={styles.text}>{analysis.industrySpecific?.typicalMultiples || 'Värderingsmultiplar varierar beroende på bransch, storlek och tillväxt. Kontakta Afterfounder för branschspecifik information.'}</Text>
           </View>
 
           <Text style={styles.subsectionTitle}>Typiska köpare</Text>
@@ -1556,14 +1556,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 20: Valuation Factors */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 20</Text>
         </View>
 
@@ -1622,14 +1622,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 21: Recommendations */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 21</Text>
         </View>
 
@@ -1652,14 +1652,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 22: Action Plan & Timeline */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 22</Text>
         </View>
 
@@ -1686,14 +1686,14 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 23: Next Steps & Contact */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 23</Text>
         </View>
 
@@ -1713,34 +1713,34 @@ export default function SalesProcessReportPDF({
           <View style={styles.highlightBox}>
             <Text style={styles.text}>1. Granska rapporten och prioritera identifierade åtgärder</Text>
             <Text style={styles.text}>2. Samla in kompletterande dokumentation för datarum</Text>
-            <Text style={styles.text}>3. Boka uppföljningsmöte med Trestor Group för fördjupad rådgivning</Text>
+            <Text style={styles.text}>3. Boka uppföljningsmöte med Afterfounder för fördjupad rådgivning</Text>
             <Text style={styles.text}>4. Diskutera tidplan och processupplägg</Text>
           </View>
 
           <View style={{ ...styles.executiveBox, marginTop: 20 }}>
             <Text style={styles.executiveTitle}>Behöver du professionell hjälp?</Text>
             <Text style={styles.executiveText}>
-              Trestor Group erbjuder komplett stöd genom hela försäljningsprocessen - från 
+              Afterfounder erbjuder komplett stöd genom hela försäljningsprocessen - från 
               förberedelse och värdering till marknadsföring, köparidentifiering och closing.
             </Text>
             <View style={{ marginTop: 15, borderTop: '1 solid rgba(255,255,255,0.3)', paddingTop: 15 }}>
               <Text style={{ ...styles.executiveText, fontWeight: 'bold', marginBottom: 8 }}>Kontakta oss</Text>
-              <Text style={styles.executiveText}>✉ kontakt@trestorgroup.se</Text>
-              <Text style={styles.executiveText}>🌐 www.trestorgroup.se</Text>
+              <Text style={styles.executiveText}>✉ kontakt@afterfounder.com</Text>
+              <Text style={styles.executiveText}>🌐 www.afterfounder.com</Text>
               <Text style={styles.executiveText}>📞 +46 8 123 456 78</Text>
             </View>
           </View>
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument</Text>
         </View>
       </Page>
 
       {/* Page 24: Appendix & Disclaimer */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerLogo}>Trestor Group</Text>
+          <Text style={styles.headerLogo}>Afterfounder</Text>
           <Text style={styles.headerPageNum}>{companyName} | Sida 24</Text>
         </View>
 
@@ -1750,7 +1750,7 @@ export default function SalesProcessReportPDF({
           <Text style={styles.subsectionTitle}>Om denna rapport</Text>
           <View style={styles.highlightBox}>
             <Text style={styles.smallText}>
-              Denna rapport har genererats av Trestor Group:s analysverktyg baserat på information som 
+              Denna rapport har genererats av Afterfounder:s analysverktyg baserat på information som 
               tillhandahållits av företagsägaren. Rapporten är avsedd som ett stöd i 
               försäljningsförberedelser och ersätter inte professionell rådgivning.
             </Text>
@@ -1759,9 +1759,9 @@ export default function SalesProcessReportPDF({
           <Text style={styles.subsectionTitle}>Datakällor</Text>
           <View style={styles.table}>
             {[
-              { source: 'Företagsinformation', desc: 'Tillhandahållen av ägaren via Trestor Group-plattformen' },
+              { source: 'Företagsinformation', desc: 'Tillhandahållen av ägaren via Afterfounder-plattformen' },
               { source: 'Finansiell data', desc: 'Baserat på uppgifter om omsättning, resultat och EBITDA' },
-              { source: 'Branschdata', desc: 'Trestor Group:s databas med transaktionsmultiplar och branschinformation' },
+              { source: 'Branschdata', desc: 'Afterfounder:s databas med transaktionsmultiplar och branschinformation' },
               { source: 'Riskbedömning', desc: 'Algoritmisk bedömning baserad på insamlad data' },
             ].map((item, idx) => (
               <View key={idx} style={styles.tableRow}>
@@ -1792,10 +1792,10 @@ export default function SalesProcessReportPDF({
           <View style={{ ...styles.warningBox, backgroundColor: '#F3F4F6', borderLeft: '3 solid #6B7280' }}>
             <Text style={{ fontSize: 7, color: '#374151', lineHeight: 1.5 }}>
               Informationen i denna rapport är baserad på uppgifter som tillhandahållits av 
-              företagsägaren och offentligt tillgängliga källor. Trestor Group AB garanterar inte 
+              företagsägaren och offentligt tillgängliga källor. Afterfounder AB garanterar inte 
               uppgifternas riktighet eller fullständighet. Värderingsintervall och 
               rekommendationer utgör inte finansiell rådgivning och ska inte ligga till grund 
-              för investeringsbeslut utan kompletterande due diligence. Trestor Group AB frånsäger sig 
+              för investeringsbeslut utan kompletterande due diligence. Afterfounder AB frånsäger sig 
               allt ansvar för eventuella förluster som kan uppstå till följd av användning av 
               informationen i denna rapport. Vi rekommenderar att anlita kvalificerad juridisk, 
               finansiell och skattemässig rådgivning inför en företagstransaktion.
@@ -1803,13 +1803,13 @@ export default function SalesProcessReportPDF({
           </View>
 
           <View style={{ marginTop: 15, backgroundColor: '#1F3C58', padding: 15, borderRadius: 6 }}>
-            <Text style={{ fontSize: 11, color: '#FFFFFF', fontWeight: 'bold', textAlign: 'center' }}>Trestor Group AB</Text>
+            <Text style={{ fontSize: 11, color: '#FFFFFF', fontWeight: 'bold', textAlign: 'center' }}>Afterfounder AB</Text>
             <Text style={{ fontSize: 8, color: '#FFFFFF', opacity: 0.8, marginTop: 6, textAlign: 'center' }}>
               Sveriges ledande plattform för företagsförsäljning
             </Text>
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-              <Text style={{ fontSize: 8, color: '#FFFFFF', marginHorizontal: 10 }}>✉ kontakt@trestorgroup.se</Text>
-              <Text style={{ fontSize: 8, color: '#FFFFFF', marginHorizontal: 10 }}>🌐 www.trestorgroup.se</Text>
+              <Text style={{ fontSize: 8, color: '#FFFFFF', marginHorizontal: 10 }}>✉ kontakt@afterfounder.com</Text>
+              <Text style={{ fontSize: 8, color: '#FFFFFF', marginHorizontal: 10 }}>🌐 www.afterfounder.com</Text>
             </View>
             <Text style={{ fontSize: 7, color: '#FFFFFF', opacity: 0.6, marginTop: 8, textAlign: 'center' }}>
               Norrmälarstrand 10, 114 62 Stockholm
@@ -1818,7 +1818,7 @@ export default function SalesProcessReportPDF({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 Trestor Group AB | Konfidentiellt dokument | Rapport genererad: {generatedAt}</Text>
+          <Text style={styles.footerText}>© 2025 Afterfounder AB | Konfidentiellt dokument | Rapport genererad: {generatedAt}</Text>
         </View>
       </Page>
     </Document>

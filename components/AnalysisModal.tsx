@@ -33,7 +33,7 @@ const copy = {
       analysisFailed: 'Analysen misslyckades'
     },
     consent: {
-      label: 'Jag godkänner att Trestor Group',
+      label: 'Jag godkänner att Afterfounder',
       text: 'sparar min information för produktutveckling och skickar analysresultatet till min e-post',
       link: 'Läs integritetspolicy'
     },
@@ -76,7 +76,7 @@ const copy = {
       analysisFailed: 'Analysis failed'
     },
     consent: {
-      label: 'I agree that Trestor Group',
+      label: 'I agree that Afterfounder',
       text: 'saves my information for product development and sends the analysis result to my email',
       link: 'Read privacy policy'
     },

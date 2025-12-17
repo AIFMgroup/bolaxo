@@ -13,8 +13,8 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     category: 'general',
-    question: 'Vad är Trestor Group?',
-    answer: 'Trestor Group är en automatiserad marknadsplats för företagsköp och försäljning. Vi kopplar samman säljare och köpare av SME-företag på ett säkert och effektivt sätt, med automatisk värdering, smart matchning och fullständig anonymitet fram till NDA-signering.'
+    question: 'Vad är Afterfounder?',
+    answer: 'Afterfounder är en automatiserad marknadsplats för företagsköp och försäljning. Vi kopplar samman säljare och köpare av SME-företag på ett säkert och effektivt sätt, med automatisk värdering, smart matchning och fullständig anonymitet fram till NDA-signering.'
   },
   {
     category: 'general',
@@ -23,7 +23,7 @@ const faqData: FAQItem[] = [
   },
   {
     category: 'general',
-    question: 'Vad kostar det att använda Trestor Group?',
+    question: 'Vad kostar det att använda Afterfounder?',
     answer: 'Värdering är alltid gratis! För säljare: Free (0 kr - utkast), Basic (495 kr/mån), Pro (895 kr/mån), Pro+ Featured (1,495 kr/mån). För köpare är det helt gratis att söka och titta.'
   },
   {
@@ -114,7 +114,7 @@ export default function FAQPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl sm:text-6xl font-bold text-primary-navy mb-6">VANLIGA FRÅGOR</h1>
           <p className="text-2xl text-primary-navy leading-relaxed">
-            Hitta svar på de vanligaste frågorna om Trestor Group
+            Hitta svar på de vanligaste frågorna om Afterfounder
           </p>
         </div>
       </section>

@@ -38,7 +38,7 @@ export default function ReceiptPage() {
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-primary-blue mb-2">Bolagsplatsen</h1>
               <p className="text-sm text-text-gray">
-                Trestor Group AB<br />
+                Afterfounder AB<br />
                 Org.nr: 559123-4567<br />
                 Drottninggatan 33<br />
                 111 51 Stockholm<br />

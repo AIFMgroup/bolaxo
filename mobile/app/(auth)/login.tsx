@@ -49,7 +49,7 @@ export default function LoginScreen() {
       style={styles.container}
     >
       <View style={styles.content}>
-        <Text style={styles.title}>Välkommen till Trestor Group</Text>
+        <Text style={styles.title}>Välkommen till Afterfounder</Text>
         <Text style={styles.subtitle}>
           Logga in med din e-postadress för att fortsätta
         </Text>

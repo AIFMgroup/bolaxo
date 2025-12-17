@@ -277,7 +277,7 @@ const demoCompanies: DemoCompany[] = [
   {
     label: 'Nimbus Analytics (SaaS)',
     data: {
-      email: 'demo+saas@trestorgroup.se',
+      email: 'demo+saas@afterfounder.com',
       companyName: 'Nimbus Analytics AB',
       website: 'https://nimbusanalytics.se',
       orgNumber: '5591234567',
@@ -324,7 +324,7 @@ const demoCompanies: DemoCompany[] = [
   {
     label: 'Nordic Retail Group',
     data: {
-      email: 'demo+retail@trestorgroup.se',
+      email: 'demo+retail@afterfounder.com',
       companyName: 'Nordic Retail Group AB',
       website: 'https://nordicretailgroup.se',
       orgNumber: '5569876543',
@@ -370,7 +370,7 @@ const demoCompanies: DemoCompany[] = [
   {
     label: 'CityCare Kliniken',
     data: {
-      email: 'demo+care@trestorgroup.se',
+      email: 'demo+care@afterfounder.com',
       companyName: 'CityCare Kliniken AB',
       website: 'https://citycarekliniken.se',
       orgNumber: '5561122334',

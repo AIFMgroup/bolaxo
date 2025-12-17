@@ -30,7 +30,7 @@ export default async function BuyerCityLandingPage({ params }: PageProps) {
             Köp ditt nästa företag i {city.name}
           </h1>
           <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-            Utforska verifierade akquisitionsmöjligheter i {city.name}. Med Trestor Group får du tillgång till 
+            Utforska verifierade akquisitionsmöjligheter i {city.name}. Med Afterfounder får du tillgång till 
             en kurerad lista över företag till salu, tillsammans med professionell stöd genom hela köpprocessen.
           </p>
           <Link
@@ -45,7 +45,7 @@ export default async function BuyerCityLandingPage({ params }: PageProps) {
 
       {/* Why Buy */}
       <div className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-bold text-primary-navy mb-12 text-center">Varför köpa via Trestor Group?</h2>
+        <h2 className="text-3xl font-bold text-primary-navy mb-12 text-center">Varför köpa via Afterfounder?</h2>
         <div className="grid md:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => (
             <div key={index} className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition">
@@ -90,7 +90,7 @@ export default async function BuyerCityLandingPage({ params }: PageProps) {
       <div className="max-w-4xl mx-auto px-6 py-16">
         <h2 className="text-2xl font-bold text-primary-navy mb-6">Lediga företag i {city.region} länet</h2>
         <p className="text-gray-600 mb-8">
-          Trestor Group har ett omfattande urval av företag till salu i {city.name} och omkringliggande områden. 
+          Afterfounder har ett omfattande urval av företag till salu i {city.name} och omkringliggande områden. 
           Alla företag är verifierade och företagarna är seriösa säljare.
         </p>
         <Link

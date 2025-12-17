@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Send email notification to seller
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trestorgroup.se'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
     const listingTitle = listing.companyName || listing.anonymousTitle || 'Objektet'
     
     try {

@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trestorgroup.se'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
     let result: { success: boolean; messageId?: string; error?: string }
     
     switch (emailType) {

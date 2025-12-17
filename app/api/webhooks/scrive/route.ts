@@ -10,7 +10,7 @@ const prisma = new PrismaClient()
  * 
  * Setup i Scrive:
  * 1. Settings → Webhooks
- * 2. URL: https://trestorgroup.se/api/webhooks/scrive
+ * 2. URL: https://afterfounder.com/api/webhooks/scrive
  * 3. Events: document.signed, document.declined
  */
 

@@ -537,8 +537,8 @@ function buildSources({
   // If using fallback and no other sources
   if (usedFallback && sources.length === 0) {
     sources.push({
-      title: 'Trestor Group analys',
-      url: 'https://trestorgroup.se/sv/analysera',
+      title: 'Afterfounder analys',
+      url: 'https://afterfounder.com/sv/analysera',
       type: 'internal'
     })
   }

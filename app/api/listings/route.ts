@@ -436,7 +436,7 @@ async function triggerMatching(listingId: string, listing: any) {
       include: { user: true }
     })
     
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trestorgroup.se'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
     const listingTitle = listing.anonymousTitle || listing.companyName || 'Objektet'
     
     for (const profile of buyerProfiles) {

@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trestorgroup.se'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
     const results = {
       digestsSent: 0,
       remindersSent: 0,

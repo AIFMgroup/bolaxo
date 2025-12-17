@@ -234,7 +234,7 @@ export async function POST(
         })
 
         // Send email notifications to buyer
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trestorgroup.se'
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
         const listingTitle = loi.listing.companyName || loi.listing.anonymousTitle || 'Objektet'
         
         try {

@@ -27,8 +27,8 @@ export default function SellerOnboardingPageContent() {
   const steps = [
     {
       number: 1,
-      title: 'Välkommen till Trestor Group!',
-      description: 'Du är nu redo att publicera ditt företag på Trestor Group – en marknadsplats för företagsöverlåtelser.',
+      title: 'Välkommen till Afterfounder!',
+      description: 'Du är nu redo att publicera ditt företag på Afterfounder – en marknadsplats för företagsöverlåtelser.',
       icon: Building2,
       content: (
         <div className="space-y-4">

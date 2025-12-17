@@ -21,7 +21,7 @@ interface ListingStructuredDataProps {
 }
 
 export function ListingStructuredData({ listing }: ListingStructuredDataProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trestorgroup.se'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
   
   useEffect(() => {
     // Product structured data

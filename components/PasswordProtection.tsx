@@ -28,7 +28,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     setError('')
     
     // You can change this password
-    if (password === 'Trestor Group') {
+    if (password === 'Afterfounder') {
       sessionStorage.setItem('site-authenticated', 'true')
       setIsAuthenticated(true)
     } else {
@@ -92,7 +92,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
           
           {/* Title */}
           <h1 className="text-3xl font-bold text-center text-[#003366] mb-2">
-            Välkommen till Trestor Group
+            Välkommen till Afterfounder
           </h1>
           <p className="text-center text-gray-600 mb-6">
             Denna sida är lösenordsskyddad

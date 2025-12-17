@@ -1,5 +1,5 @@
 /**
- * Test script for Trestor Group email system
+ * Test script for Afterfounder email system
  * Run with: npx ts-node scripts/test-emails.ts
  * 
  * Requires BREVO_API_KEY to be set in environment
@@ -25,10 +25,10 @@ import {
 } from '../lib/email'
 
 const TEST_EMAIL = process.env.TEST_EMAIL || 'test@example.com'
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://trestorgroup.se'
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
 
 async function runTests() {
-  console.log('🧪 Starting Trestor Group Email System Tests')
+  console.log('🧪 Starting Afterfounder Email System Tests')
   console.log('====================================')
   console.log(`📧 Test email: ${TEST_EMAIL}`)
   console.log(`🌐 Base URL: ${BASE_URL}`)

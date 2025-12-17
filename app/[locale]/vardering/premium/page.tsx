@@ -41,7 +41,7 @@ function PremiumValuationContent() {
     if (demoMode) {
       setIsDemo(true)
       setPurchaseData({
-        email: 'demo@trestorgroup.se',
+        email: 'demo@afterfounder.com',
         paymentId: 'demo-preview-' + Date.now(),
         inputData: {}
       })

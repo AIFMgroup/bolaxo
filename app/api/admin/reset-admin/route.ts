@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     console.log(`OK Deleted ${deleted.count} old account(s)`)
 
     // Create new admin account
-    const newEmail = 'admin@trestorgroup.se'
+    const newEmail = 'admin@afterfounder.com'
     const password = 'Password123'
     
     console.log(` Creating new admin account...`)
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       message: 'Admin account reset completed',
       email: adminUser.email,
       password: password,
-      loginUrl: process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}/admin/login` : 'https://trestorgroup.se/admin/login'
+      loginUrl: process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}/admin/login` : 'https://afterfounder.com/admin/login'
     })
 
   } catch (error) {

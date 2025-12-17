@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Köparkommunikation - Trestor Group',
+  title: 'Köparkommunikation - Afterfounder',
   description: 'Hantera förfrågningar och chatta med intresserade köpare'
 }
 

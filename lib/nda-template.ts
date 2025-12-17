@@ -152,7 +152,7 @@ Signature: _______________         Signature: _______________
 
 ─────────────────────────────────────────────────────────────
 
-Detta avtal har skapats och signerats digitalt via Trestor Group-plattformen.
+Detta avtal har skapats och signerats digitalt via Afterfounder-plattformen.
 `.trim()
 }
 

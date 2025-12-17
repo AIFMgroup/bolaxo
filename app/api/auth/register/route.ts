@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       })
 
       const protocol = request.headers.get('x-forwarded-proto') || 'https'
-      const host = request.headers.get('host') || 'trestorgroup.se'
+      const host = request.headers.get('host') || 'afterfounder.com'
       let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`
       // Ta bort trailing slash om den finns
       baseUrl = baseUrl.replace(/\/$/, '')
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
 
     // Generate magic link
     const protocol = request.headers.get('x-forwarded-proto') || 'https'
-    const host = request.headers.get('host') || 'trestorgroup.se'
+    const host = request.headers.get('host') || 'afterfounder.com'
     let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`
     // Ta bort trailing slash om den finns
     baseUrl = baseUrl.replace(/\/$/, '')

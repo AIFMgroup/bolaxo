@@ -4,8 +4,8 @@ import * as bcrypt from 'bcrypt'
 const prisma = new PrismaClient()
 
 async function createChristopherAdmin() {
-  const email = 'christopher@trestorgroup.se'
-  const password = 'Trestor Group2025!Admin' // Starkt lösenord
+  const email = 'christopher@afterfounder.com'
+  const password = 'Afterfounder2025!Admin' // Starkt lösenord
 
   try {
     console.log(`🔐 Creating admin user: ${email}...`)
@@ -57,7 +57,7 @@ async function createChristopherAdmin() {
           passwordHash,
           verified: true,
           bankIdVerified: true,
-          companyName: 'Trestor Group'
+          companyName: 'Afterfounder'
         }
       })
       console.log(`✅ Admin user created successfully!`)

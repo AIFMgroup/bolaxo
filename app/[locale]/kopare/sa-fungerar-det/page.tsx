@@ -68,7 +68,7 @@ export default function BuyerInfoPage() {
             <div className="flex-shrink-0">
               <img 
                 src="/Home/maskot3.png" 
-                alt="Trestor Group maskot" 
+                alt="Afterfounder maskot" 
                 className="w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 object-contain"
               />
             </div>

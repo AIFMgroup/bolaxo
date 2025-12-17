@@ -52,11 +52,11 @@ export function generateSPAText(data: SPAData): string {
 ═══════════════════════════════════════════════════════════════
 
 Upprättat: ${today}
-Genererat via: Trestor Group Deal Management Platform
+Genererat via: Afterfounder Deal Management Platform
 
 ⚠️  JURIDISK GRANSKNING KRÄVS
 Detta dokument är en MALL och måste granskas av advokat innan signering.
-Trestor Group AB tar inget juridiskt ansvar för innehållet.
+Afterfounder AB tar inget juridiskt ansvar för innehållet.
 
 ═══════════════════════════════════════════════════════════════
 
@@ -208,7 +208,7 @@ Datum: ________________
 
 ═══════════════════════════════════════════════════════════════
 
-Genererat av: Trestor Group Deal Management Platform
+Genererat av: Afterfounder Deal Management Platform
 Datum: ${today}
 Transaction ID: [Kommer från systemet]
 

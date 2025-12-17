@@ -67,7 +67,7 @@ export default function OnePagerPage() {
               <div className="inline-flex items-center px-3 sm:px-3 sm:px-4 py-2 min-h-10 sm:min-h-auto bg-white/20 backdrop-blur-sm rounded-full text-sm mb-6 animate-fade-in">
                 <Users className="w-4 h-4 mr-2" />
                 <span className="font-semibold">{liveCounter.toLocaleString('sv-SE')}</span>
-                <span className="ml-1">företagare använder Trestor Group</span>
+                <span className="ml-1">företagare använder Afterfounder</span>
               </div>
 
               {/* Main headline - Emotionell */}
@@ -264,7 +264,7 @@ export default function OnePagerPage() {
             <div className="space-y-6">
             <h3 className="text-xl sm:text-2xl font-bold text-primary-blue mb-6 flex items-center">
               <CheckCircle className="w-6 h-6 text-primary-blue mr-2" />
-              Med Trestor Group
+              Med Afterfounder
             </h3>
               
               <div className="bg-gradient-to-br from-green-50 to-light-blue p-6 rounded-2xl border-l-4 border-green-500">
@@ -418,7 +418,7 @@ export default function OnePagerPage() {
         <div className="max-w-6xl mx-auto px-3 sm:px-4">
           <div className="text-center mb-16">
             <h2 className="heading-1 mb-4">Riktiga företagare. Riktiga resultat.</h2>
-            <p className="text-xl text-text-gray">Över 2,800 entreprenörer har nått sina drömmar genom Trestor Group</p>
+            <p className="text-xl text-text-gray">Över 2,800 entreprenörer har nått sina drömmar genom Afterfounder</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-3 sm:gap-4 md:gap-6">
@@ -427,7 +427,7 @@ export default function OnePagerPage() {
                     name: 'Stefan Andersson',
                     age: 62,
                     company: 'Byggföretag, 15 anställda',
-                    quote: 'Efter 30 år var det dags att gå i pension. Trestor Group hjälpte mig hitta en köpare som verkligen bryr sig om mina medarbetare. Fick 6.2M över min värdering.',
+                    quote: 'Efter 30 år var det dags att gå i pension. Afterfounder hjälpte mig hitta en köpare som verkligen bryr sig om mina medarbetare. Fick 6.2M över min värdering.',
                     result: '6.2M över värdering',
                     icon: Trophy,
                     metric: 'Såld på 78 dagar'
@@ -436,7 +436,7 @@ export default function OnePagerPage() {
                     name: 'Lisa Chen',
                     age: 34,
                     company: 'SaaS-startup',
-                    quote: 'Vi behövde växa snabbt. Trestor Group matchade oss med en strategisk köpare som hade rätt nätverk. Exit på 18.5M gav oss möjlighet att starta nästa venture.',
+                    quote: 'Vi behövde växa snabbt. Afterfounder matchade oss med en strategisk köpare som hade rätt nätverk. Exit på 18.5M gav oss möjlighet att starta nästa venture.',
                     result: '18.5M exit',
                     icon: Rocket,
                     metric: '12 bud första veckan'
@@ -506,7 +506,7 @@ export default function OnePagerPage() {
           <div className="bg-gradient-to-br from-green-50 to-light-blue p-12 rounded-3xl border-2 border-green-200 text-center">
             <Shield className="w-20 h-20 text-green-600 mx-auto mb-6" />
             <h2 className="text-2xl sm:text-3xl font-bold text-text-dark mb-4">
-              Vår Trestor Group-Garanti
+              Vår Afterfounder-Garanti
             </h2>
             <p className="text-xl text-text-gray mb-8">
               Om du inte får minst 3 kvalificerade bud inom 90 dagar får du <strong className="text-primary-blue">pengarna tillbaka + 90 dagar gratis förlängning</strong>

@@ -38,10 +38,10 @@ async function seedDatabase() {
     console.log('OK Demo buyer created:', demoBuyer.email)
 
     const demoAdvisor = await prisma.user.upsert({
-      where: { email: 'advisor@trestorgroup.se' },
+      where: { email: 'advisor@afterfounder.com' },
       update: {},
       create: {
-        email: 'advisor@trestorgroup.se',
+        email: 'advisor@afterfounder.com',
         name: 'Maria Svensson',
         companyName: 'Svensson Corporate Finance',
         role: 'advisor',

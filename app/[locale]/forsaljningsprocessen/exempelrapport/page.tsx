@@ -293,7 +293,7 @@ export default function ExempelrapportPage() {
             <div className="flex-shrink-0">
               <img 
                 src="/Maskots/maskot4.png" 
-                alt="Trestor Group maskot" 
+                alt="Afterfounder maskot" 
                 className="w-36 h-36 md:w-48 md:h-48 lg:w-56 lg:h-56 object-contain"
               />
             </div>

@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Meddelanden - Trestor Group',
+  title: 'Meddelanden - Afterfounder',
   description: 'Chatta med säljare efter godkänd NDA'
 }
 

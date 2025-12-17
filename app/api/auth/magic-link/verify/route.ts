@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     
     // Detektera rätt base URL tidigt
     const protocol = request.headers.get('x-forwarded-proto') || 'https'
-    const host = request.headers.get('host') || 'trestorgroup.se'
+    const host = request.headers.get('host') || 'afterfounder.com'
     let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`
     // Ta bort trailing slash om den finns
     baseUrl = baseUrl.replace(/\/$/, '')
@@ -110,7 +110,7 @@ export async function GET(request: Request) {
     // Always use secure for HTTPS - check protocol header
     const isHttps = protocol === 'https' || baseUrl.startsWith('https://')
     // Always use secure cookies for HTTPS, and in production
-    const useSecure = isHttps || process.env.NODE_ENV === 'production' || baseUrl.includes('trestorgroup.se')
+    const useSecure = isHttps || process.env.NODE_ENV === 'production' || baseUrl.includes('afterfounder.com')
 
     console.log(' [MAGIC LINK VERIFY] Cookie settings:', {
       protocol,

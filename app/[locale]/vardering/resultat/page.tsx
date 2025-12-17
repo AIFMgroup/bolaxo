@@ -114,7 +114,7 @@ const mockValuationData = {
   industry: 'webbtjanster',
   revenue: '12500000',
   employees: '11-25',
-  email: 'demo@trestorgroup.se'
+  email: 'demo@afterfounder.com'
 }
 
 function ValuationResultContent() {

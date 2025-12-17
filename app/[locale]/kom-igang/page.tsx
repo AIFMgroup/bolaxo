@@ -128,7 +128,7 @@ export default function KomIgangPage() {
       <section className="bg-gradient-to-br from-primary-navy/10 to-accent-pink/10 py-16 sm:py-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-navy mb-4">
-            Välkommen till Trestor Group
+            Välkommen till Afterfounder
           </h1>
           <p className="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
             Sveriges moderna marknadsplats för företagsöverlåtelser. Vi guidar dig genom hela processen.
@@ -302,7 +302,7 @@ export default function KomIgangPage() {
               <div className={`bg-gradient-to-br ${selectedUserType.color} rounded-xl p-8 text-white sticky top-8`}>
                 <h3 className="text-2xl font-bold mb-4">Redo att komma igång?</h3>
                 <p className="text-white/90 mb-6">
-                  Börja din resa på Trestor Group idag. Det tar bara några minuter att komma igång.
+                  Börja din resa på Afterfounder idag. Det tar bara några minuter att komma igång.
                 </p>
                 <Link
                   href={selectedUserType.cta.href}
@@ -317,7 +317,7 @@ export default function KomIgangPage() {
 
               {/* Trust Indicators */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                <h4 className="font-semibold text-gray-900 mb-4">Varför välja Trestor Group?</h4>
+                <h4 className="font-semibold text-gray-900 mb-4">Varför välja Afterfounder?</h4>
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-green-500" />

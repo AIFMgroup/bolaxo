@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Företagsprofil - Trestor Group',
+  title: 'Företagsprofil - Afterfounder',
   description: 'Uppdatera din profil och företagsuppgifter'
 }
 
