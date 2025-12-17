@@ -142,7 +142,7 @@ const demoValuationProfiles: DemoValuationProfile[] = [
   {
     label: 'Nimbus Analytics (SaaS)',
     data: {
-      email: 'demo+saas@trestorgroup.se',
+      email: 'demo+saas@afterfounder.com',
       companyName: 'Nimbus Analytics AB',
       website: 'https://nimbusanalytics.se',
       orgNumber: '5591234567',
@@ -195,7 +195,7 @@ const demoValuationProfiles: DemoValuationProfile[] = [
   {
     label: 'Nordic Precision Manufacturing',
     data: {
-      email: 'demo+manufacturing@trestorgroup.se',
+      email: 'demo+manufacturing@afterfounder.com',
       companyName: 'Nordic Precision Manufacturing AB',
       website: 'https://npm.se',
       orgNumber: '5567788990',
@@ -248,7 +248,7 @@ const demoValuationProfiles: DemoValuationProfile[] = [
   {
     label: 'CityCare Kliniken',
     data: {
-      email: 'demo+care@trestorgroup.se',
+      email: 'demo+care@afterfounder.com',
       companyName: 'CityCare Kliniken AB',
       website: 'https://citycarekliniken.se',
       orgNumber: '5561122334',

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createNotification } from '@/lib/notifications'
+import { sendMatchNotificationEmail } from '@/lib/email'
 
 // GET /api/matches?sellerId= OR /api/matches?buyerId=
 export async function GET(request: NextRequest) {
@@ -249,6 +250,14 @@ function getMatchReasons(listing: any, buyerProfile: any): string[] {
 }
 
 async function notifyNewBuyerMatches(buyerId: string, matches: any[]) {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+  
+  // Get buyer info for email
+  const buyer = await prisma.user.findUnique({
+    where: { id: buyerId },
+    select: { name: true, email: true }
+  })
+  
   for (const match of matches) {
     try {
       const alreadyNotifiedBuyer = await prisma.message.findFirst({
@@ -262,6 +271,7 @@ async function notifyNewBuyerMatches(buyerId: string, matches: any[]) {
       })
 
       if (!alreadyNotifiedBuyer) {
+        // Create in-app notification
         await createNotification({
           userId: buyerId,
           type: 'match',
@@ -269,6 +279,23 @@ async function notifyNewBuyerMatches(buyerId: string, matches: any[]) {
           message: `Vi hittade en ny matchning (${Math.round(match.matchScore)}%). Signera NDA för att se detaljer. [listing:${match.listingId}]`,
           listingId: match.listingId
         })
+        
+        // Send email notification to buyer (only for high-score matches >= 70%)
+        if (buyer?.email && match.matchScore >= 70) {
+          try {
+            await sendMatchNotificationEmail(
+              buyer.email,
+              buyer.name || 'Köpare',
+              'buyer',
+              match.listing.anonymousTitle || 'Företag till salu',
+              Math.round(match.matchScore),
+              match.listingId,
+              baseUrl
+            )
+          } catch (emailError) {
+            console.error('Failed to send buyer match email:', emailError)
+          }
+        }
       }
 
       if (match.sellerId) {
@@ -283,6 +310,13 @@ async function notifyNewBuyerMatches(buyerId: string, matches: any[]) {
         })
 
         if (!alreadyNotifiedSeller) {
+          // Get seller info for email
+          const seller = await prisma.user.findUnique({
+            where: { id: match.sellerId },
+            select: { name: true, email: true }
+          })
+          
+          // Create in-app notification
           await createNotification({
             userId: match.sellerId,
             type: 'match',
@@ -290,6 +324,23 @@ async function notifyNewBuyerMatches(buyerId: string, matches: any[]) {
             message: `En verifierad köpare matchar ${match.listing.anonymousTitle || 'ditt objekt'} (${Math.round(match.matchScore)}%). [buyer:${buyerId}]`,
             listingId: match.listingId
           })
+          
+          // Send email notification to seller (only for high-score matches >= 70%)
+          if (seller?.email && match.matchScore >= 70) {
+            try {
+              await sendMatchNotificationEmail(
+                seller.email,
+                seller.name || 'Säljare',
+                'seller',
+                match.listing.anonymousTitle || 'Ditt objekt',
+                Math.round(match.matchScore),
+                match.listingId,
+                baseUrl
+              )
+            } catch (emailError) {
+              console.error('Failed to send seller match email:', emailError)
+            }
+          }
         }
       }
     } catch (error) {

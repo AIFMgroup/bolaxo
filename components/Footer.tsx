@@ -43,9 +43,9 @@ export default function Footer() {
                 <Phone className="w-4 h-4 flex-shrink-0" />
                 <span>+46 (0)8 123 456 78</span>
               </a>
-              <a href="mailto:kontakt@trestorgroup.se" className="flex items-center gap-3 text-gray-300 hover:text-accent-pink transition-colors">
+              <a href="mailto:kontakt@afterfounder.se" className="flex items-center gap-3 text-gray-300 hover:text-accent-pink transition-colors">
                 <Mail className="w-4 h-4 flex-shrink-0" />
-                <span>kontakt@trestorgroup.se</span>
+                <span>kontakt@afterfounder.se</span>
               </a>
               <div className="flex items-start gap-3 text-gray-300">
                 <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
@@ -158,7 +158,7 @@ export default function Footer() {
           {/* Social Links */}
           <div className="flex items-center gap-6">
             <a 
-              href="https://facebook.com/trestorgroup" 
+              href="https://facebook.com/afterfounder" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-accent-pink transition-colors"
@@ -176,7 +176,7 @@ export default function Footer() {
               <Linkedin className="w-5 h-5" />
             </a>
             <a 
-              href="https://twitter.com/trestorgroup" 
+              href="https://twitter.com/afterfounder" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-accent-pink transition-colors"

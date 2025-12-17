@@ -1,15 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { mockObjects, BusinessObject } from '@/data/mockObjects'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
 import ObjectCard from '@/components/ObjectCard'
+import LazyObjectCard from '@/components/LazyObjectCard'
 import MultiSelect from '@/components/MultiSelect'
 import PriceRangeSlider from '@/components/PriceRangeSlider'
 import AdvancedFilterDropdown from '@/components/AdvancedFilterDropdown'
-import { Search, SlidersHorizontal, ChevronDown, X, TrendingUp, AlertCircle, MapPin, Briefcase, DollarSign, Users, Calendar, Shield, BarChart3, Filter, Zap, HelpCircle } from 'lucide-react'
+import { useDebounce, useDebouncedCallback } from '@/lib/hooks/useDebounce'
+import { Search, SlidersHorizontal, ChevronDown, X, TrendingUp, AlertCircle, MapPin, Briefcase, DollarSign, Users, Calendar, Shield, BarChart3, Filter, Zap, HelpCircle, Loader2 } from 'lucide-react'
 
 export default function SearchPageContent() {
   const router = useRouter()
@@ -19,8 +21,14 @@ export default function SearchPageContent() {
   const [allObjects, setAllObjects] = useState<BusinessObject[]>(mockObjects)
   const [filteredObjects, setFilteredObjects] = useState<BusinessObject[]>(mockObjects)
   const [loading, setLoading] = useState(true)
+  const [isFiltering, setIsFiltering] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  
+  // Debounce search query for instant search
+  const debouncedSearchQuery = useDebounce(searchQuery, 200)
   
   // Filter states
   const [filters, setFilters] = useState({
@@ -169,15 +177,52 @@ export default function SearchPageContent() {
     loadSavedFilters()
   }, [profileChecked, user?.id])
 
-  const applyFilters = () => {
-    setLoading(true)
+  // Generate search suggestions based on available data
+  const generateSuggestions = useCallback((query: string) => {
+    if (!query || query.length < 2) {
+      setSearchSuggestions([])
+      return
+    }
     
-    setTimeout(() => {
+    const queryLower = query.toLowerCase()
+    const suggestions = new Set<string>()
+    
+    allObjects.forEach(obj => {
+      // Match titles
+      if ((obj.title || '').toLowerCase().includes(queryLower)) {
+        suggestions.add(obj.title || '')
+      }
+      if ((obj.anonymousTitle || '').toLowerCase().includes(queryLower)) {
+        suggestions.add(obj.anonymousTitle || '')
+      }
+      // Match types/industries
+      if (obj.type.toLowerCase().includes(queryLower)) {
+        suggestions.add(obj.type)
+      }
+      // Match regions
+      if ((obj.region || '').toLowerCase().includes(queryLower)) {
+        suggestions.add(obj.region || '')
+      }
+    })
+    
+    setSearchSuggestions(Array.from(suggestions).slice(0, 5))
+  }, [allObjects])
+
+  // Update suggestions when search query changes
+  useEffect(() => {
+    generateSuggestions(searchQuery)
+  }, [searchQuery, generateSuggestions])
+
+  const applyFilters = useCallback(() => {
+    setIsFiltering(true)
+    
+    // Use requestAnimationFrame for smooth UI
+    requestAnimationFrame(() => {
       let filtered = [...allObjects]
 
-      // Search filter
-      if (searchQuery) {
-        const searchLower = searchQuery.toLowerCase()
+      // Search filter using debounced query
+      if (debouncedSearchQuery) {
+        const searchLower = debouncedSearchQuery.toLowerCase()
         filtered = filtered.filter(obj => 
           (obj.title || obj.anonymousTitle || '').toLowerCase().includes(searchLower) ||
           obj.description.toLowerCase().includes(searchLower) ||
@@ -291,14 +336,14 @@ export default function SearchPageContent() {
       }
 
       setFilteredObjects(filtered)
-      setLoading(false)
-    }, 300)
-  }
+      setIsFiltering(false)
+    })
+  }, [allObjects, debouncedSearchQuery, filters])
 
-  // Apply filters on change
+  // Apply filters on change (with debounced search)
   useEffect(() => {
     applyFilters()
-  }, [searchQuery, filters])
+  }, [debouncedSearchQuery, filters, applyFilters])
 
   // Save filter preferences to database when user is logged in
   useEffect(() => {
@@ -364,21 +409,27 @@ export default function SearchPageContent() {
           <div className="flex flex-col gap-3 sm:gap-4">
             {/* Search and Filter Toggle Row */}
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
-              {/* Enhanced Search Input */}
-              <div className="flex-1">
+              {/* Enhanced Search Input with Suggestions */}
+              <div className="flex-1 relative">
                 <div className="relative group">
                   <div className="absolute inset-0 bg-gradient-to-r from-primary-blue/20 to-primary-dark/20 rounded-button blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500"></div>
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-gray group-focus-within:text-primary-blue transition-colors z-10" />
                   <input
                     type="text"
-                    placeholder="Sök företag..."
+                    placeholder="Sök företag, bransch eller region..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setShowSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                     className="relative w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 bg-white border-2 border-gray-200 rounded-button text-sm sm:text-base text-text-dark placeholder-text-gray
                       focus:border-primary-blue focus:outline-none focus:shadow-lg focus:shadow-primary-blue/10
                       transition-all duration-300"
                   />
-                  {searchQuery && (
+                  {/* Loading indicator during filtering */}
+                  {isFiltering && (
+                    <Loader2 className="absolute right-12 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-blue animate-spin z-10" />
+                  )}
+                  {searchQuery && !isFiltering && (
                     <button
                       onClick={() => setSearchQuery('')}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-text-gray hover:text-error transition-colors z-10"
@@ -387,6 +438,28 @@ export default function SearchPageContent() {
                     </button>
                   )}
                 </div>
+                
+                {/* Search Suggestions Dropdown */}
+                {showSuggestions && searchSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden">
+                    <div className="p-2">
+                      <p className="text-xs text-gray-500 px-3 py-1">Förslag</p>
+                      {searchSuggestions.map((suggestion, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            setSearchQuery(suggestion)
+                            setShowSuggestions(false)
+                          }}
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"
+                        >
+                          <Search className="w-4 h-4 text-gray-400" />
+                          <span className="text-gray-700">{suggestion}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Enhanced Filter Toggle */}
@@ -642,11 +715,16 @@ export default function SearchPageContent() {
           </div>
         )}
 
-        {/* Results Grid */}
+        {/* Results Grid with Lazy Loading */}
         {!loading && filteredObjects.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
-            {filteredObjects.map((object) => (
-              <ObjectCard key={object.id} object={object} matchScore={object.matchScore} />
+            {filteredObjects.map((object, index) => (
+              <LazyObjectCard 
+                key={object.id} 
+                object={object} 
+                matchScore={object.matchScore}
+                index={index}
+              />
             ))}
           </div>
         )}

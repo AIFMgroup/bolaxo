@@ -79,7 +79,7 @@ export default function AdminLoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block hover:opacity-80 transition-opacity">
             <h1 className="text-4xl font-black text-navy mb-2">
-              Trestor Group
+              Afterfounder
             </h1>
           </Link>
           <p className="text-graphite/60 text-sm font-medium tracking-wider uppercase">
@@ -133,7 +133,7 @@ export default function AdminLoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setFocusedField('email')}
                   onBlur={() => setFocusedField(null)}
-                  placeholder="admin@trestorgroup.se"
+                  placeholder="admin@afterfounder.com"
                   required
                   disabled={loading || success}
                   className="w-full pl-12 pr-4 py-3.5 bg-cream/50 border border-sand rounded-xl text-graphite placeholder-graphite/40 focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy focus:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"

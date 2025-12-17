@@ -52,7 +52,7 @@ export default function HomePageContent() {
             
             {/* Intro Text */}
             <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Trestor Group (en del av Pactior Group) kopplar samman kvalificerade köpare med 
+              Afterfounder (en del av Pactior Group) kopplar samman kvalificerade köpare med 
               verifierade säljare. Anonymt tills NDA är signerat.
             </p>
             
@@ -237,7 +237,7 @@ export default function HomePageContent() {
         </div>
       </section>
 
-      {/* Varför Trestor Group */}
+      {/* Varför Afterfounder */}
       <section className="py-24 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -245,7 +245,7 @@ export default function HomePageContent() {
               Fördelar
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy">
-              Varför välja Trestor Group?
+              Varför välja Afterfounder?
             </h2>
           </div>
           
@@ -300,7 +300,7 @@ export default function HomePageContent() {
               En del av Pactior Group
             </h2>
             <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto">
-              Trestor Group utvecklas tillsammans med Pactior Group och erfarna M&A-rådgivare. 
+              Afterfounder utvecklas tillsammans med Pactior Group och erfarna M&A-rådgivare. 
               Kombinationen av modern teknologi och klassisk transaktionskompetens gör processen 
               både effektiv och trygg.
             </p>

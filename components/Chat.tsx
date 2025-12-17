@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { Send, Check, CheckCheck, MoreVertical, Phone, Video, Info } from 'lucide-react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { Send, Check, CheckCheck, MoreVertical, Phone, Video, Info, RefreshCw } from 'lucide-react'
 import Image from 'next/image'
+import { useChatUpdates } from '@/lib/hooks/useRealTimeUpdates'
 
 interface Message {
   id: string
@@ -46,11 +47,13 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
+  const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const chatContainerRef = useRef<HTMLDivElement>(null)
+  const previousMessagesLengthRef = useRef(0)
 
   // Fetch messages
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     try {
       const params = new URLSearchParams({
         peerId,
@@ -67,12 +70,24 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
 
       if (response.ok) {
         const data = await response.json()
-        setMessages(data.messages)
+        const newMessages = data.messages
+        
+        // Check if there are new messages
+        if (newMessages.length > previousMessagesLengthRef.current) {
+          const newestMessage = newMessages[newMessages.length - 1]
+          // If the newest message is from the peer, play sound
+          if (newestMessage && newestMessage.senderId === peerId && previousMessagesLengthRef.current > 0) {
+            playMessageSound()
+          }
+        }
+        previousMessagesLengthRef.current = newMessages.length
+        
+        setMessages(newMessages)
         setHasMore(data.pagination.hasMore)
         setUnreadCount(data.unreadCount)
         
         // Mark messages as read
-        const unreadIds = data.messages
+        const unreadIds = newMessages
           .filter((m: Message) => m.recipientId === currentUserId && !m.read)
           .map((m: Message) => m.id)
         
@@ -85,7 +100,10 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
     } finally {
       setLoading(false)
     }
-  }
+  }, [peerId, page, listingId, currentUserId])
+  
+  // Use smart polling hook - faster during active typing
+  const { refresh, markActivity, isFastMode } = useChatUpdates(fetchMessages, true)
 
   // Mark messages as read
   const markAsRead = async (ids: string[]) => {
@@ -174,15 +192,17 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
     return groups
   }
 
-  useEffect(() => {
-    fetchMessages()
-    const interval = setInterval(fetchMessages, 5000) // Poll every 5 seconds
-    return () => clearInterval(interval)
-  }, [page])
-
+  // Scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+  
+  // Speed up polling when typing
+  useEffect(() => {
+    if (newMessage.length > 0) {
+      markActivity()
+    }
+  }, [newMessage, markActivity])
 
   const messageGroups = groupMessagesByDate(messages)
 
@@ -213,14 +233,19 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-            <Phone className="w-5 h-5" />
-          </button>
-          <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-            <Video className="w-5 h-5" />
-          </button>
-          <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-            <Info className="w-5 h-5" />
+          {/* Live indicator */}
+          <div className="flex items-center gap-1.5 px-2 py-1 bg-white/10 rounded-full">
+            <div className={`w-2 h-2 rounded-full ${isFastMode ? 'bg-green-400 animate-pulse' : 'bg-white/50'}`} />
+            <span className="text-xs text-white/70">
+              {isFastMode ? 'Live' : 'Auto'}
+            </span>
+          </div>
+          <button 
+            onClick={refresh}
+            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            title="Uppdatera"
+          >
+            <RefreshCw className={`w-5 h-5 ${isFastMode ? 'animate-spin' : ''}`} />
           </button>
           <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
             <MoreVertical className="w-5 h-5" />
@@ -340,4 +365,40 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
       </div>
     </div>
   )
+}
+
+// Play a subtle message received sound
+function playMessageSound() {
+  try {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+    const oscillator = audioContext.createOscillator()
+    const gainNode = audioContext.createGain()
+    
+    oscillator.connect(gainNode)
+    gainNode.connect(audioContext.destination)
+    
+    // Two-tone notification
+    oscillator.frequency.value = 600
+    oscillator.type = 'sine'
+    
+    gainNode.gain.setValueAtTime(0.08, audioContext.currentTime)
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15)
+    
+    oscillator.start(audioContext.currentTime)
+    oscillator.stop(audioContext.currentTime + 0.15)
+    
+    // Second tone
+    const oscillator2 = audioContext.createOscillator()
+    const gainNode2 = audioContext.createGain()
+    oscillator2.connect(gainNode2)
+    gainNode2.connect(audioContext.destination)
+    oscillator2.frequency.value = 800
+    oscillator2.type = 'sine'
+    gainNode2.gain.setValueAtTime(0.08, audioContext.currentTime + 0.1)
+    gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.25)
+    oscillator2.start(audioContext.currentTime + 0.1)
+    oscillator2.stop(audioContext.currentTime + 0.25)
+  } catch (e) {
+    // Audio not supported or blocked
+  }
 }

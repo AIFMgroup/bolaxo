@@ -33,7 +33,7 @@
     "getStarted": "Kom igång nu",
     "discoverTitle": "Upptäck alla möjligheter",
     "discoverSubtitle": "Utforska våra tjänster och verktyg för att maximera din affär",
-    "reviewsTitle": "Våra kunder älskar Trestor Group",
+    "reviewsTitle": "Våra kunder älskar Afterfounder",
     "reviewsSubtitle": "98% av våra säljare rekommenderar oss",
     "ctaTitle": "Redo att sälja ditt företag?",
     "ctaSubtitle": "Börja med en gratis värdering och se vad ditt företag är värt idag",
@@ -75,8 +75,8 @@
     "stepModal": {
       "step1": {
         "title": "STEG 1: REGISTRERA",
-        "header": "Börja din resa på Trestor Group",
-        "description": "Registrering på Trestor Group är helt enkelt och tar bara 2-3 minuter. Du behöver bara fylla i några grundläggande uppgifter om dig själv och ditt företag för att komma igång.",
+        "header": "Börja din resa på Afterfounder",
+        "description": "Registrering på Afterfounder är helt enkelt och tar bara 2-3 minuter. Du behöver bara fylla i några grundläggande uppgifter om dig själv och ditt företag för att komma igång.",
         "step1Title": "Skapa ditt konto",
         "step1Desc": "Använd e-post eller BankID för att registrera dig. BankID ger dig extra säkerhet och verifiering från start.",
         "step2Title": "Fyll i företagsinformation",
@@ -139,7 +139,7 @@
       "step4": {
         "title": "STEG 4: FÖRHANDLA",
         "header": "Säker förhandling från start till mål",
-        "description": "Trestor Group säkerställer en trygg och professionell förhandlingsprocess med automatisk NDA, säkert datarum och juridiska verktyg som sparar både tid och pengar.",
+        "description": "Afterfounder säkerställer en trygg och professionell förhandlingsprocess med automatisk NDA, säkert datarum och juridiska verktyg som sparar både tid och pengar.",
         "nda": {
           "title": "Automatisk NDA",
           "desc": "Innan köparen ser känslig information måste de signera digitalt sekretesspakt med BankID. Du är alltid skyddad."
@@ -311,7 +311,7 @@
     "contact": "Kontakt",
     "freeValuation": "Gratis värdering",
     "howItWorks": "Så funkar det",
-    "howItWorksDesc": "Så funkar Trestor Group",
+    "howItWorksDesc": "Så funkar Afterfounder",
     "startSelling": "Börja sälja",
     "searchCompany": "Sök företag",
     "buyerSignup": "Skapa konto",
@@ -327,7 +327,7 @@
     "securityDesc": "Bank-nivå säkerhet för dina uppgifter och data",
     "partners": "Våra partners",
     "partnersDesc": "Samarbeten med ledande aktörer i finansvärlden",
-    "copyright": "(C) {year} Trestor Group AB. Alla rättigheter förbehållna.",
+    "copyright": "(C) {year} Afterfounder AB. Alla rättigheter förbehållna.",
     "description": "Säkerhet & Integritet Våra partners",
     "address": "Norrmälarstrand 10\n114 62 Stockholm\nSverige",
     "sellInYourCity": "Sälja i din stad",
@@ -370,7 +370,7 @@
   },
   "faq": {
     "title": "VANLIGA FRÅGOR",
-    "subtitle": "Hitta svar på de vanligaste frågorna om Trestor Group",
+    "subtitle": "Hitta svar på de vanligaste frågorna om Afterfounder",
     "categories": {
       "general": "Allmänt",
       "sellers": "Säljare",
@@ -384,15 +384,15 @@
     "items": {
       "general": {
         "whatIs": {
-          "q": "Vad är Trestor Group?",
-          "a": "Trestor Group är en automatiserad marknadsplats för företagsköp och försäljning. Vi kopplar samman säljare och köpare av SME-företag på ett säkert och effektivt sätt, med automatisk värdering, smart matchning och fullständig anonymitet fram till NDA-signering."
+          "q": "Vad är Afterfounder?",
+          "a": "Afterfounder är en automatiserad marknadsplats för företagsköp och försäljning. Vi kopplar samman säljare och köpare av SME-företag på ett säkert och effektivt sätt, med automatisk värdering, smart matchning och fullständig anonymitet fram till NDA-signering."
         },
         "howItWorks": {
           "q": "Hur fungerar processen?",
           "a": "Säljare börjar med gratis värdering (5 min), skapar sedan annons och publicerar. Systemet matchar automatiskt med relevanta köpare. Köpare söker, signerar NDA digitalt för fullständig information, och kan sedan skicka LOI. Hela processen från NDA till closing hanteras i vår deal management-plattform."
         },
         "cost": {
-          "q": "Vad kostar det att använda Trestor Group?",
+          "q": "Vad kostar det att använda Afterfounder?",
           "a": "Värdering är alltid gratis! För säljare: Free (0 kr - utkast), Basic (495 kr/mån), Pro (895 kr/mån), Pro+ Featured (1,495 kr/mån). För köpare är det helt gratis att söka och titta."
         }
       },
@@ -775,10 +775,10 @@
   },
   "kopare": {
     "heroTitle": "Köp företag i Sverige",
-    "heroSubtitle": "Utforska verifierade akquisitionsmöjligheter i hundratals svenska städer. Från Stockholm till Hemse - hitta ditt nästa företag med Trestor Group.",
+    "heroSubtitle": "Utforska verifierade akquisitionsmöjligheter i hundratals svenska städer. Från Stockholm till Hemse - hitta ditt nästa företag med Afterfounder.",
     "browseButton": "Bläddra bland alla företag",
     "citiesTitle": "Städer i Sverige",
-    "whyBuyTitle": "Köp företag med Trestor Group",
+    "whyBuyTitle": "Köp företag med Afterfounder",
     "benefits": [
       {
         "title": "Nationell räckvidd",
@@ -862,7 +862,7 @@
     "errorGeneric": "Ett fel uppstod"
   },
   "kopareSaFungerarDet": {
-    "heroTitle": "Trestor Group – Hitta, granska och förvärva tryggt och effektivt",
+    "heroTitle": "Afterfounder – Hitta, granska och förvärva tryggt och effektivt",
     "heroSubtitle": "Skapa en trovärdig köparprofil med BankID. Filtrera annonser, signera NDA och få tillgång till datarum – allt i samma flöde.",
     "createProfileButton": "Skapa köparprofil",
     "watchButton": "Sätt bevakning",
@@ -1183,10 +1183,10 @@
   "chatWidget": {
     "button": "Chatt",
     "header": {
-      "title": "Trestor Group Support",
+      "title": "Afterfounder Support",
       "subtitle": "Alltid redo att hjälpa"
     },
-    "initialMessage": "Hej! Jag är din AI-assistent för Trestor Group. Hur kan jag hjälpa dig idag?",
+    "initialMessage": "Hej! Jag är din AI-assistent för Afterfounder. Hur kan jag hjälpa dig idag?",
     "commonQuestions": "Vanliga frågor:",
     "contactMe": "Jag vill bli kontaktad",
     "inputPlaceholder": "Skriv ditt meddelande...",
@@ -1216,7 +1216,7 @@
       "valuation": "Vår AI-värdering tar bara 5 minuter och är helt gratis! Du får en professionell bedömning baserad på branschstandarder och verkliga affärer. Vill du starta en värdering nu?",
       "selling": "Perfekt att du vill sälja! Processen är enkel: 1) Gör en gratis värdering, 2) Skapa en annons, 3) Få matchning med köpare, 4) Genomför affären säkert. Ska jag guida dig till värderingen?",
       "buying": "Som köpare får du tillgång till verifierade säljare och smarta matchningar. Det är helt gratis för köpare! Du kan filtrera på bransch, region och storlek. Vill du skapa ett köparkonto?",
-      "contact": "Jag hjälper gärna till! Du kan också klicka på \"Jag vill bli kontaktad\" nedan så ringer vi upp dig. Eller maila oss på kontakt@trestorgroup.se.",
+      "contact": "Jag hjälper gärna till! Du kan också klicka på \"Jag vill bli kontaktad\" nedan så ringer vi upp dig. Eller maila oss på kontakt@afterfounder.com.",
       "default": "Tack för din fråga! Jag är här för att hjälpa dig med allt som rör företagsförsäljning och köp. Kan du berätta lite mer om vad du behöver hjälp med? Du kan också klicka på \"Jag vill bli kontaktad\" om du föredrar att prata med en människa."
     },
     "contactForm": {
@@ -1254,7 +1254,7 @@
   },
   "onepager": {
     "hero": {
-      "socialProof": "företagare använder Trestor Group",
+      "socialProof": "företagare använder Afterfounder",
       "title": "Sälj ditt företag.",
       "titleHighlight": "Enkelt. Säkert.",
       "titleSubtext": "På dina villkor.",
@@ -1314,7 +1314,7 @@
       "titleEnd": "att sälja sitt företag?",
       "subtitle": "Vi förstår frustrationen. Därför byggde vi en bättre lösning.",
       "traditional": "Traditionellt sätt",
-      "withTrestor Group": "Med Trestor Group",
+      "withAfterfounder": "Med Afterfounder",
       "problems": {
         "longTime": {
           "title": "Tar upp till 2 år",
@@ -1452,13 +1452,13 @@
     },
     "testimonials": {
       "title": "Riktiga företagare. Riktiga resultat.",
-      "subtitle": "Över 2,800 entreprenörer har nått sina drömmar genom Trestor Group",
+      "subtitle": "Över 2,800 entreprenörer har nått sina drömmar genom Afterfounder",
       "stories": [
         {
           "name": "Stefan Andersson",
           "age": 62,
           "company": "Byggföretag, 15 anställda",
-          "quote": "Efter 30 år var det dags att gå i pension. Trestor Group hjälpte mig hitta en köpare som verkligen bryr sig om mina medarbetare. Fick 6.2M över min värdering.",
+          "quote": "Efter 30 år var det dags att gå i pension. Afterfounder hjälpte mig hitta en köpare som verkligen bryr sig om mina medarbetare. Fick 6.2M över min värdering.",
           "result": "6.2M över värdering",
           "metric": "Såld på 78 dagar"
         },
@@ -1466,7 +1466,7 @@
           "name": "Lisa Chen",
           "age": 34,
           "company": "SaaS-startup",
-          "quote": "Vi behövde växa snabbt. Trestor Group matchade oss med en strategisk köpare som hade rätt nätverk. Exit på 18.5M gav oss möjlighet att starta nästa venture.",
+          "quote": "Vi behövde växa snabbt. Afterfounder matchade oss med en strategisk köpare som hade rätt nätverk. Exit på 18.5M gav oss möjlighet att starta nästa venture.",
           "result": "18.5M exit",
           "metric": "12 bud första veckan"
         },
@@ -1489,7 +1489,7 @@
       "cta": "Aktivera Mitt Erbjudande Nu"
     },
     "guarantee": {
-      "title": "Vår Trestor Group-Garanti",
+      "title": "Vår Afterfounder-Garanti",
       "subtitle": "Om du inte får minst 3 kvalificerade bud inom 90 dagar får du",
       "subtitleHighlight": "pengarna tillbaka + 90 dagar gratis förlängning",
       "items": [

@@ -45,9 +45,9 @@ export function StructuredData({ type, data }: StructuredDataProps) {
 export const defaultOrganizationData = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Trestor Group',
+  name: 'Afterfounder',
   alternateName: 'En del av Pactior Group',
-  url: 'https://trestorgroup.se',
+  url: 'https://afterfounder.com',
   logo: 'https://afterfounder.com/Logo/afterfounder.png',
   description: 'Sveriges smartaste företagsförmedling med verifierade uppgifter, NDA innan detaljer och kvalificerade köpare.',
   foundingDate: '2024',
@@ -61,8 +61,8 @@ export const defaultOrganizationData = {
     '@type': 'ContactPoint',
     contactType: 'Customer Service',
     availableLanguage: ['Swedish', 'English'],
-    email: 'kontakt@trestorgroup.se',
-    url: 'https://trestorgroup.se/kontakt',
+    email: 'kontakt@afterfounder.com',
+    url: 'https://afterfounder.com/kontakt',
   },
   areaServed: {
     '@type': 'Country',
@@ -81,14 +81,14 @@ export const defaultOrganizationData = {
 export const websiteStructuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'Trestor Group',
-  url: 'https://trestorgroup.se',
+  name: 'Afterfounder',
+  url: 'https://afterfounder.com',
   description: 'Sveriges smartaste företagsförmedling - Köp och sälj företag säkert och enkelt',
   potentialAction: {
     '@type': 'SearchAction',
     target: {
       '@type': 'EntryPoint',
-      urlTemplate: 'https://trestorgroup.se/sok?q={search_term_string}',
+      urlTemplate: 'https://afterfounder.com/sok?q={search_term_string}',
     },
     'query-input': 'required name=search_term_string',
   },
@@ -101,7 +101,7 @@ export const serviceStructuredData = {
   serviceType: 'Företagsförmedling',
   provider: {
     '@type': 'Organization',
-    name: 'Trestor Group',
+    name: 'Afterfounder',
   },
   areaServed: {
     '@type': 'Country',
@@ -161,7 +161,7 @@ export function generateArticleStructuredData(article: {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Trestor Group',
+      name: 'Afterfounder',
       logo: {
         '@type': 'ImageObject',
         url: 'https://afterfounder.com/Logo/afterfounder.png',

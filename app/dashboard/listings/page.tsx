@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import ClientDashboardLayout from '@/components/dashboard/ClientDashboardLayout'
+import DashboardAnalytics from '@/components/DashboardAnalytics'
 import Link from 'next/link'
-import { Building, Eye, Shield, MessageSquare, Edit, Pause, Play, MoreVertical, TrendingUp, Calendar, Download, Bookmark, Trash2, CheckCircle, XCircle } from 'lucide-react'
+import { Building, Eye, Shield, MessageSquare, Edit, Pause, Play, MoreVertical, TrendingUp, Calendar, Download, Bookmark, Trash2, CheckCircle, XCircle, ChevronDown, ChevronUp } from 'lucide-react'
 import { mockObjects } from '@/data/mockObjects'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
@@ -56,6 +57,7 @@ export default function ListingsPage() {
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [showNDAPanel, setShowNDAPanel] = useState(false)
+  const [showAnalytics, setShowAnalytics] = useState(true)
 
   // Fetch real data from API
   useEffect(() => {
@@ -187,6 +189,33 @@ export default function ListingsPage() {
             <p className="text-sm text-gray-600 mt-1">Hantera och följ upp dina annonser</p>
           </div>
         </div>
+
+        {/* Analytics Section */}
+        {user && (
+          <div className="bg-gray-50 rounded-xl p-4 sm:p-6">
+            <button
+              onClick={() => setShowAnalytics(!showAnalytics)}
+              className="w-full flex items-center justify-between mb-4"
+            >
+              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-primary-navy" />
+                Statistik & Analytics
+              </h2>
+              {showAnalytics ? (
+                <ChevronUp className="w-5 h-5 text-gray-400" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-gray-400" />
+              )}
+            </button>
+            {showAnalytics && (
+              <DashboardAnalytics 
+                userId={user.id} 
+                role="seller"
+                listingId={listings[0]?.id}
+              />
+            )}
+          </div>
+        )}
 
         {/* NDA Requests Panel */}
         {ndaRequests.length > 0 && (

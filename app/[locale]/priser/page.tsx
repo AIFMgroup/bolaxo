@@ -334,7 +334,7 @@ export default function PriserPage() {
             <div>
               <h2 className="text-3xl font-bold text-navy mt-2 mb-4">Gratis för köpare</h2>
               <p className="text-gray-600 max-w-2xl">
-                Det kostar ingenting att hitta och köpa företag via Trestor Group. Skapa en investerarprofil 
+                Det kostar ingenting att hitta och köpa företag via Afterfounder. Skapa en investerarprofil 
                 och börja utforska annonser direkt.
               </p>
             </div>

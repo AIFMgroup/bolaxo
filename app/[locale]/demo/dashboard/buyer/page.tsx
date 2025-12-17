@@ -9,7 +9,7 @@ export default function DemoBuyerDashboardPage() {
     // Seed dev auth + cookies so middleware and auth context treat this as logged-in
     const demoUser = {
       id: 'demo-buyer',
-      email: 'demo-buyer@trestorgroup.se',
+      email: 'demo-buyer@afterfounder.com',
       name: 'Demo Köpare',
       role: 'buyer',
       loginTime: new Date().toISOString(),

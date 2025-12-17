@@ -89,7 +89,7 @@ export async function middleware(request: NextRequest) {
     
     if (process.env.NODE_ENV === 'production') {
       const currentHost = safeHeader(request, 'host')
-      const isTrestorGroupDomain = currentHost.includes('trestorgroup.se')
+      const isAfterfounderDomain = currentHost.includes('afterfounder.com')
       response.headers.set(
         'Content-Security-Policy',
         [
@@ -100,7 +100,7 @@ export async function middleware(request: NextRequest) {
           "font-src 'self' data: https:",
           "connect-src 'self' https://api.openai.com https://api.brevo.com https://api.sendinblue.com https://*.amazonaws.com https://*.s3.amazonaws.com https://*.s3.eu-north-1.amazonaws.com blob:",
           "frame-src 'self' https://player.vimeo.com https://vimeo.com",
-          `frame-ancestors 'self'${isTrestorGroupDomain ? ' https://trestorgroup.se https://www.trestorgroup.se' : ''}`,
+          `frame-ancestors 'self'${isAfterfounderDomain ? ' https://afterfounder.com https://www.afterfounder.com' : ''}`,
           "worker-src 'self' blob:",
           "base-uri 'self'",
           "form-action 'self'",
@@ -147,7 +147,7 @@ export async function middleware(request: NextRequest) {
 
   if (process.env.NODE_ENV === 'production') {
     const currentHost = safeHeader(request, 'host')
-    const isTrestorGroupDomain = currentHost.includes('trestorgroup.se')
+    const isAfterfounderDomain = currentHost.includes('afterfounder.com')
     
     response.headers.set(
       'Content-Security-Policy',
@@ -159,7 +159,7 @@ export async function middleware(request: NextRequest) {
         "font-src 'self' data: https:",
         "connect-src 'self' https://api.openai.com https://api.brevo.com https://api.sendinblue.com https://*.amazonaws.com https://*.s3.amazonaws.com https://*.s3.eu-north-1.amazonaws.com blob:",
         "frame-src 'self' https://player.vimeo.com https://vimeo.com",
-        `frame-ancestors 'self'${isTrestorGroupDomain ? ' https://trestorgroup.se https://www.trestorgroup.se' : ''}`,
+        `frame-ancestors 'self'${isAfterfounderDomain ? ' https://afterfounder.com https://www.afterfounder.com' : ''}`,
         "worker-src 'self' blob:",
         "base-uri 'self'",
         "form-action 'self'",

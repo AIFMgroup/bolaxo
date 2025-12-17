@@ -72,7 +72,7 @@ async function callBedrock(
   
   // Use Claude 3 Haiku for fast, cost-effective analysis
   // Other options: anthropic.claude-3-sonnet, anthropic.claude-3-opus
-  const modelId = process.env.BEDROCK_MODEL_ID || 'anthropic.claude-3-haiku-20240307-v1:0'
+  const modelId = process.env.BEDROCK_MODEL_ID || 'anthropic.claude-sonnet-4-5-20250514-v1:0'
   
   // Convert messages to Claude format
   const systemMessage = messages.find(m => m.role === 'system')?.content || ''

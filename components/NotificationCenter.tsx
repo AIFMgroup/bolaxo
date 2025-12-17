@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Bell, X, CheckCircle2 } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { Bell, X, CheckCircle2, RefreshCw } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTranslations } from 'next-intl'
+import { useNotificationUpdates } from '@/lib/hooks/useRealTimeUpdates'
 
 interface Notification {
   id: string
@@ -21,35 +22,49 @@ export default function NotificationCenter() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [previousUnreadCount, setPreviousUnreadCount] = useState(0)
 
-  // Fetch notifications
-  useEffect(() => {
+  // Fetch notifications function
+  const fetchNotifications = useCallback(async () => {
     if (!user) return
 
-    const fetchNotifications = async () => {
-      try {
-        const response = await fetch(`/api/notifications?userId=${user.id}&unreadOnly=false`)
-        if (response.ok) {
-          const data = await response.json()
-          setNotifications(data.notifications || [])
-          setUnreadCount(data.unreadCount || 0)
-        } else if (response.status === 401) {
-          console.log('User not authenticated for notifications')
-          setNotifications([])
-          setUnreadCount(0)
+    try {
+      const response = await fetch(`/api/notifications?userId=${user.id}&unreadOnly=false`)
+      if (response.ok) {
+        const data = await response.json()
+        const newNotifications = data.notifications || []
+        const newUnreadCount = data.unreadCount || 0
+        
+        // Check if there are new notifications
+        if (newUnreadCount > previousUnreadCount && previousUnreadCount > 0) {
+          // Play notification sound or show visual indicator
+          playNotificationSound()
         }
-      } catch (error) {
-        console.error('Error fetching notifications:', error)
+        
+        setNotifications(newNotifications)
+        setUnreadCount(newUnreadCount)
+        setPreviousUnreadCount(newUnreadCount)
+      } else if (response.status === 401) {
         setNotifications([])
+        setUnreadCount(0)
       }
+    } catch (error) {
+      console.error('Error fetching notifications:', error)
     }
+  }, [user, previousUnreadCount])
 
-    fetchNotifications()
+  // Use smart polling hook - faster when panel is open
+  const { refresh, markActivity, isFastMode } = useNotificationUpdates(
+    fetchNotifications,
+    !!user
+  )
 
-    // Poll every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000)
-    return () => clearInterval(interval)
-  }, [user])
+  // Speed up polling when notification panel is open
+  useEffect(() => {
+    if (open) {
+      markActivity()
+    }
+  }, [open, markActivity])
 
   const markAsRead = async (notificationIds: string[]) => {
     try {
@@ -165,12 +180,19 @@ export default function NotificationCenter() {
 
             {/* Footer */}
             {notifications.length > 0 && (
-              <div className="px-6 py-3 border-t border-gray-100 bg-gray-50">
+              <div className="px-6 py-3 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
                 <button
                   onClick={() => markAsRead(notifications.filter(n => !n.read).map(n => n.id))}
                   className="text-sm text-primary-navy font-medium hover:underline flex items-center gap-1"
                 >
                   {t('markAllRead')}
+                </button>
+                <button
+                  onClick={refresh}
+                  className="p-1.5 text-gray-400 hover:text-primary-navy hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Uppdatera"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isFastMode ? 'animate-spin' : ''}`} />
                 </button>
               </div>
             )}
@@ -179,6 +201,30 @@ export default function NotificationCenter() {
       )}
     </>
   )
+}
+
+// Play a subtle notification sound
+function playNotificationSound() {
+  try {
+    // Create a subtle notification sound using Web Audio API
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+    const oscillator = audioContext.createOscillator()
+    const gainNode = audioContext.createGain()
+    
+    oscillator.connect(gainNode)
+    gainNode.connect(audioContext.destination)
+    
+    oscillator.frequency.value = 800
+    oscillator.type = 'sine'
+    
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime)
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2)
+    
+    oscillator.start(audioContext.currentTime)
+    oscillator.stop(audioContext.currentTime + 0.2)
+  } catch (e) {
+    // Audio not supported or blocked
+  }
 }
 
 function formatTime(dateString: string, t: (key: string) => string): string {
