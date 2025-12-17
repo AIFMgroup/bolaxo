@@ -9,6 +9,7 @@ import {
   Heart, Bell, BarChart3, Sparkles, ArrowUpRight
 } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
+import BuyerStatistics from './BuyerStatistics'
 
 interface BuyerDashboardProps {
   userId: string
@@ -194,6 +195,9 @@ export default function BuyerDashboard({ userId }: BuyerDashboardProps) {
           <div className="text-sm text-graphite/70">Nya matchningar</div>
         </div>
       </div>
+
+      {/* Detailed Statistics with Comparison */}
+      <BuyerStatistics />
 
       {/* Quick Tools */}
       <div>
