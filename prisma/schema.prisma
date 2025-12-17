@@ -36,6 +36,12 @@ model User {
   // Admin password authentication (optional, only for admin users)
   passwordHash    String?   // bcrypt hashed password for admin login
   
+  // Two-Factor Authentication (2FA)
+  totpSecret      String?   // TOTP secret for authenticator apps
+  totpEnabled     Boolean   @default(false)
+  backupCodes     String[]  // One-time backup codes (hashed)
+  twoFactorVerifiedAt DateTime? // Last 2FA verification timestamp
+  
   // Timestamps
   createdAt       DateTime  @default(now())
   lastLoginAt     DateTime?
@@ -783,6 +789,17 @@ model DataRoom {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  // Security settings
+  ipRestrictionEnabled  Boolean  @default(false)
+  allowedIPs            String[] // Array of allowed IP addresses/ranges (CIDR)
+  allowedCountries      String[] // Array of allowed country codes (SE, NO, etc)
+  requireVPN            Boolean  @default(false)
+  downloadEnabled       Boolean  @default(true)
+  printEnabled          Boolean  @default(true)
+  watermarkDownloads    Boolean  @default(true)
+  sessionTimeout        Int      @default(30) // Minutes of inactivity before re-auth
+  maxConcurrentSessions Int      @default(3)  // Max simultaneous sessions per user
+
   folders         DataRoomFolder[]
   documents       DataRoomDocument[]
   permissions     DataRoomPermission[]
@@ -1442,4 +1459,75 @@ model Waitlist {
   
   @@index([status])
   @@index([createdAt])
+}
+
+// ============================================
+// SECURITY & AUDIT
+// ============================================
+
+model AuditLog {
+  id            String   @id @default(cuid())
+  
+  // Actor information
+  userId        String?  // Who performed the action (null for system actions)
+  userEmail     String?  // Email at time of action
+  userRole      String?  // Role at time of action
+  
+  // Action details
+  action        String   // Action type: login, logout, 2fa_setup, nda_approve, listing_edit, etc
+  category      String   // Category: auth, nda, listing, dataroom, admin, payment, etc
+  severity      String   @default("info") // info, warning, critical
+  
+  // Target
+  targetType    String?  // What was affected: user, listing, nda, dataroom, etc
+  targetId      String?  // ID of affected entity
+  
+  // Request context
+  ipAddress     String?
+  userAgent     String?
+  country       String?  // Derived from IP
+  
+  // Details
+  description   String   // Human-readable description
+  metadata      Json?    // Additional structured data
+  previousValue Json?    // Value before change (for edits)
+  newValue      Json?    // Value after change (for edits)
+  
+  // Status
+  success       Boolean  @default(true)
+  errorMessage  String?  // If action failed
+  
+  createdAt     DateTime @default(now())
+  
+  @@index([userId])
+  @@index([action])
+  @@index([category])
+  @@index([severity])
+  @@index([targetType, targetId])
+  @@index([ipAddress])
+  @@index([createdAt])
+}
+
+model AdminSession {
+  id            String   @id @default(cuid())
+  userId        String
+  
+  // Session info
+  token         String   @unique
+  ipAddress     String?
+  userAgent     String?
+  country       String?
+  
+  // 2FA status for this session
+  twoFactorVerified Boolean @default(false)
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  expiresAt     DateTime
+  lastActiveAt  DateTime @default(now())
+  revokedAt     DateTime?
+  
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
 }
