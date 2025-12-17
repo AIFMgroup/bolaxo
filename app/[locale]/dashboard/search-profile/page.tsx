@@ -87,7 +87,7 @@ export default function SearchProfilePage() {
         </div>
 
         {/* Current profile summary */}
-        <div className="bg-accent-pink text-white p-6 rounded-xl">
+        <div className="bg-navy text-white p-6 rounded-xl">
           <h2 className="text-lg font-semibold mb-4">Nuvarande profil</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <div>
@@ -112,7 +112,7 @@ export default function SearchProfilePage() {
         {/* Industries */}
         <div className="bg-white p-6 rounded-xl border border-gray-200">
           <h2 className="text-lg font-semibold text-primary-navy mb-4 flex items-center gap-2">
-            <Building className="w-4 h-4 sm:w-5 sm:h-5 text-accent-pink" />
+            <Building className="w-4 h-4 sm:w-5 sm:h-5 text-navy" />
             Branscher
           </h2>
           
@@ -121,7 +121,7 @@ export default function SearchProfilePage() {
             {industries.map((industry) => (
               <span
                 key={industry}
-                className="bg-accent-pink text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-2"
+                className="bg-navy text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-2"
               >
                 {industry}
                 <button
@@ -171,7 +171,7 @@ export default function SearchProfilePage() {
                   setCustomIndustry('')
                 }
               }}
-              className="p-2 bg-accent-pink text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="p-2 bg-navy text-white rounded-lg hover:bg-navy/80 transition-colors"
             >
               <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
@@ -181,7 +181,7 @@ export default function SearchProfilePage() {
         {/* Locations */}
         <div className="bg-white p-6 rounded-xl border border-gray-200">
           <h2 className="text-lg font-semibold text-primary-navy mb-4 flex items-center gap-2">
-            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-accent-pink" />
+            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-navy" />
             Platser
           </h2>
           
@@ -190,7 +190,7 @@ export default function SearchProfilePage() {
             {locations.map((location) => (
               <span
                 key={location}
-                className="bg-accent-pink text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-2"
+                className="bg-navy text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-2"
               >
                 {location}
                 <button
@@ -240,7 +240,7 @@ export default function SearchProfilePage() {
                   setCustomLocation('')
                 }
               }}
-              className="p-2 bg-accent-pink text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="p-2 bg-navy text-white rounded-lg hover:bg-navy/80 transition-colors"
             >
               <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
@@ -250,7 +250,7 @@ export default function SearchProfilePage() {
         {/* Financial criteria */}
         <div className="bg-white p-6 rounded-xl border border-gray-200">
           <h2 className="text-lg font-semibold text-primary-navy mb-4 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-accent-pink" />
+            <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-navy" />
             Finansiella kriterier
           </h2>
           
@@ -302,7 +302,7 @@ export default function SearchProfilePage() {
         {/* Additional criteria */}
         <div className="bg-white p-6 rounded-xl border border-gray-200">
           <h2 className="text-lg font-semibold text-primary-navy mb-4 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-accent-pink" />
+            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-navy" />
             Ytterligare kriterier
           </h2>
           
@@ -367,7 +367,7 @@ export default function SearchProfilePage() {
             <p className="text-sm text-gray-600">Logga in för att spara din profil.</p>
           )}
           <div className="flex items-center gap-3">
-            {saveMessage && <span className="text-sm text-accent-pink">{saveMessage}</span>}
+            {saveMessage && <span className="text-sm text-navy font-medium">{saveMessage}</span>}
             <button
               disabled={!user || saving}
               onClick={async () => {

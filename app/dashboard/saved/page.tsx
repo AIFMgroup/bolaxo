@@ -182,15 +182,15 @@ export default function SavedListingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <div className="bg-white p-4 rounded-xl border border-gray-200">
             <div className="flex items-center justify-between mb-2">
-              <Bookmark className="w-4 h-4 sm:w-5 sm:h-5 text-accent-pink" />
-              <span className="text-xs text-accent-pink font-medium">+2</span>
+              <Bookmark className="w-4 h-4 sm:w-5 sm:h-5 text-navy" />
+              <span className="text-xs text-navy font-medium">+2</span>
             </div>
             <p className="text-xl sm:text-2xl font-bold text-primary-navy">{savedListings.length}</p>
             <p className="text-xs text-gray-600">Sparade objekt</p>
           </div>
           <div className="bg-white p-4 rounded-xl border border-gray-200">
             <div className="flex items-center justify-between mb-2">
-              <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-accent-pink" />
+              <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-navy" />
             </div>
             <p className="text-xl sm:text-2xl font-bold text-primary-navy">
               {savedListings.filter(l => l.ndaStatus === 'approved').length}
@@ -199,7 +199,7 @@ export default function SavedListingsPage() {
           </div>
           <div className="bg-white p-4 rounded-xl border border-gray-200">
             <div className="flex items-center justify-between mb-2">
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-accent-pink" />
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-navy" />
             </div>
             <p className="text-xl sm:text-2xl font-bold text-primary-navy">
               {savedListings.filter(l => l.matchScore >= 85).length}
@@ -208,7 +208,7 @@ export default function SavedListingsPage() {
           </div>
           <div className="bg-white p-4 rounded-xl border border-gray-200">
             <div className="flex items-center justify-between mb-2">
-              <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-accent-pink" />
+              <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-navy" />
               <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
             </div>
             <p className="text-xl sm:text-2xl font-bold text-primary-navy">
@@ -263,7 +263,7 @@ export default function SavedListingsPage() {
                     <div className="text-right">
                       <div className="flex items-center justify-end gap-2 mb-1">
                         <span className="text-sm text-gray-600">Match:</span>
-                        <span className="text-lg font-semibold text-accent-pink">{listing.matchScore}%</span>
+                        <span className="text-lg font-semibold text-navy">{listing.matchScore}%</span>
                       </div>
                       <p className="text-xs text-gray-600">Sparad {new Date(listing.savedAt).toLocaleDateString('sv-SE')}</p>
                     </div>
@@ -295,7 +295,7 @@ export default function SavedListingsPage() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Prisintervall</p>
-                      <span className="text-sm font-medium text-accent-pink">{listing.price}</span>
+                      <span className="text-sm font-medium text-navy">{listing.price}</span>
                     </div>
                   </div>
 
