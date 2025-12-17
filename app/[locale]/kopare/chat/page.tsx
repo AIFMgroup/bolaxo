@@ -24,7 +24,7 @@ function BuyerChatContent() {
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
   const [conversations, setConversations] = useState<Conversation[]>([])
   
-  // Mock conversations - TODO: Fetch from API
+  // Fetch conversations from API
   useEffect(() => {
     if (!user) return
 

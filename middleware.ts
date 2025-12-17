@@ -4,8 +4,12 @@ import type { NextRequest } from 'next/server'
 import { jwtVerify } from 'jose'
 
 // Use the same secret as admin-auth.ts
-const JWT_SECRET = process.env.JWT_SECRET || 'afterfounder-admin-secret-key-2024'
-const secret = new TextEncoder().encode(JWT_SECRET)
+const JWT_SECRET = process.env.JWT_SECRET
+// In middleware, we can't throw errors - just log warning if missing
+if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
+  console.error('CRITICAL: JWT_SECRET environment variable is required in production!')
+}
+const secret = new TextEncoder().encode(JWT_SECRET || 'dev-only-insecure-key')
 
 // Create next-intl middleware
 const intlMiddleware = createMiddleware({

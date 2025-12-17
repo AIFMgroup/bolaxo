@@ -38,7 +38,7 @@ function SellerChatContent() {
   const [contactRequests, setContactRequests] = useState<ContactRequest[]>([])
   const [activeTab, setActiveTab] = useState<'conversations' | 'requests'>('conversations')
   
-  // Mock data - TODO: Fetch from API
+  // Fetch conversations and contact requests from API
   useEffect(() => {
     if (!user) return
 
