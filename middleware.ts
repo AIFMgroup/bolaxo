@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 import { jwtVerify } from 'jose'
 
 // Use the same secret as admin-auth.ts
-const JWT_SECRET = process.env.JWT_SECRET || 'bolagsplatsen-admin-secret-key-2024'
+const JWT_SECRET = process.env.JWT_SECRET || 'afterfounder-admin-secret-key-2024'
 const secret = new TextEncoder().encode(JWT_SECRET)
 
 // Create next-intl middleware
@@ -28,8 +28,8 @@ function safeHeader(request: NextRequest, headerName: string): string {
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
-  const cookieUserId = request.cookies.get('bolaxo_user_id')?.value
-  const cookieUserRole = request.cookies.get('bolaxo_user_role')?.value
+  const cookieUserId = request.cookies.get('afterfounder_user_id')?.value
+  const cookieUserRole = request.cookies.get('afterfounder_user_role')?.value
   
   // Explicit redirect from root to /sv
   if (pathname === '/') {

@@ -105,8 +105,8 @@ export async function GET(req: NextRequest) {
     }
 
     const cookieStore = await cookies()
-    const userId = cookieStore.get('bolaxo_user_id')?.value
-    const userEmail = cookieStore.get('bolaxo_user_email')?.value
+    const userId = cookieStore.get('afterfounder_user_id')?.value
+    const userEmail = cookieStore.get('afterfounder_user_email')?.value
     if (!userId && !userEmail) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
     }

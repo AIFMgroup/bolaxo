@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { SignJWT, jwtVerify } from 'jose'
 
 // Generate a consistent JWT secret - use env var or a default
-const JWT_SECRET = process.env.JWT_SECRET || 'bolagsplatsen-admin-secret-key-2024'
+const JWT_SECRET = process.env.JWT_SECRET
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required')
+}
 const secret = new TextEncoder().encode(JWT_SECRET)
 
 export interface AdminJWT {

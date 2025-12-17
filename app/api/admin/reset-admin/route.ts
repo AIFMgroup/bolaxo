@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     console.log(' Starting admin account reset...')
 
     // Delete old admin account
-    const oldEmail = 'admin@bolagsplatsen.se'
+    const oldEmail = 'admin@afterfounder.se'
     console.log(` Deleting ${oldEmail}...`)
     
     const deleted = await prisma.user.deleteMany({

@@ -19,7 +19,7 @@ export default function CookieConsent() {
 
   useEffect(() => {
     setMounted(true)
-    const consent = localStorage.getItem('bolaxo_cookie_consent')
+    const consent = localStorage.getItem('afterfounder_cookie_consent')
     if (!consent) {
       setTimeout(() => setShowBanner(true), 800)
     }
@@ -27,7 +27,7 @@ export default function CookieConsent() {
 
   const dismissBanner = (consent: object) => {
     setIsLeaving(true)
-    localStorage.setItem('bolaxo_cookie_consent', JSON.stringify(consent))
+    localStorage.setItem('afterfounder_cookie_consent', JSON.stringify(consent))
     setTimeout(() => setShowBanner(false), 300)
   }
 

@@ -18,8 +18,8 @@ export default function DemoBuyerDashboardPage() {
     localStorage.setItem('dev-auth-user', JSON.stringify(demoUser))
     localStorage.setItem('dev-auth-token', `dev-token-${demoUser.id}-${Date.now()}`)
 
-    document.cookie = `bolaxo_user_id=${demoUser.id}; path=/; max-age=86400`
-    document.cookie = `bolaxo_user_role=${demoUser.role}; path=/; max-age=86400`
+    document.cookie = `afterfounder_user_id=${demoUser.id}; path=/; max-age=86400`
+    document.cookie = `afterfounder_user_role=${demoUser.role}; path=/; max-age=86400`
   }, [])
 
   return (

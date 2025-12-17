@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
       },
       {
         id: 'email-5',
-        recipient: 'admin@bolagsplatsen.se',
+        recipient: 'admin@afterfounder.se',
         subject: 'Alert: Suspicious Activity Detected',
         type: 'alert',
         status: 'opened',

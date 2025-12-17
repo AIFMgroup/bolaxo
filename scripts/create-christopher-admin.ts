@@ -65,7 +65,7 @@ async function createChristopherAdmin() {
 
     console.log(`\n📧 Email: ${email}`)
     console.log(`🔑 Password: ${password}`)
-    console.log(`\n🌐 Login at: https://bolaxo-production.up.railway.app/admin/login`)
+    console.log(`\n🌐 Login at: https://afterfounder-production.up.railway.app/admin/login`)
 
   } catch (error) {
     console.error('❌ Error:', error)

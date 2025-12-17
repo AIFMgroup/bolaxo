@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     // Example:
     // await sendEmail({
     //   to: email,
-    //   subject: 'Välkommen till Bolagsplatsens väntelista!',
+    //   subject: 'Välkommen till Afterfounders väntelista!',
     //   html: '<p>Tack för ditt intresse...</p>'
     // })
     

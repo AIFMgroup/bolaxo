@@ -87,7 +87,7 @@ export async function GET(
   try {
     // Get user from cookie
     const cookieStore = await cookies()
-    const userId = cookieStore.get('bolaxo_user_id')?.value
+    const userId = cookieStore.get('afterfounder_user_id')?.value
 
     if (!userId) {
       return NextResponse.json(
@@ -178,7 +178,7 @@ export async function DELETE(
   try {
     // Get user from cookie
     const cookieStore = await cookies()
-    const userId = cookieStore.get('bolaxo_user_id')?.value
+    const userId = cookieStore.get('afterfounder_user_id')?.value
 
     if (!userId) {
       return NextResponse.json(

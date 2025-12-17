@@ -254,7 +254,7 @@ export default function ForMaklarePage() {
             <div>
               <h3 className="font-semibold mb-2">Hur funkar API-access?</h3>
               <p className="text-sm text-text-gray">
-                Premium-licensen inkluderar REST API för att integrera Bolagsplatsen med ditt CRM eller hemsida.
+                Premium-licensen inkluderar REST API för att integrera Afterfounder med ditt CRM eller hemsida.
               </p>
             </div>
           </div>
@@ -288,7 +288,7 @@ export default function ForMaklarePage() {
           )}
 
           <p className="text-xs text-text-gray mt-6">
-            Frågor? Kontakta maklare@bolagsplatsen.se eller ring 08-123 456 78
+            Frågor? Kontakta maklare@afterfounder.se eller ring 08-123 456 78
           </p>
         </div>
       </div>

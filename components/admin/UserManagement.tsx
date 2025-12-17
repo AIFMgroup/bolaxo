@@ -550,7 +550,7 @@ export default function UserManagement({ onUserSelect }: UserManagementProps) {
                 <label className="text-sm text-gray-500">Referenslänk</label>
                 <div className="flex items-center gap-2 mt-1">
                   <code className="flex-1 px-4 py-2 bg-gray-100 rounded-lg text-xs break-all">
-                    https://bolagsplatsen.se/ref/{showReferralModal.referralCode}
+                    https://afterfounder.se/ref/{showReferralModal.referralCode}
                   </code>
                 </div>
               </div>

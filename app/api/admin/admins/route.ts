@@ -8,7 +8,7 @@ const mockAdmins = [
   {
     id: 'admin-1',
     name: 'Anna Svensson',
-    email: 'anna@bolagsplatsen.se',
+    email: 'anna@afterfounder.se',
     role: 'super_admin',
     permissions: ['all'],
     status: 'active',
@@ -20,7 +20,7 @@ const mockAdmins = [
   {
     id: 'admin-2',
     name: 'Erik Nilsson',
-    email: 'erik@bolagsplatsen.se',
+    email: 'erik@afterfounder.se',
     role: 'admin',
     permissions: ['users', 'listings', 'transactions', 'moderation'],
     status: 'active',
@@ -32,7 +32,7 @@ const mockAdmins = [
   {
     id: 'admin-3',
     name: 'Maria Garcia',
-    email: 'maria@bolagsplatsen.se',
+    email: 'maria@afterfounder.se',
     role: 'moderator',
     permissions: ['listings', 'moderation', 'messages'],
     status: 'active',
@@ -44,7 +44,7 @@ const mockAdmins = [
   {
     id: 'admin-4',
     name: 'Johan Berg',
-    email: 'johan@bolagsplatsen.se',
+    email: 'johan@afterfounder.se',
     role: 'analyst',
     permissions: ['reports', 'analytics', 'financial'],
     status: 'active',
@@ -56,7 +56,7 @@ const mockAdmins = [
   {
     id: 'admin-5',
     name: 'Sofia Lundgren',
-    email: 'sofia@bolagsplatsen.se',
+    email: 'sofia@afterfounder.se',
     role: 'support',
     permissions: ['tickets', 'messages', 'users'],
     status: 'inactive',

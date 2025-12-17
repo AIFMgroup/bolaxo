@@ -16,7 +16,7 @@ const s3Client = new S3Client({
   },
 });
 
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || "bolagsplatsen-sme-documents";
+const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || "afterfounder-sme-documents";
 
 // File validation
 export function validateFileType(mimeType: string, category: "financial" | "documents"): boolean {

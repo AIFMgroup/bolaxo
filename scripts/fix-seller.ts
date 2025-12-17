@@ -53,7 +53,7 @@ async function fixSeller() {
     console.log('   Token:', token)
     console.log('   Giltig till:', expiresAt.toISOString())
     
-    const baseUrl = 'https://bolaxo-production.up.railway.app'
+    const baseUrl = 'https://afterfounder-production.up.railway.app'
     const magicLink = `${baseUrl}/auth/verify?token=${token}`
     
     console.log('\n🔗 Magic Link:')

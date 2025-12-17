@@ -10,7 +10,7 @@ export default function AboutPage() {
             VI FÖRENKLAR FÖRETAGSFÖRSÄLJNING
           </h1>
           <p className="text-2xl text-primary-navy leading-relaxed">
-            Bolagsplatsen skapades för att göra M&A transparent, trygg och tillgänglig för alla.
+            Afterfounder skapades för att göra M&A transparent, trygg och tillgänglig för alla.
           </p>
         </div>
       </section>
@@ -56,7 +56,7 @@ export default function AboutPage() {
                   Vi såg hur många små och medelstora företagare som ville sälja sitt livsverk, men saknade en modern, digital plattform för det. De flesta tvingades att engagera dyra traditionella mäklare eller leta långt och brett utan struktur.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Vi tror att teknologi kan göra denna process enklare, snabbare och mer tillgänglig. Därför skapade vi Bolagsplatsen - en plattform som automatiserar det omständiga och låter säljare och köpare fokusera på det som räknas.
+                  Vi tror att teknologi kan göra denna process enklare, snabbare och mer tillgänglig. Därför skapade vi Afterfounder - en plattform som automatiserar det omständiga och låter säljare och köpare fokusera på det som räknas.
                 </p>
               </div>
             </div>
@@ -68,7 +68,7 @@ export default function AboutPage() {
       <section className="py-24 bg-neutral-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-primary-navy mb-6">Teamet bakom Bolagsplatsen</h2>
+            <h2 className="text-4xl font-bold text-primary-navy mb-6">Teamet bakom Afterfounder</h2>
             <p className="text-xl text-primary-navy">
               Erfarna entreprenörer och tech-builders med passion för M&A
             </p>

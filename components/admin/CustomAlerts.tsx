@@ -39,7 +39,7 @@ export default function CustomAlerts() {
           threshold: formData.threshold ? parseInt(formData.threshold) : null,
           condition: '>=',
           notificationChannels: formData.channels,
-          recipients: ['admin@bolagsplatsen.se']
+          recipients: ['admin@afterfounder.se']
         })
       })
       loadAlerts()

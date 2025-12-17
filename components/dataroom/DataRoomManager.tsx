@@ -81,8 +81,8 @@ interface Props {
 type Tab = 'documents' | 'sharing'
 
 // LocalStorage key for demo documents
-const DEMO_DATAROOM_DOCS_KEY = 'bolaxo_demo_dataroom_docs'
-const DEMO_DATAROOM_FILES_KEY = 'bolaxo_demo_dataroom_files'
+const DEMO_DATAROOM_DOCS_KEY = 'afterfounder_demo_dataroom_docs'
+const DEMO_DATAROOM_FILES_KEY = 'afterfounder_demo_dataroom_files'
 
 // Save docs to localStorage for demo persistence
 const saveDemoDocsToStorage = (listingId: string, docs: Document[]) => {
@@ -159,7 +159,7 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Check if demo mode
-  const isDemo = listingId?.startsWith('demo') || (typeof window !== 'undefined' && document.cookie.includes('bolaxo_user_id=demo'))
+  const isDemo = listingId?.startsWith('demo') || (typeof window !== 'undefined' && document.cookie.includes('afterfounder_user_id=demo'))
 
   // Save to localStorage whenever docs change (for demo persistence)
   useEffect(() => {

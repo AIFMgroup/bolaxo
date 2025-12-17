@@ -10,7 +10,7 @@ const prisma = new PrismaClient()
 export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies()
-    const userId = cookieStore.get('bolaxo_user_id')?.value
+    const userId = cookieStore.get('afterfounder_user_id')?.value
 
     if (!userId) {
       return NextResponse.json(
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const cookieStore = await cookies()
-    const userId = cookieStore.get('bolaxo_user_id')?.value
+    const userId = cookieStore.get('afterfounder_user_id')?.value
 
     if (!userId) {
       return NextResponse.json(

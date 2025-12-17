@@ -705,7 +705,7 @@ async function main() {
   console.log('   Format: seller-obj-XXX@afterfounder.com (same password as above)')
   console.log('\n🔗 Direct URLs för investor demo:')
   console.log('   Transaction: /transaktion/demo-transaction-001')
-  console.log('   Full URL: https://bolaxo-production.up.railway.app/transaktion/demo-transaction-001')
+  console.log('   Full URL: https://afterfounder-production.up.railway.app/transaktion/demo-transaction-001')
   console.log('\n💡 Logga in via /login för att se dashboards med data!')
 }
 

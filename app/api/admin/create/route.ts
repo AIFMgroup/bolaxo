@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
         'Content-Type': 'application/json'
       },
       body: {
-        email: 'admin@bolagsplatsen.se',
+        email: 'admin@afterfounder.se',
         password: 'StrongPassword123!Min12Chars',
         name: 'Admin User (optional)',
         setupToken: 'your_admin_setup_token_here'

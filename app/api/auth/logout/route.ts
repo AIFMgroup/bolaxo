@@ -6,9 +6,9 @@ export async function POST(request: Request) {
     const cookieStore = await cookies()
     
     // Rensa alla session cookies
-    cookieStore.delete('bolaxo_user_id')
-    cookieStore.delete('bolaxo_user_email')
-    cookieStore.delete('bolaxo_user_role')
+    cookieStore.delete('afterfounder_user_id')
+    cookieStore.delete('afterfounder_user_email')
+    cookieStore.delete('afterfounder_user_role')
 
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { Lock, ArrowRight, Eye, EyeOff, Check } from 'lucide-react'
 
-const CORRECT_PASSWORD = 'bolaxo123%'
-const STORAGE_KEY = 'bolaxo_auth'
+const CORRECT_PASSWORD = 'afterfounder123%'
+const STORAGE_KEY = 'afterfounder_auth'
 
 export default function PasswordGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -109,7 +109,7 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
             {isSuccess ? 'Välkommen' : 'Ange lösenord'}
           </h1>
           <p className="text-sm text-gray-500">
-            {isSuccess ? 'Omdirigerar...' : 'Fortsätt till Bolaxo'}
+            {isSuccess ? 'Omdirigerar...' : 'Fortsätt till Afterfounder'}
           </p>
         </div>
 

@@ -53,9 +53,9 @@ export const defaultOrganizationData = {
   foundingDate: '2024',
   sameAs: [
     // Lägg till social media länkar här när de finns
-    // 'https://www.linkedin.com/company/bolaxo',
-    // 'https://twitter.com/bolaxo',
-    // 'https://www.facebook.com/bolaxo',
+    // 'https://www.linkedin.com/company/afterfounder',
+    // 'https://twitter.com/afterfounder',
+    // 'https://www.facebook.com/afterfounder',
   ],
   contactPoint: {
     '@type': 'ContactPoint',

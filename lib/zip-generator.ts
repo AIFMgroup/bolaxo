@@ -197,8 +197,8 @@ IMPORTANT NOTES:
 SUPPORT:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Questions about documents? Contact the seller through Bolagsplatsen.
-Questions about Bolagsplatsen? Visit support.bolagsplatsen.se
+Questions about documents? Contact the seller through Afterfounder.
+Questions about Afterfounder? Visit support.afterfounder.se
 `;
 
   return Buffer.from(readme, 'utf-8');
@@ -494,7 +494,7 @@ function generateHtmlIndex(content: HandoffPackageContent): Buffer {
     </div>
     
     <div class="footer">
-      <p>Advisor Handoff Package v1.0 | Bolagsplatsen SME Automation</p>
+      <p>Advisor Handoff Package v1.0 | Afterfounder SME Automation</p>
       <p>Listing ID: ${content.listingId}</p>
     </div>
   </div>

@@ -237,7 +237,7 @@ export async function POST(request: NextRequest) {
         await prisma.user.update({
           where: { id: itemId },
           data: {
-            email: `suspended-${itemId}@bolagsplatsen.se`,
+            email: `suspended-${itemId}@afterfounder.se`,
             name: 'Suspended User'
           }
         })
@@ -300,7 +300,7 @@ export async function PUT(request: NextRequest) {
         await prisma.user.update({
           where: { id: itemId },
           data: {
-            email: `suspended-${itemId}@bolagsplatsen.se`,
+            email: `suspended-${itemId}@afterfounder.se`,
             name: 'Suspended User'
           }
         })

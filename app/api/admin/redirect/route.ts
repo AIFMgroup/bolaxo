@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import * as jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'bolagsplatsen-admin-secret-key-2024'
+const JWT_SECRET = process.env.JWT_SECRET || ''
 
 export async function GET(request: NextRequest) {
   try {

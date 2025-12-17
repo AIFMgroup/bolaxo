@@ -11,7 +11,7 @@ const mockAlerts = [
     condition: '>=',
     status: 'active',
     notificationChannels: ['email', 'dashboard'],
-    recipients: ['admin@bolagsplatsen.se'],
+    recipients: ['admin@afterfounder.se'],
     createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
     lastTriggered: new Date(Date.now() - 2 * 60 * 60 * 1000),
     triggerCount: 47
@@ -24,7 +24,7 @@ const mockAlerts = [
     condition: '>=',
     status: 'active',
     notificationChannels: ['email', 'sms'],
-    recipients: ['security@bolagsplatsen.se'],
+    recipients: ['security@afterfounder.se'],
     createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
     lastTriggered: new Date(Date.now() - 12 * 60 * 60 * 1000),
     triggerCount: 12
@@ -37,7 +37,7 @@ const mockAlerts = [
     condition: null,
     status: 'inactive',
     notificationChannels: ['dashboard'],
-    recipients: ['team@bolagsplatsen.se'],
+    recipients: ['team@afterfounder.se'],
     createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
     lastTriggered: null,
     triggerCount: 0

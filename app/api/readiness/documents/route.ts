@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
 
     // Verify user has access to this listing
     const cookieStore = await cookies()
-    const userId = cookieStore.get('bolaxo_user_id')?.value
+    const userId = cookieStore.get('afterfounder_user_id')?.value
 
     if (!userId) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })

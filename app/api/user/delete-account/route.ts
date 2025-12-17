@@ -8,7 +8,7 @@ const prisma = new PrismaClient()
 export async function POST(request: Request) {
   try {
     const cookieStore = await cookies()
-    const userId = cookieStore.get('bolaxo_user_id')?.value
+    const userId = cookieStore.get('afterfounder_user_id')?.value
 
     if (!userId) {
       return NextResponse.json(
@@ -81,9 +81,9 @@ export async function POST(request: Request) {
     console.log(`GDPR Account Deletion: User ${user.email} (ID: ${userId}) deleted at ${new Date().toISOString()}`)
 
     // Rensa cookies
-    cookieStore.delete('bolaxo_user_id')
-    cookieStore.delete('bolaxo_user_email')
-    cookieStore.delete('bolaxo_user_role')
+    cookieStore.delete('afterfounder_user_id')
+    cookieStore.delete('afterfounder_user_email')
+    cookieStore.delete('afterfounder_user_role')
 
     return NextResponse.json({ 
       success: true,
