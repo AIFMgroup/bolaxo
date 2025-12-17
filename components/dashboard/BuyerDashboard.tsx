@@ -123,7 +123,7 @@ export default function BuyerDashboard({ userId }: BuyerDashboardProps) {
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <div className="relative bg-gradient-to-br from-navy via-navy/95 to-sky/30 rounded-3xl p-8 md:p-10 text-white overflow-hidden">
+      <div className="relative bg-navy rounded-3xl p-8 md:p-10 text-white overflow-hidden">
         {/* Background decorations */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-sky/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-rose/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
