@@ -42,7 +42,7 @@
     "leaflet": "^1.9.4",
     "lucide-react": "^0.546.0",
     "mammoth": "^1.11.0",
-    "next": "^15.0.0",
+    "next": "^15.5.9",
     "next-intl": "^4.4.0",
     "openai": "^4.52.0",
     "pdf-parse": "^2.4.5",
