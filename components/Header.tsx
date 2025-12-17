@@ -29,7 +29,6 @@ const getNavigation = (t: (key: string) => string): NavItem[] => {
       label: 'Marknadsplats',
       dropdown: [
         { label: 'Bolag till salu', href: '/sok' },
-        { label: 'Värdering', href: '/vardering' },
         { label: 'Sanitycheck', href: '/sanitycheck' },
         { label: 'Prismodeller', href: '/priser' },
         { label: 'Kunskapsbank', href: '/kunskapsbank' },
