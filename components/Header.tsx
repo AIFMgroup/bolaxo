@@ -2,13 +2,14 @@
 
 import Link from 'next/link'
 import { useState, useRef, useEffect, useMemo } from 'react'
-import { ChevronDown, Menu, X, User, LogOut, MessageSquare, LayoutDashboard } from 'lucide-react'
+import { ChevronDown, Menu, X, User, LogOut, MessageSquare, LayoutDashboard, Bell } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { usePathname } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import { LAUNCH_CONFIG } from '@/lib/launch-config'
 import LanguageSwitcher from './LanguageSwitcher'
 import NotificationCenter from './NotificationCenter'
+import MobileNotificationCenter from './MobileNotificationCenter'
 
 interface DropdownItem {
   label: string
@@ -181,8 +182,8 @@ export default function Header() {
           {/* Logo */}
           <Link href={`/${locale}`} className="flex items-center">
             <img 
-              src="/Logo/Trestor_logo.png" 
-              alt="Trestor Group - En del av Pactior Group" 
+              src="/Logo/afterfounder.png" 
+              alt="Afterfounder" 
               className="h-28 md:h-24 lg:h-20 w-auto"
             />
           </Link>
@@ -393,7 +394,7 @@ export default function Header() {
             style={{ position: 'relative', zIndex: 1 }}
           >
             <div className="flex justify-between items-center">
-              <img src="/Logo/Trestor_logo.png" alt="Trestor Group - En del av Pactior Group" className="h-20 w-auto" />
+              <img src="/Logo/afterfounder.png" alt="Afterfounder" className="h-20 w-auto" />
               <button
                 onClick={() => setIsMenuOpen(false)}
                 className="p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors"
@@ -470,6 +471,11 @@ export default function Header() {
               <div className="pt-6 mt-6 border-t border-gray-200">
                 {user ? (
                   <div className="space-y-1">
+                    {/* Mobile Notifications */}
+                    <div className="px-4 py-3">
+                      <MobileNotificationCenter />
+                    </div>
+                    
                     {(user.role === 'buyer' || user.role === 'seller') && (
                       <>
                         <Link

@@ -25,16 +25,12 @@ export default function Footer() {
             <Link href={`/${locale}`} className="inline-block mb-6">
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/Logo/Trestor_logo.png" 
-                  alt="Trestor Group" 
-                  width={50} 
+                  src="/Logo/afterfounder.png" 
+                  alt="Afterfounder" 
+                  width={150} 
                   height={50}
                   className="h-12 md:h-10 w-auto"
                 />
-                <div className="flex flex-col">
-                  <span className="text-xl md:text-lg font-bold text-white leading-tight">Trestor Group</span>
-                  <span className="text-xs text-gray-400 leading-tight">En del av Pactior Group</span>
-                </div>
               </div>
             </Link>
             <p className="text-gray-300 text-base md:text-sm leading-relaxed mb-6">

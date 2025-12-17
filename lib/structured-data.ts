@@ -48,7 +48,7 @@ export const defaultOrganizationData = {
   name: 'Trestor Group',
   alternateName: 'En del av Pactior Group',
   url: 'https://trestorgroup.se',
-  logo: 'https://trestorgroup.se/Logo/Trestor_logo.png',
+  logo: 'https://afterfounder.com/Logo/afterfounder.png',
   description: 'Sveriges smartaste företagsförmedling med verifierade uppgifter, NDA innan detaljer och kvalificerade köpare.',
   foundingDate: '2024',
   sameAs: [
@@ -164,7 +164,7 @@ export function generateArticleStructuredData(article: {
       name: 'Trestor Group',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://trestorgroup.se/Logo/Trestor_logo.png',
+        url: 'https://afterfounder.com/Logo/afterfounder.png',
       },
     },
     datePublished: article.datePublished,
