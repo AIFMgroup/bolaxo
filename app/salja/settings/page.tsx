@@ -1,8 +1,5 @@
 'use client'
 
-// Prevent static generation - requires auth context
-export const dynamic = 'force-dynamic'
-
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Save, Check, Loader2 } from 'lucide-react'

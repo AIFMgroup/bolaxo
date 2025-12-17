@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { DEMO_DEALS, DEMO_QA_QUESTIONS, DEMO_ENGAGEMENT_DATA } from '@/lib/demo-data'
 import { useLocale, useTranslations } from 'next-intl'
+import SellerStatistics from './SellerStatistics'
 
 const DEMO_MODE = true // Set to true to show demo data
 
@@ -330,6 +331,9 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
           <div className="text-sm text-graphite/70">Väntande ärenden</div>
         </div>
       </div>
+
+      {/* Detailed Statistics with Industry Comparison */}
+      <SellerStatistics />
 
       {/* Quick Tools Grid */}
       <div>
