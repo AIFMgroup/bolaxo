@@ -1143,11 +1143,35 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                     Kör om analys
                   </button>
                   <button
+                    onClick={async () => {
+                      if (!showAnalysis?.currentVersion?.id) return
+                      try {
+                        const res = await fetch(`/api/dataroom/analyze/export-pdf?versionId=${showAnalysis.currentVersion.id}`)
+                        if (res.ok) {
+                          const blob = await res.blob()
+                          const url = window.URL.createObjectURL(blob)
+                          const a = document.createElement('a')
+                          a.href = url
+                          a.download = `DD-Analys_${showAnalysis.title}.pdf`
+                          document.body.appendChild(a)
+                          a.click()
+                          window.URL.revokeObjectURL(url)
+                          document.body.removeChild(a)
+                        }
+                      } catch (err) {
+                        console.error('PDF export error:', err)
+                      }
+                    }}
+                    className="flex-1 px-5 py-3 bg-violet-600 text-white rounded-xl text-sm font-medium hover:bg-violet-700 transition-colors"
+                  >
+                    📄 Ladda ner PDF
+                  </button>
+                  <button
                     onClick={() => {
                       setShowAnalysis(null)
                       setAnalysisData(null)
                     }}
-                    className="flex-1 px-5 py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-colors"
+                    className="px-5 py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-colors"
                   >
                     Stäng
                   </button>

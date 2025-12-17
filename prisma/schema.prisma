@@ -66,6 +66,9 @@ model User {
   buyerQuestions       Question[]        @relation("BuyerQuestions")
   sellerAnswers        Answer[]          @relation("SellerAnswers")
   
+  // Saved searches
+  savedSearches        SavedSearch[]
+  
   // Engagement relations
   documentEngagement   DocumentEngagement[] @relation("BuyerEngagement")
   
@@ -1530,4 +1533,37 @@ model AdminSession {
   @@index([userId])
   @@index([token])
   @@index([expiresAt])
+}
+
+// ============================================
+// SAVED SEARCHES
+// ============================================
+
+model SavedSearch {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Search name
+  name          String
+  
+  // Search filters (stored as JSON)
+  filters       Json     // { industries: [], regions: [], priceMin: x, priceMax: y, revenueMin: x, etc }
+  
+  // Notification settings
+  notifyOnNew   Boolean  @default(true)  // Notify when new matching listings appear
+  notifyEmail   Boolean  @default(true)  // Send email notifications
+  notifyInApp   Boolean  @default(true)  // Send in-app notifications
+  
+  // Last notification tracking
+  lastNotifiedAt DateTime?
+  lastMatchCount Int     @default(0)     // Number of matches at last check
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([notifyOnNew])
+  @@index([lastNotifiedAt])
 }
