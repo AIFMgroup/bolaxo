@@ -45,9 +45,9 @@ export async function POST(request: NextRequest) {
         priceMax: true,
         employees: true,
         foundedYear: true,
-        businessModel: true,
-        growthRate: true,
+        revenueGrowthRate: true,
         description: true,
+        type: true,
       }
     })
 
@@ -138,8 +138,8 @@ Objektinformation:
          `${formatPrice(listing.priceMin)} - ${formatPrice(listing.priceMax)}` : 'Ej specificerat'}
 - Anställda: ${listing.employees || 'Ej specificerat'}
 - Grundat: ${listing.foundedYear || 'Ej specificerat'}
-- Affärsmodell: ${listing.businessModel || 'Ej specificerat'}
-- Tillväxt: ${listing.growthRate ? `${listing.growthRate}%` : 'Ej specificerat'}
+- Typ: ${listing.type || 'Ej specificerat'}
+- Tillväxt: ${listing.revenueGrowthRate ? `${listing.revenueGrowthRate}%` : 'Ej specificerat'}
 - Beskrivning: ${listing.description || 'Ingen beskrivning'}
 `
 
