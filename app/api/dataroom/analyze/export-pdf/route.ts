@@ -79,7 +79,10 @@ export async function GET(request: NextRequest) {
     // Return PDF with appropriate headers
     const filename = `DD-Analys_${docTitle.replace(/[^a-zA-Z0-9åäöÅÄÖ]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
 
-    return new NextResponse(pdfBuffer, {
+    // Convert Buffer to Uint8Array for NextResponse compatibility
+    const uint8Array = new Uint8Array(pdfBuffer)
+
+    return new NextResponse(uint8Array, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${filename}"`,
