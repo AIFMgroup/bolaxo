@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get the document version with analysis data
-    const version = await prisma.documentVersion.findUnique({
+    const version = await prisma.dataRoomDocumentVersion.findUnique({
       where: { id: versionId },
       include: {
         document: {
