@@ -417,27 +417,27 @@ export default function SearchPageContent() {
         </div>
       </div>
 
-      {/* Search and Filter Bar */}
+      {/* Search and Filter Bar - Mobile optimized */}
       <div className="sticky top-16 sm:top-20 md:top-24 z-20 bg-gradient-to-b from-white to-gray-50/50 backdrop-blur-md border-b border-gray-200 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 md:py-6">
-          <div className="flex flex-col gap-3 sm:gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-6">
+          <div className="flex flex-col gap-2.5 sm:gap-3 md:gap-4">
             {/* Search and Filter Toggle Row */}
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
-              {/* Enhanced Search Input with Suggestions */}
+              {/* Enhanced Search Input with Suggestions - Touch optimized */}
               <div className="flex-1 relative">
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary-blue/20 to-primary-dark/20 rounded-button blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500"></div>
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-gray group-focus-within:text-primary-blue transition-colors z-10" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-blue/20 to-primary-dark/20 rounded-xl blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500"></div>
+                  <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-gray group-focus-within:text-primary-blue transition-colors z-10" />
                   <input
                     type="text"
-                    placeholder="Sök företag, bransch eller region..."
+                    placeholder="Sök företag, bransch..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    className="relative w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 bg-white border-2 border-gray-200 rounded-button text-sm sm:text-base text-text-dark placeholder-text-gray
+                    className="relative w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3.5 sm:py-3.5 bg-white border-2 border-gray-200 rounded-xl text-base text-text-dark placeholder-text-gray
                       focus:border-primary-blue focus:outline-none focus:shadow-lg focus:shadow-primary-blue/10
-                      transition-all duration-300"
+                      transition-all duration-300 min-h-[48px]"
                   />
                   {/* Loading indicator during filtering */}
                   {isFiltering && (
@@ -476,25 +476,26 @@ export default function SearchPageContent() {
                 )}
               </div>
 
-              {/* Enhanced Filter Toggle */}
+              {/* Enhanced Filter Toggle - Touch optimized */}
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className={`
-                  relative px-4 sm:px-6 py-3 sm:py-3.5 rounded-lg font-medium text-sm sm:text-base
-                  transition-all duration-300 transform
+                  relative px-4 sm:px-6 py-3 sm:py-3.5 rounded-xl font-medium text-sm sm:text-base
+                  transition-all duration-300 transform min-h-[48px]
                   flex items-center justify-center gap-2 whitespace-nowrap
+                  active:scale-95
                   ${showFilters 
-                    ? 'bg-primary-navy text-white shadow-xl scale-105' 
+                    ? 'bg-primary-navy text-white shadow-xl sm:scale-105' 
                     : 'bg-white text-primary-navy border-2 border-primary-navy/30 hover:border-primary-navy hover:shadow-lg hover:bg-primary-navy/5'
                   }
                 `}
               >
-                <Filter className={`w-4 sm:w-5 h-4 sm:h-5 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+                <Filter className={`w-5 h-5 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
                 <span className="hidden sm:inline">Avancerade filter</span>
                 <span className="sm:hidden">Filter</span>
                 {activeFilterCount > 0 && (
                   <span className={`
-                    px-1.5 sm:px-2 py-0.5 rounded-full text-xs sm:text-sm font-bold
+                    px-2 py-0.5 rounded-full text-xs font-bold
                     ${showFilters ? 'bg-white text-primary-navy' : 'bg-primary-navy text-white'}
                     animate-pulse
                   `}>
@@ -505,12 +506,12 @@ export default function SearchPageContent() {
               </button>
             </div>
 
-            {/* Enhanced Collapsible Filters */}
+            {/* Enhanced Collapsible Filters - Mobile optimized */}
             {showFilters && (
               <div className="animate-slide-down">
-                <div className="bg-white rounded-button border border-gray-200 p-4 sm:p-6 shadow-inner">
+                <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 md:p-6 shadow-inner">
                   {/* Primary Filters Row - All equal width */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4 mb-3 sm:mb-4 md:mb-6">
                     {/* Industries Multi-Select */}
                     <div>
                       <MultiSelect
@@ -698,32 +699,34 @@ export default function SearchPageContent() {
         </div>
       </div>
 
-      {/* Comparison Floating Bar */}
+      {/* Comparison Floating Bar - Mobile optimized */}
       {comparisonIds.length > 0 && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-primary-navy text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Scale className="w-5 h-5" />
-            <span className="font-medium">{comparisonIds.length} bolag valda</span>
+        <div className="fixed bottom-20 lg:bottom-4 left-2 right-2 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-40 bg-primary-navy text-white px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl shadow-2xl flex items-center justify-between sm:justify-start gap-2 sm:gap-4" style={{ marginBottom: 'env(safe-area-inset-bottom)' }}>
+          <div className="flex items-center gap-2 min-w-0">
+            <Scale className="w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" />
+            <span className="font-medium text-sm sm:text-base truncate">{comparisonIds.length} valda</span>
           </div>
-          <button
-            onClick={() => setShowComparison(true)}
-            className="px-4 py-2 bg-white text-primary-navy rounded-xl text-sm font-semibold hover:bg-gray-100 transition-colors"
-          >
-            Jämför nu
-          </button>
-          <button
-            onClick={clearComparison}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            <button
+              onClick={() => setShowComparison(true)}
+              className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-primary-navy rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:bg-gray-100 active:bg-gray-200 transition-colors min-h-[36px]"
+            >
+              Jämför
+            </button>
+            <button
+              onClick={clearComparison}
+              className="p-1.5 sm:p-2 hover:bg-white/10 active:bg-white/20 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Comparison Modal */}
+      {/* Comparison Modal - Mobile optimized */}
       {showComparison && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center overflow-y-auto">
+          <div className="w-full sm:max-w-6xl max-h-[85vh] sm:max-h-[90vh] overflow-y-auto bg-white rounded-t-2xl sm:rounded-2xl sm:m-4">
             <ListingComparison 
               listingIds={comparisonIds}
               onRemove={removeFromComparison}

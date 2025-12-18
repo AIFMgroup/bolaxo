@@ -34,60 +34,60 @@ export default function HomePageContent() {
 
   return (
     <main className="bg-gray-50 min-h-screen">
-      {/* HERO SECTION */}
-      <section className="pt-32 pb-24 px-4 bg-gradient-to-b from-white to-gray-50">
+      {/* HERO SECTION - Mobile optimized */}
+      <section className="pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 md:pb-24 px-4 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-navy/5 text-navy px-4 py-2 rounded-full text-sm font-medium mb-8 animate-pulse-subtle">
-              <Sparkles className="w-4 h-4" />
-              Sveriges smartaste företagsförmedling
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-navy/5 text-navy px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium mb-6 sm:mb-8 animate-pulse-subtle">
+              <Sparkles className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+              <span className="truncate">Sveriges smartaste företagsförmedling</span>
             </div>
             
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-navy leading-tight mb-6">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-navy leading-tight mb-4 sm:mb-6 px-2">
               Köp och sälj företag
               <span className="block text-navy/60">tryggt och transparent</span>
             </h1>
             
             {/* Intro Text */}
-            <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2">
               Afterfounder (en del av Pactior Group) kopplar samman kvalificerade köpare med 
               verifierade säljare. Anonymt tills NDA är signerat.
             </p>
             
-            {/* Primary CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            {/* Primary CTAs - Mobile optimized */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-2">
               <Link
                 href={`/${locale}/sok`}
-                className="group relative inline-flex items-center justify-center gap-3 bg-navy text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 hover:scale-105 shadow-lg shadow-navy/25 hover:shadow-xl hover:shadow-navy/30"
+                className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 bg-navy text-white font-bold py-3.5 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-base sm:text-lg transition-all duration-300 active:scale-95 sm:hover:scale-105 shadow-lg shadow-navy/25 sm:hover:shadow-xl sm:hover:shadow-navy/30 min-h-[52px]"
               >
-                <Search className="w-5 h-5" />
-                Utforska bolag till salu
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                <Search className="w-4 sm:w-5 h-4 sm:h-5" />
+                <span className="truncate">Utforska bolag till salu</span>
+                <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5 transition-transform group-hover:translate-x-1 flex-shrink-0" />
               </Link>
               
               <Link
                 href={`/${locale}/salja/skapa-annons`}
-                className="group relative inline-flex items-center justify-center gap-3 bg-white text-navy font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 hover:scale-105 border-2 border-navy/20 hover:border-navy/40 shadow-lg shadow-gray-200/50"
+                className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 bg-white text-navy font-bold py-3.5 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-base sm:text-lg transition-all duration-300 active:scale-95 sm:hover:scale-105 border-2 border-navy/20 hover:border-navy/40 shadow-lg shadow-gray-200/50 min-h-[52px]"
               >
-                <FileText className="w-5 h-5" />
-                Annonsera ditt företag
+                <FileText className="w-4 sm:w-5 h-4 sm:h-5" />
+                <span className="truncate">Annonsera ditt företag</span>
               </Link>
             </div>
             
-            {/* Trust indicators */}
-            <div className="flex flex-wrap gap-8 justify-center text-sm text-gray-500">
-              <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-emerald-500" />
+            {/* Trust indicators - Mobile optimized */}
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-6 md:gap-8 justify-center text-xs sm:text-sm text-gray-500 px-2">
+              <div className="flex items-center justify-center gap-2">
+                <Lock className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                 <span>Anonymt tills NDA</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-emerald-500" />
+              <div className="flex items-center justify-center gap-2">
+                <Shield className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                 <span>Verifierade uppgifter</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-500" />
+              <div className="flex items-center justify-center gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                 <span>Inga success fees</span>
               </div>
             </div>
@@ -96,18 +96,18 @@ export default function HomePageContent() {
       </section>
 
       {/* Så fungerar det - 3 steg */}
-      <section className="py-24 px-4">
+      <section className="py-16 sm:py-20 md:py-24 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-block text-sm font-bold text-navy/60 uppercase tracking-widest mb-4">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
+            <span className="inline-block text-xs sm:text-sm font-bold text-navy/60 uppercase tracking-widest mb-3 sm:mb-4">
               Så fungerar det
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy px-2">
               Tre enkla steg till en lyckad affär
             </h2>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {/* Steg 1 */}
             <div className="relative bg-white p-8 rounded-3xl shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-navy/10 transition-all duration-500 group">
               <div className="absolute -top-4 -left-4 w-12 h-12 bg-navy text-white rounded-2xl flex items-center justify-center font-bold text-xl shadow-lg shadow-navy/30">
@@ -160,18 +160,18 @@ export default function HomePageContent() {
       </section>
 
       {/* För köpare och säljare */}
-      <section className="py-24 px-4 bg-white">
+      <section className="py-16 sm:py-20 md:py-24 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-block text-sm font-bold text-navy/60 uppercase tracking-widest mb-4">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
+            <span className="inline-block text-xs sm:text-sm font-bold text-navy/60 uppercase tracking-widest mb-3 sm:mb-4">
               Välj din roll
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy px-2">
               Oavsett om du köper eller säljer
             </h2>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             {/* För köpare */}
             <Link href={`/${locale}/investerarprofil`} className="group">
               <div className="h-full bg-navy text-white p-10 rounded-3xl transition-all duration-500 hover:scale-[1.02] shadow-xl shadow-navy/20 hover:shadow-2xl hover:shadow-navy/30">
@@ -238,84 +238,84 @@ export default function HomePageContent() {
       </section>
 
       {/* Varför Afterfounder */}
-      <section className="py-24 px-4">
+      <section className="py-16 sm:py-20 md:py-24 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-block text-sm font-bold text-navy/60 uppercase tracking-widest mb-4">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
+            <span className="inline-block text-xs sm:text-sm font-bold text-navy/60 uppercase tracking-widest mb-3 sm:mb-4">
               Fördelar
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy px-2">
               Varför välja Afterfounder?
             </h2>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             {/* Fördel 1 */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg shadow-gray-200/50 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-navy/5 rounded-xl flex items-center justify-center mb-4">
-                <Lock className="w-6 h-6 text-navy" />
+            <div className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg shadow-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-navy/5 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                <Lock className="w-5 sm:w-6 h-5 sm:h-6 text-navy" />
               </div>
-              <h3 className="font-bold text-navy mb-2">Anonymitet</h3>
-              <p className="text-sm text-gray-600">Ditt företag förblir anonymt tills köparen signerat NDA.</p>
+              <h3 className="font-bold text-navy mb-1.5 sm:mb-2 text-sm sm:text-base">Anonymitet</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Ditt företag förblir anonymt tills köparen signerat NDA.</p>
             </div>
             
             {/* Fördel 2 */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg shadow-gray-200/50 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-navy/5 rounded-xl flex items-center justify-center mb-4">
-                <Scale className="w-6 h-6 text-navy" />
+            <div className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg shadow-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-navy/5 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                <Scale className="w-5 sm:w-6 h-5 sm:h-6 text-navy" />
               </div>
-              <h3 className="font-bold text-navy mb-2">Inga success fees</h3>
-              <p className="text-sm text-gray-600">Fasta månadsavgifter istället för procentuella arvoden.</p>
+              <h3 className="font-bold text-navy mb-1.5 sm:mb-2 text-sm sm:text-base">Inga success fees</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Fasta månadsavgifter istället för procentuella arvoden.</p>
             </div>
             
             {/* Fördel 3 */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg shadow-gray-200/50 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-navy/5 rounded-xl flex items-center justify-center mb-4">
-                <Shield className="w-6 h-6 text-navy" />
+            <div className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg shadow-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-navy/5 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                <Shield className="w-5 sm:w-6 h-5 sm:h-6 text-navy" />
               </div>
-              <h3 className="font-bold text-navy mb-2">Verifierade uppgifter</h3>
-              <p className="text-sm text-gray-600">Alla annonser kvalitetsgranskas innan publicering.</p>
+              <h3 className="font-bold text-navy mb-1.5 sm:mb-2 text-sm sm:text-base">Verifierade uppgifter</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Alla annonser kvalitetsgranskas innan publicering.</p>
             </div>
             
             {/* Fördel 4 */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg shadow-gray-200/50 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-navy/5 rounded-xl flex items-center justify-center mb-4">
-                <MessageSquare className="w-6 h-6 text-navy" />
+            <div className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg shadow-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-navy/5 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                <MessageSquare className="w-5 sm:w-6 h-5 sm:h-6 text-navy" />
               </div>
-              <h3 className="font-bold text-navy mb-2">Säker kommunikation</h3>
-              <p className="text-sm text-gray-600">Inbyggd chatt och dokumenthantering i plattformen.</p>
+              <h3 className="font-bold text-navy mb-1.5 sm:mb-2 text-sm sm:text-base">Säker kommunikation</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Inbyggd chatt och dokumenthantering i plattformen.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Om oss - Pactior Group */}
-      <section className="py-24 px-4 bg-white">
+      <section className="py-16 sm:py-20 md:py-24 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-navy text-white p-10 md:p-16 rounded-3xl text-center shadow-2xl shadow-navy/30">
-            <span className="inline-block text-sm font-bold text-white/60 uppercase tracking-widest mb-4">
+          <div className="bg-navy text-white p-6 sm:p-10 md:p-16 rounded-2xl sm:rounded-3xl text-center shadow-2xl shadow-navy/30">
+            <span className="inline-block text-xs sm:text-sm font-bold text-white/60 uppercase tracking-widest mb-3 sm:mb-4">
               Trygghet & kompetens
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-white">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-white">
               En del av Pactior Group
             </h2>
-            <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto">
               Afterfounder utvecklas tillsammans med Pactior Group och erfarna M&A-rådgivare. 
               Kombinationen av modern teknologi och klassisk transaktionskompetens gör processen 
               både effektiv och trygg.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-8 flex-wrap">
+            <div className="mt-6 sm:mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8">
               <div className="flex items-center gap-2 text-white/60">
-                <Shield className="w-5 h-5" />
-                <span>Trygg process</span>
+                <Shield className="w-4 sm:w-5 h-4 sm:h-5" />
+                <span className="text-sm sm:text-base">Trygg process</span>
               </div>
               <div className="flex items-center gap-2 text-white/60">
-                <TrendingUp className="w-5 h-5" />
-                <span>Fintech-driven</span>
+                <TrendingUp className="w-4 sm:w-5 h-4 sm:h-5" />
+                <span className="text-sm sm:text-base">Fintech-driven</span>
               </div>
               <div className="flex items-center gap-2 text-white/60">
-                <Users className="w-5 h-5" />
-                <span>M&A-expertis</span>
+                <Users className="w-4 sm:w-5 h-4 sm:h-5" />
+                <span className="text-sm sm:text-base">M&A-expertis</span>
               </div>
             </div>
           </div>
@@ -323,49 +323,49 @@ export default function HomePageContent() {
       </section>
 
       {/* Prismodell */}
-      <section className="py-24 px-4">
+      <section className="py-16 sm:py-20 md:py-24 px-4">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-block text-sm font-bold text-navy/60 uppercase tracking-widest mb-4">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
+            <span className="inline-block text-xs sm:text-sm font-bold text-navy/60 uppercase tracking-widest mb-3 sm:mb-4">
               Transparent prissättning
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy mb-4">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy mb-3 sm:mb-4 px-2">
               Inga dolda avgifter
             </h2>
-            <p className="text-gray-600 max-w-xl mx-auto">
+            <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto px-2">
               För köpare är plattformen helt gratis. För säljare erbjuder vi fasta månadspaket.
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             {/* Köpare */}
-            <div className="bg-white p-8 rounded-3xl shadow-xl shadow-gray-200/50 border-2 border-emerald-100">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
-                  <Briefcase className="w-6 h-6 text-emerald-600" />
+            <div className="bg-white p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl shadow-xl shadow-gray-200/50 border-2 border-emerald-100">
+              <div className="flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-6">
+                <div className="w-10 sm:w-12 h-10 sm:h-12 bg-emerald-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Briefcase className="w-5 sm:w-6 h-5 sm:h-6 text-emerald-600" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-navy">För köpare</h3>
-                  <p className="text-emerald-600 font-semibold">Helt gratis</p>
+                  <h3 className="text-lg sm:text-xl font-bold text-navy">För köpare</h3>
+                  <p className="text-emerald-600 font-semibold text-sm sm:text-base">Helt gratis</p>
                 </div>
               </div>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-3 text-gray-600">
-                  <CheckCircle className="w-5 h-5 text-emerald-500" />
+              <ul className="space-y-2.5 sm:space-y-3 mb-4 sm:mb-6">
+                <li className="flex items-center gap-2.5 sm:gap-3 text-gray-600 text-sm sm:text-base">
+                  <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-emerald-500 flex-shrink-0" />
                   <span>Obegränsat sökande</span>
                 </li>
-                <li className="flex items-center gap-3 text-gray-600">
-                  <CheckCircle className="w-5 h-5 text-emerald-500" />
+                <li className="flex items-center gap-2.5 sm:gap-3 text-gray-600 text-sm sm:text-base">
+                  <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-emerald-500 flex-shrink-0" />
                   <span>NDA-förfrågningar</span>
                 </li>
-                <li className="flex items-center gap-3 text-gray-600">
-                  <CheckCircle className="w-5 h-5 text-emerald-500" />
+                <li className="flex items-center gap-2.5 sm:gap-3 text-gray-600 text-sm sm:text-base">
+                  <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-emerald-500 flex-shrink-0" />
                   <span>Direktkontakt med säljare</span>
                 </li>
               </ul>
               <Link
                 href={`/${locale}/investerarprofil`}
-                className="inline-flex items-center gap-2 text-navy font-semibold hover:text-navy/70 transition-colors"
+                className="inline-flex items-center gap-2 text-navy font-semibold hover:text-navy/70 transition-colors text-sm sm:text-base min-h-[44px]"
               >
                 Kom igång gratis
                 <ArrowRight className="w-4 h-4" />
@@ -373,33 +373,33 @@ export default function HomePageContent() {
             </div>
             
             {/* Säljare */}
-            <div className="bg-navy p-8 rounded-3xl shadow-xl shadow-navy/30 text-white">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
-                  <Building2 className="w-6 h-6 text-white" />
+            <div className="bg-navy p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl shadow-xl shadow-navy/30 text-white">
+              <div className="flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-6">
+                <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Building2 className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">För säljare</h3>
-                  <p className="text-white/60">Från 495 kr/mån</p>
+                  <h3 className="text-lg sm:text-xl font-bold text-white">För säljare</h3>
+                  <p className="text-white/60 text-sm sm:text-base">Från 495 kr/mån</p>
                 </div>
               </div>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-3 text-white/80">
-                  <CheckCircle className="w-5 h-5 text-emerald-400" />
+              <ul className="space-y-2.5 sm:space-y-3 mb-4 sm:mb-6">
+                <li className="flex items-center gap-2.5 sm:gap-3 text-white/80 text-sm sm:text-base">
+                  <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-emerald-400 flex-shrink-0" />
                   <span>Anonym annonsering</span>
                 </li>
-                <li className="flex items-center gap-3 text-white/80">
-                  <CheckCircle className="w-5 h-5 text-emerald-400" />
+                <li className="flex items-center gap-2.5 sm:gap-3 text-white/80 text-sm sm:text-base">
+                  <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-emerald-400 flex-shrink-0" />
                   <span>Smart matchning med köpare</span>
                 </li>
-                <li className="flex items-center gap-3 text-white/80">
-                  <CheckCircle className="w-5 h-5 text-emerald-400" />
+                <li className="flex items-center gap-2.5 sm:gap-3 text-white/80 text-sm sm:text-base">
+                  <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-emerald-400 flex-shrink-0" />
                   <span>Inga success fees</span>
                 </li>
               </ul>
               <Link
                 href={`/${locale}/priser`}
-                className="inline-flex items-center gap-2 text-white font-semibold hover:text-white/80 transition-colors"
+                className="inline-flex items-center gap-2 text-white font-semibold hover:text-white/80 transition-colors text-sm sm:text-base min-h-[44px]"
               >
                 Se alla paket
                 <ArrowRight className="w-4 h-4" />
@@ -410,30 +410,30 @@ export default function HomePageContent() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-4">
+      <section className="py-16 sm:py-20 md:py-24 px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-br from-navy to-navy/90 text-white p-10 md:p-16 rounded-3xl text-center shadow-2xl shadow-navy/40">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-white">
+          <div className="bg-gradient-to-br from-navy to-navy/90 text-white p-6 sm:p-10 md:p-16 rounded-2xl sm:rounded-3xl text-center shadow-2xl shadow-navy/40">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-white">
               Redo att ta nästa steg?
             </h2>
-            <p className="text-lg text-white/80 mb-10 max-w-xl mx-auto">
+            <p className="text-base sm:text-lg text-white/80 mb-6 sm:mb-8 md:mb-10 max-w-xl mx-auto">
               Utforska bolag till salu eller skapa en annons för ditt företag.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <Link
                 href={`/${locale}/sok`}
-                className="group inline-flex items-center justify-center gap-3 bg-white text-navy font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 hover:scale-105 shadow-lg"
+                className="group inline-flex items-center justify-center gap-2 sm:gap-3 bg-white text-navy font-bold py-3.5 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-base sm:text-lg transition-all duration-300 active:scale-95 sm:hover:scale-105 shadow-lg min-h-[52px]"
               >
-                <Search className="w-5 h-5" />
-                Sök bolag
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                <Search className="w-4 sm:w-5 h-4 sm:h-5" />
+                <span>Sök bolag</span>
+                <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 href={`/${locale}/salja/skapa-annons`}
-                className="group inline-flex items-center justify-center gap-3 bg-white/10 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 hover:bg-white/20 border border-white/20"
+                className="group inline-flex items-center justify-center gap-2 sm:gap-3 bg-white/10 text-white font-bold py-3.5 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-base sm:text-lg transition-all duration-300 active:bg-white/20 sm:hover:bg-white/20 border border-white/20 min-h-[52px]"
               >
-                <FileText className="w-5 h-5" />
-                Skapa annons
+                <FileText className="w-4 sm:w-5 h-4 sm:h-5" />
+                <span>Skapa annons</span>
               </Link>
             </div>
           </div>

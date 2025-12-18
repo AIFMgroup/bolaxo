@@ -2,6 +2,113 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   MOBILE-FIRST OPTIMIZATIONS
+   ============================================ */
+
+/* Safe area padding for notched phones (iPhone X+) */
+:root {
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+}
+
+/* Prevent zooming on inputs on iOS */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Minimum touch target size (44px as per Apple/Google guidelines) */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Better tap highlighting */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    -webkit-tap-highlight-color: rgba(31, 60, 88, 0.1);
+  }
+}
+
+/* Prevent pull-to-refresh on mobile when not needed */
+.no-pull-refresh {
+  overscroll-behavior-y: contain;
+}
+
+/* Smooth scrolling for touch devices */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Mobile-friendly spacing utilities */
+@layer utilities {
+  .pb-safe {
+    padding-bottom: max(1rem, var(--safe-area-bottom));
+  }
+  
+  .pt-safe {
+    padding-top: max(0.5rem, var(--safe-area-top));
+  }
+  
+  .mb-safe {
+    margin-bottom: max(1rem, var(--safe-area-bottom));
+  }
+  
+  /* Mobile bottom navigation spacer */
+  .mb-mobile-nav {
+    margin-bottom: calc(70px + var(--safe-area-bottom));
+  }
+  
+  @media (min-width: 1024px) {
+    .mb-mobile-nav {
+      margin-bottom: 0;
+    }
+  }
+  
+  /* Tap-friendly button sizes */
+  .btn-mobile {
+    @apply min-h-[44px] px-4 py-3;
+  }
+  
+  /* Hide on mobile, show on desktop */
+  .desktop-only {
+    @apply hidden lg:block;
+  }
+  
+  /* Show on mobile, hide on desktop */
+  .mobile-only {
+    @apply block lg:hidden;
+  }
+  
+  /* Better spacing for small screens */
+  .mobile-padding {
+    @apply px-3 sm:px-4 md:px-6 lg:px-8;
+  }
+  
+  /* Stack on mobile, row on desktop */
+  .mobile-stack {
+    @apply flex flex-col sm:flex-row;
+  }
+  
+  /* Full width on mobile, auto on desktop */
+  .mobile-full {
+    @apply w-full sm:w-auto;
+  }
+}
+
 /* Pulsating shadow animation for CTA buttons */
 @keyframes pulse-shadow {
   0% {
@@ -129,44 +236,48 @@
 }
 
 @layer components {
-  /* 🎨 Buttons - Klarna-inspirerad stil */
+  /* 🎨 Buttons - Klarna-inspirerad stil med touch optimization */
   .btn-primary {
-    @apply bg-navy text-white px-6 py-3 rounded-full font-medium 
-           hover:bg-opacity-90 hover:shadow-lg
-           transition-all duration-300;
+    @apply bg-navy text-white px-5 sm:px-6 py-3 sm:py-3 rounded-xl sm:rounded-full font-medium 
+           hover:bg-opacity-90 hover:shadow-lg active:scale-95
+           transition-all duration-300
+           min-h-[44px] flex items-center justify-center;
   }
   
   .btn-secondary {
-    @apply bg-rose text-navy px-6 py-3 rounded-full font-medium 
-           hover:bg-coral hover:shadow-md
-           transition-all duration-300;
+    @apply bg-rose text-navy px-5 sm:px-6 py-3 sm:py-3 rounded-xl sm:rounded-full font-medium 
+           hover:bg-coral hover:shadow-md active:scale-95
+           transition-all duration-300
+           min-h-[44px] flex items-center justify-center;
   }
   
   .btn-outline {
-    @apply border-2 border-navy text-navy px-6 py-3 rounded-full font-medium 
-           hover:bg-navy hover:text-white
-           transition-all duration-300;
+    @apply border-2 border-navy text-navy px-5 sm:px-6 py-3 sm:py-3 rounded-xl sm:rounded-full font-medium 
+           hover:bg-navy hover:text-white active:scale-95
+           transition-all duration-300
+           min-h-[44px] flex items-center justify-center;
   }
   
   .btn-ghost {
-    @apply text-sky px-4 py-2 rounded-full font-medium 
-           hover:bg-sky hover:bg-opacity-10
-           transition-all duration-300;
+    @apply text-sky px-4 py-2 rounded-xl sm:rounded-full font-medium 
+           hover:bg-sky hover:bg-opacity-10 active:bg-opacity-20
+           transition-all duration-300
+           min-h-[44px] flex items-center justify-center;
   }
   
-  /* 🎴 Cards */
+  /* 🎴 Cards - Mobile optimized */
   .card {
-    @apply bg-white rounded-2xl shadow-sm p-6 
+    @apply bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-5 md:p-6 
            hover:shadow-md border border-gray-soft
            transition-all duration-300;
   }
   
   .card-interactive {
-    @apply card cursor-pointer transform hover:-translate-y-1;
+    @apply card cursor-pointer transform hover:-translate-y-1 active:scale-[0.98];
   }
   
   .card-accent {
-    @apply bg-sand rounded-2xl p-6 shadow-sm
+    @apply bg-sand rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm
            border border-sand;
   }
   
@@ -181,26 +292,29 @@
            transition-colors duration-200;
   }
   
-  /* 📝 Inputs */
+  /* 📝 Inputs - Mobile optimized (min 16px font for iOS) */
   .input {
-    @apply w-full px-4 py-3 rounded-xl border-2 border-gray-soft
+    @apply w-full px-3 sm:px-4 py-3 sm:py-3 rounded-xl border-2 border-gray-soft
            focus:border-sky focus:outline-none focus:ring-2 focus:ring-sky focus:ring-opacity-20
-           bg-white text-graphite
-           transition-all duration-200;
+           bg-white text-graphite text-base
+           transition-all duration-200
+           min-h-[48px];
   }
   
   .input-field {
-    @apply w-full px-4 py-3 rounded-lg border-2 border-primary-navy/30
+    @apply w-full px-3 sm:px-4 py-3 sm:py-3 rounded-lg sm:rounded-xl border-2 border-primary-navy/30
            focus:border-primary-navy focus:outline-none focus:ring-2 focus:ring-primary-navy/20
-           bg-white text-graphite shadow-sm
-           transition-all duration-200;
+           bg-white text-graphite shadow-sm text-base
+           transition-all duration-200
+           min-h-[48px];
   }
   
   .textarea-field {
-    @apply w-full px-4 py-3 rounded-lg border-2 border-primary-navy/30
+    @apply w-full px-3 sm:px-4 py-3 sm:py-3 rounded-lg sm:rounded-xl border-2 border-primary-navy/30
            focus:border-primary-navy focus:outline-none focus:ring-2 focus:ring-primary-navy/20
-           bg-white text-graphite shadow-sm
-           transition-all duration-200 resize-none;
+           bg-white text-graphite shadow-sm text-base
+           transition-all duration-200 resize-none
+           min-h-[100px];
   }
   
   .input-error {
@@ -338,33 +452,33 @@
     background: linear-gradient(135deg, #A9D2DA 0%, #CBE3CF 100%);
   }
   
-  /* 📱 Responsive Typography */
+  /* 📱 Responsive Typography - Mobile optimized */
   .heading-xl {
-    @apply text-4xl md:text-5xl lg:text-6xl font-bold text-navy leading-tight;
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-navy leading-tight;
   }
   
   .heading-lg {
-    @apply text-3xl md:text-4xl lg:text-5xl font-bold text-navy leading-tight;
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-navy leading-tight;
   }
   
   .heading-md {
-    @apply text-2xl md:text-3xl font-bold text-navy leading-snug;
+    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-navy leading-snug;
   }
   
   .heading-sm {
-    @apply text-xl md:text-2xl font-semibold text-navy leading-snug;
+    @apply text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-navy leading-snug;
   }
   
   .body-lg {
-    @apply text-lg md:text-xl text-graphite leading-relaxed;
+    @apply text-base sm:text-lg md:text-xl text-graphite leading-relaxed;
   }
   
   .body-md {
-    @apply text-base md:text-lg text-graphite leading-relaxed;
+    @apply text-sm sm:text-base md:text-lg text-graphite leading-relaxed;
   }
   
   .body-sm {
-    @apply text-sm md:text-base text-graphite leading-relaxed;
+    @apply text-xs sm:text-sm md:text-base text-graphite leading-relaxed;
   }
 }
 

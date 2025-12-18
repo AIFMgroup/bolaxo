@@ -11,6 +11,7 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import AuthProviderWrapper from '@/components/AuthProviderWrapper'
 import ToastProviderWrapper from '@/components/ToastProviderWrapper'
 import PasswordGateWrapper from '@/components/PasswordGateWrapper'
+import MobileBottomNav from '@/components/MobileBottomNav'
 
 // Ensure dynamic rendering for locale routes
 export const dynamic = 'force-dynamic'
@@ -53,8 +54,9 @@ export default async function LocaleLayout({
               <ToastProviderWrapper>
                 <ErrorBoundary>
                   <Header />
-                  <main>{children}</main>
+                  <main className="pb-20 lg:pb-0">{children}</main>
                   <Footer />
+                  <MobileBottomNav />
                   <CookieConsent />
                   <ChatWidget />
                 </ErrorBoundary>

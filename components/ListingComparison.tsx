@@ -122,50 +122,119 @@ export function ListingComparison({ listingIds = [], onRemove, onClose }: Props)
   const employees = listings.map(l => l.employees || 0)
 
   return (
-    <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-navy text-white">
-        <div className="flex items-center gap-3">
-          <span className="text-xl">⚖️</span>
-          <h2 className="font-semibold">Jämförelse</h2>
-          <span className="px-2 py-0.5 bg-white/20 text-white text-xs rounded-full">
+      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 flex items-center justify-between bg-navy text-white sticky top-0 z-10">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <span className="text-lg sm:text-xl">⚖️</span>
+          <h2 className="font-semibold text-sm sm:text-base">Jämförelse</h2>
+          <span className="px-2 py-0.5 bg-white/20 text-white text-[10px] sm:text-xs rounded-full">
             {listings.length} bolag
           </span>
         </div>
         {onClose && (
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label="Stäng"
           >
             ✕
           </button>
         )}
       </div>
 
-      {/* Company Headers */}
-      <div className="grid" style={{ gridTemplateColumns: `200px repeat(${listings.length}, 1fr)` }}>
-        <div className="p-4 bg-gray-50 font-medium text-gray-500 text-sm">Nyckeltal</div>
+      {/* Mobile View - Stacked cards */}
+      <div className="md:hidden">
         {listings.map((listing, idx) => (
-          <div key={listing.id} className="p-4 border-l border-gray-100 bg-gray-50">
-            <div className="flex items-start justify-between">
+          <div key={listing.id} className={`p-4 ${idx > 0 ? 'border-t border-gray-200' : ''}`}>
+            <div className="flex items-start justify-between mb-3">
               <div>
                 <h3 className="font-semibold text-gray-900 text-sm">
                   {listing.anonymousTitle || listing.companyName}
                 </h3>
-                <p className="text-xs text-gray-500 mt-0.5">{listing.industry}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{listing.industry} • {listing.region}</p>
               </div>
               {onRemove && (
                 <button
                   onClick={() => onRemove(listing.id)}
-                  className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                  className="p-2 text-gray-400 hover:text-red-500 transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center"
                 >
                   ✕
                 </button>
               )}
             </div>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <p className="text-gray-500 text-xs mb-0.5">💰 Pris</p>
+                <p className={`font-medium ${getComparisonClass(askingPrices, idx, false)}`}>
+                  {listing.askingPrice ? formatCurrency(listing.askingPrice) : '-'}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-xs mb-0.5">📊 Omsättning</p>
+                <p className={`font-medium ${getComparisonClass(revenues, idx)}`}>
+                  {listing.revenue ? formatCurrency(listing.revenue) : '-'}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-xs mb-0.5">💵 Vinst</p>
+                <p className={`font-medium ${getComparisonClass(profits, idx)}`}>
+                  {listing.profit ? formatCurrency(listing.profit) : '-'}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-xs mb-0.5">📈 Multipel</p>
+                <p className="font-medium">
+                  {calculateMultiple(listing.askingPrice || 0, listing.revenue || 0)}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-xs mb-0.5">👥 Anställda</p>
+                <p className={`font-medium ${getComparisonClass(employees, idx)}`}>
+                  {listing.employees || '-'}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-xs mb-0.5">📅 Etablerad</p>
+                <p className="font-medium">{listing.establishedYear || '-'}</p>
+              </div>
+            </div>
+            <Link
+              href={`/objekt/${listing.id}`}
+              className="mt-4 block w-full px-4 py-2.5 bg-navy text-white text-sm font-medium rounded-xl text-center hover:bg-navy/90 active:bg-navy/80 transition-colors min-h-[44px] flex items-center justify-center"
+            >
+              Visa detaljer
+            </Link>
           </div>
         ))}
       </div>
+
+      {/* Desktop View - Table layout */}
+      <div className="hidden md:block">
+        {/* Company Headers */}
+        <div className="grid" style={{ gridTemplateColumns: `200px repeat(${listings.length}, 1fr)` }}>
+          <div className="p-4 bg-gray-50 font-medium text-gray-500 text-sm">Nyckeltal</div>
+          {listings.map((listing, idx) => (
+            <div key={listing.id} className="p-4 border-l border-gray-100 bg-gray-50">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="font-semibold text-gray-900 text-sm">
+                    {listing.anonymousTitle || listing.companyName}
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-0.5">{listing.industry}</p>
+                </div>
+                {onRemove && (
+                  <button
+                    onClick={() => onRemove(listing.id)}
+                    className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
 
       {/* Comparison Rows */}
       <div className="divide-y divide-gray-50">
@@ -253,23 +322,24 @@ export function ListingComparison({ listingIds = [], onRemove, onClose }: Props)
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Actions */}
-      <div className="p-4 bg-gray-50 border-t border-gray-100">
-        <div className="grid gap-3" style={{ gridTemplateColumns: `200px repeat(${listings.length}, 1fr)` }}>
-          <div></div>
-          {listings.map((listing) => (
-            <div key={listing.id} className="flex gap-2">
-              <Link
-                href={`/marknadsplats/${listing.id}`}
-                className="flex-1 px-4 py-2 bg-navy text-white text-sm font-medium rounded-xl text-center hover:bg-navy/90 transition-colors"
-              >
-                Visa detaljer
-              </Link>
-            </div>
-          ))}
+        {/* Actions */}
+        <div className="p-4 bg-gray-50 border-t border-gray-100">
+          <div className="grid gap-3" style={{ gridTemplateColumns: `200px repeat(${listings.length}, 1fr)` }}>
+            <div></div>
+            {listings.map((listing) => (
+              <div key={listing.id} className="flex gap-2">
+                <Link
+                  href={`/objekt/${listing.id}`}
+                  className="flex-1 px-4 py-2 bg-navy text-white text-sm font-medium rounded-xl text-center hover:bg-navy/90 transition-colors"
+                >
+                  Visa detaljer
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
+      </div>
       </div>
     </div>
   )

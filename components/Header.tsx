@@ -335,13 +335,13 @@ export default function Header() {
               </>
             )}
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Optimized for touch */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2.5 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors active:bg-gray-200"
+              className="lg:hidden p-3 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors active:bg-gray-200 min-h-[48px] min-w-[48px] flex items-center justify-center"
               aria-label={t('common.openMenu')}
             >
-              {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
@@ -389,17 +389,17 @@ export default function Header() {
         >
           {/* Header Section - Fixed */}
           <div 
-            className="bg-white border-b border-gray-200 px-6 py-5 flex-shrink-0"
-            style={{ position: 'relative', zIndex: 1 }}
+            className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4 flex-shrink-0"
+            style={{ position: 'relative', zIndex: 1, paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
           >
             <div className="flex justify-between items-center">
-              <img src="/Logo/afterfounder.png" alt="Afterfounder" className="h-36 w-auto" />
+              <img src="/Logo/afterfounder.png" alt="Afterfounder" className="h-28 sm:h-36 w-auto" />
               <button
                 onClick={() => setIsMenuOpen(false)}
-                className="p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors"
+                className="p-3 rounded-xl hover:bg-gray-100 active:bg-gray-200 transition-colors min-h-[48px] min-w-[48px] flex items-center justify-center"
                 aria-label={t('common.closeMenu')}
               >
-                <X className="w-7 h-7 text-gray-700" />
+                <X className="w-6 h-6 text-gray-700" />
               </button>
             </div>
           </div>
@@ -413,26 +413,26 @@ export default function Header() {
               overflowX: 'hidden'
             }}
           >
-            <div className="px-6 pt-6 pb-32 space-y-1">
-              {/* Mobile navigation */}
+            <div className="px-4 sm:px-6 pt-4 sm:pt-6 pb-32 space-y-1">
+              {/* Mobile navigation - Touch optimized */}
               {navigation.map((item, index) => (
                 <div key={item.label}>
                   {item.href ? (
-                    <div className="space-y-1">
+                    <div className="space-y-0.5">
                       <Link
                         href={getLocalizedPath(item.href || '/')}
-                        className="block text-lg font-semibold text-gray-900 hover:text-primary-navy transition-colors py-3 px-4 rounded-lg hover:bg-gray-50 active:bg-gray-100"
+                        className="block text-base sm:text-lg font-semibold text-gray-900 hover:text-primary-navy transition-colors py-3.5 px-4 rounded-xl hover:bg-gray-50 active:bg-gray-100 min-h-[48px] flex items-center"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {item.label}
                       </Link>
                       {item.dropdown && (
-                        <div className="space-y-1 pl-2">
+                        <div className="space-y-0.5 pl-2">
                           {item.dropdown.map((dropdownItem) => (
                             <Link
                               key={dropdownItem.href}
                               href={getLocalizedPath(dropdownItem.href)}
-                              className="block text-base text-gray-600 hover:text-primary-navy transition-colors py-2.5 px-6 rounded-lg hover:bg-gray-50 active:bg-gray-100"
+                              className="block text-sm sm:text-base text-gray-600 hover:text-primary-navy transition-colors py-3 px-5 rounded-xl hover:bg-gray-50 active:bg-gray-100 min-h-[44px] flex items-center"
                               onClick={() => setIsMenuOpen(false)}
                             >
                               {dropdownItem.label}
@@ -442,15 +442,15 @@ export default function Header() {
                       )}
                     </div>
                   ) : (
-                    <div className="space-y-1">
-                      <div className="text-lg font-semibold text-gray-900 px-4 py-3">{item.label}</div>
+                    <div className="space-y-0.5">
+                      <div className="text-base sm:text-lg font-semibold text-gray-900 px-4 py-3.5 min-h-[48px] flex items-center">{item.label}</div>
                       {item.dropdown && (
-                        <div className="space-y-1 pl-2">
+                        <div className="space-y-0.5 pl-2">
                           {item.dropdown.map((dropdownItem) => (
                             <Link
                               key={dropdownItem.href}
                               href={getLocalizedPath(dropdownItem.href)}
-                              className="block text-base text-gray-600 hover:text-primary-navy transition-colors py-2.5 px-6 rounded-lg hover:bg-gray-50 active:bg-gray-100"
+                              className="block text-sm sm:text-base text-gray-600 hover:text-primary-navy transition-colors py-3 px-5 rounded-xl hover:bg-gray-50 active:bg-gray-100 min-h-[44px] flex items-center"
                               onClick={() => setIsMenuOpen(false)}
                             >
                               {dropdownItem.label}
@@ -466,12 +466,12 @@ export default function Header() {
                 </div>
               ))}
               
-              {/* Mobile user menu */}
-              <div className="pt-6 mt-6 border-t border-gray-200">
+              {/* Mobile user menu - Touch optimized */}
+              <div className="pt-4 mt-4 border-t border-gray-200">
                 {user ? (
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     {/* Mobile Notifications */}
-                    <div className="px-4 py-3">
+                    <div className="px-4 py-2">
                       <MobileNotificationCenter />
                     </div>
                     
@@ -479,28 +479,28 @@ export default function Header() {
                       <>
                         <Link
                           href={getLocalizedPath(user.role === 'buyer' ? '/kopare/chat' : '/salja/chat')}
-                          className="flex items-center space-x-3 text-base font-medium text-gray-900 hover:text-primary-navy transition-colors py-3 px-4 rounded-lg hover:bg-gray-50 active:bg-gray-100"
+                          className="flex items-center space-x-3 text-sm sm:text-base font-medium text-gray-900 hover:text-primary-navy transition-colors py-3.5 px-4 rounded-xl hover:bg-gray-50 active:bg-gray-100 min-h-[48px]"
                           onClick={() => setIsMenuOpen(false)}
                         >
-                          <MessageSquare className="w-5 h-5" />
+                          <MessageSquare className="w-5 h-5 flex-shrink-0" />
                           <span>{t('header.messages')}</span>
                         </Link>
                         <Link
                           href={getLocalizedPath(user.role === 'buyer' ? '/kopare/settings' : '/salja/settings')}
-                          className="flex items-center space-x-3 text-base font-medium text-gray-900 hover:text-primary-navy transition-colors py-3 px-4 rounded-lg hover:bg-gray-50 active:bg-gray-100"
+                          className="flex items-center space-x-3 text-sm sm:text-base font-medium text-gray-900 hover:text-primary-navy transition-colors py-3.5 px-4 rounded-xl hover:bg-gray-50 active:bg-gray-100 min-h-[48px]"
                           onClick={() => setIsMenuOpen(false)}
                         >
-                          <User className="w-5 h-5" />
+                          <User className="w-5 h-5 flex-shrink-0" />
                           <span>{t('header.profile')}</span>
                         </Link>
                       </>
                     )}
                     <Link
                       href={getLocalizedPath('/dashboard')}
-                      className="flex items-center space-x-3 text-base font-medium text-gray-900 hover:text-primary-navy transition-colors py-3 px-4 rounded-lg hover:bg-gray-50 active:bg-gray-100"
+                      className="flex items-center space-x-3 text-sm sm:text-base font-medium text-gray-900 hover:text-primary-navy transition-colors py-3.5 px-4 rounded-xl hover:bg-gray-50 active:bg-gray-100 min-h-[48px]"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <LayoutDashboard className="w-5 h-5" />
+                      <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
                       <span>{t('header.dashboard')}</span>
                     </Link>
                     <button
@@ -508,24 +508,24 @@ export default function Header() {
                         logout()
                         setIsMenuOpen(false)
                       }}
-                      className="flex items-center space-x-3 text-base font-medium text-red-600 hover:text-red-700 transition-colors w-full py-3 px-4 rounded-lg hover:bg-red-50 active:bg-red-100 text-left"
+                      className="flex items-center space-x-3 text-sm sm:text-base font-medium text-red-600 hover:text-red-700 transition-colors w-full py-3.5 px-4 rounded-xl hover:bg-red-50 active:bg-red-100 text-left min-h-[48px]"
                     >
-                      <LogOut className="w-5 h-5" />
+                      <LogOut className="w-5 h-5 flex-shrink-0" />
                       <span>{t('common.logout')}</span>
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-2 px-2">
                     <Link
                       href={getLocalizedPath('/login')}
-                      className="block text-lg font-semibold text-gray-900 hover:text-primary-navy transition-colors py-3 px-4 rounded-lg hover:bg-gray-50 active:bg-gray-100"
+                      className="block text-base sm:text-lg font-semibold text-gray-900 hover:text-primary-navy transition-colors py-3.5 px-4 rounded-xl hover:bg-gray-50 active:bg-gray-100 min-h-[48px] flex items-center"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {t('common.login')}
                     </Link>
                     <Link
                       href={getLocalizedPath('/registrera')}
-                      className="block w-full text-center px-6 py-4 bg-primary-navy text-white rounded-lg font-semibold text-base hover:bg-primary-navy/90 active:bg-primary-navy/80 transition-all shadow-md active:shadow-sm"
+                      className="block w-full text-center px-6 py-4 bg-primary-navy text-white rounded-xl font-semibold text-base hover:bg-primary-navy/90 active:bg-primary-navy/80 transition-all shadow-md active:shadow-sm min-h-[52px] flex items-center justify-center"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {t('header.getStarted')}
