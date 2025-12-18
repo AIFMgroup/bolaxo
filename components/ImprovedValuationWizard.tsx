@@ -1805,8 +1805,8 @@ export default function ImprovedValuationWizard({ onClose, variant = 'modal' }: 
               </div>
             </div>
             
-            {/* Step indicators */}
-            <div className="flex items-center justify-between mt-6 overflow-x-auto pb-2">
+            {/* Step indicators - horizontal scroll on mobile */}
+            <div className="flex items-center gap-1 sm:gap-0 sm:justify-between mt-4 sm:mt-6 overflow-x-auto pb-2 -mx-4 sm:mx-0 px-4 sm:px-0 scrollbar-hide">
               {steps.map((step) => {
                 const Icon = step.icon
                 const isActive = currentStep === step.id
@@ -1822,24 +1822,24 @@ export default function ImprovedValuationWizard({ onClose, variant = 'modal' }: 
                     }}
                     disabled={step.id > currentStep}
                     className={`
-                      flex flex-col items-center min-w-[80px] p-2 rounded-lg transition-all
+                      flex flex-col items-center min-w-[60px] sm:min-w-[80px] p-1.5 sm:p-2 rounded-lg transition-all flex-shrink-0
                       ${isActive ? 'bg-primary-navy/10' : ''}
                       ${isCompleted ? 'cursor-pointer hover:bg-gray-50' : ''}
                       ${step.id > currentStep ? 'opacity-50 cursor-not-allowed' : ''}
                     `}
                   >
                     <div className={`
-                      w-10 h-10 rounded-full flex items-center justify-center mb-2 transition-all
+                      w-8 sm:w-10 h-8 sm:h-10 rounded-full flex items-center justify-center mb-1 sm:mb-2 transition-all
                       ${isActive ? 'bg-primary-navy text-white' : ''}
                       ${isCompleted ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'}
                     `}>
                       {isCompleted ? (
-                        <CheckCircle className="w-5 h-5" />
+                        <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5" />
                       ) : (
-                        <Icon className="w-5 h-5" />
+                        <Icon className="w-4 sm:w-5 h-4 sm:h-5" />
                       )}
                     </div>
-                    <span className={`text-xs font-medium ${isActive ? 'text-primary-navy' : 'text-gray-600'}`}>
+                    <span className={`text-[10px] sm:text-xs font-medium text-center leading-tight ${isActive ? 'text-primary-navy' : 'text-gray-600'}`}>
                       {step.title}
                     </span>
                   </button>
@@ -1849,26 +1849,26 @@ export default function ImprovedValuationWizard({ onClose, variant = 'modal' }: 
           </div>
           
           {/* Content */}
-          <div className="flex-1 overflow-y-auto px-8 py-6" ref={scrollRef}>
+          <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6" ref={scrollRef}>
             {renderStepContent()}
           </div>
           
           {/* Footer */}
-          <div className="px-8 py-6 border-t border-gray-200 bg-gray-50">
-            <div className="flex justify-between items-center">
+          <div className="px-4 sm:px-8 py-4 sm:py-6 border-t border-gray-200 bg-gray-50 pb-[calc(1rem+var(--sab))] sm:pb-6">
+            <div className="flex justify-between items-center gap-2">
               <button
                 onClick={handleBack}
                 disabled={currentStep === 1}
                 className={`
-                  flex items-center px-6 py-3 rounded-lg font-medium transition-all
+                  flex items-center px-3 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base
                   ${currentStep === 1 
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                    : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100'
                   }
                 `}
               >
-                <ArrowLeft className="w-5 h-5 mr-2" />
-                Tillbaka
+                <ArrowLeft className="w-4 sm:w-5 h-4 sm:h-5 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Tillbaka</span>
               </button>
               
               <button
@@ -1879,7 +1879,7 @@ export default function ImprovedValuationWizard({ onClose, variant = 'modal' }: 
                   (currentStep === 1 && isEnriching)
                 }
                 className={`
-                  flex items-center px-8 py-3 rounded-lg font-medium transition-all
+                  flex items-center px-4 sm:px-8 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base active:scale-95
                   ${currentStep === steps.length 
                     ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700' 
                     : 'bg-primary-navy text-white hover:bg-primary-navy/90'
@@ -1895,23 +1895,26 @@ export default function ImprovedValuationWizard({ onClose, variant = 'modal' }: 
               >
                 {isSubmitting ? (
                   <>
-                    <Sparkles className="w-5 h-5 mr-2 animate-spin" />
-                    Genererar värdering...
+                    <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 mr-1 sm:mr-2 animate-spin" />
+                    <span className="hidden sm:inline">Genererar värdering...</span>
+                    <span className="sm:hidden">Laddar...</span>
                   </>
                 ) : currentStep === 1 && isEnriching ? (
                   <>
-                    <Sparkles className="w-5 h-5 mr-2 animate-spin" />
-                    Hämtar företagsdata...
+                    <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 mr-1 sm:mr-2 animate-spin" />
+                    <span className="hidden sm:inline">Hämtar företagsdata...</span>
+                    <span className="sm:hidden">Hämtar...</span>
                   </>
                 ) : currentStep === steps.length ? (
                   <>
-                    Få värdering
-                    <Sparkles className="w-5 h-5 ml-2" />
+                    <span className="hidden sm:inline">Få värdering</span>
+                    <span className="sm:hidden">Värdering</span>
+                    <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 ml-1 sm:ml-2" />
                   </>
                 ) : (
                   <>
                     Nästa
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                    <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5 ml-1 sm:ml-2" />
                   </>
                 )}
               </button>

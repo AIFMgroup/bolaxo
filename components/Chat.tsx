@@ -207,26 +207,26 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
   const messageGroups = groupMessagesByDate(messages)
 
   return (
-    <div className="flex flex-col h-[600px] bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-12rem)] sm:h-[600px] bg-white rounded-lg shadow-lg overflow-hidden">
       {/* Header */}
-      <div className="bg-primary-navy text-white px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="bg-primary-navy text-white px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           {peerAvatar ? (
             <Image
               src={peerAvatar}
               alt={peerName}
-              width={40}
-              height={40}
-              className="rounded-full object-cover"
+              width={36}
+              height={36}
+              className="rounded-full object-cover w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-semibold">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/20 flex items-center justify-center font-semibold flex-shrink-0 text-sm sm:text-base">
               {peerName.charAt(0).toUpperCase()}
             </div>
           )}
-          <div>
-            <h3 className="font-semibold">{peerName}</h3>
-            <p className="text-xs text-white/70">
+          <div className="min-w-0 flex-1">
+            <h3 className="font-semibold text-sm sm:text-base truncate">{peerName}</h3>
+            <p className="text-[10px] sm:text-xs text-white/70 truncate">
               {peerRole === 'seller' ? 'Säljare' : 'Köpare'}
               {listingTitle && ` • ${listingTitle}`}
             </p>
@@ -305,15 +305,15 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
                     )}
                     {!isOwn && !showAvatar && <div className="w-8" />}
                     
-                    <div className={`max-w-[70%] ${isOwn ? 'items-end' : 'items-start'}`}>
+                    <div className={`max-w-[85%] sm:max-w-[70%] ${isOwn ? 'items-end' : 'items-start'}`}>
                       <div
-                        className={`rounded-2xl px-4 py-2 ${
+                        className={`rounded-2xl px-3 sm:px-4 py-2 ${
                           isOwn 
                             ? 'bg-primary-navy text-white' 
                             : 'bg-white border border-gray-200'
                         }`}
                       >
-                        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                        <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
                       </div>
                       <div className="flex items-center gap-1 mt-1 px-2">
                         <span className="text-xs text-gray-500">
@@ -338,7 +338,7 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
       </div>
 
       {/* Input */}
-      <div className="border-t border-gray-200 p-4 bg-white">
+      <div className="border-t border-gray-200 p-3 sm:p-4 bg-white pb-[calc(0.75rem+var(--sab))] sm:pb-4">
         <form 
           onSubmit={(e) => {
             e.preventDefault()
@@ -351,13 +351,13 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Skriv ett meddelande..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-primary-navy"
+            className="flex-1 px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-full focus:outline-none focus:border-primary-navy text-base"
             disabled={sending}
           />
           <button
             type="submit"
             disabled={!newMessage.trim() || sending}
-            className="p-2 bg-primary-navy text-white rounded-full hover:bg-primary-navy/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="p-2.5 sm:p-2 bg-primary-navy text-white rounded-full hover:bg-primary-navy/90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             <Send className="w-5 h-5" />
           </button>

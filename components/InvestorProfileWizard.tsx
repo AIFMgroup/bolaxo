@@ -1057,10 +1057,45 @@ export default function InvestorProfileWizard({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
-          <div className="lg:w-72 flex-shrink-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
+          {/* Mobile Step Navigation - Horizontal scroll */}
+          <div className="lg:hidden -mx-3 sm:-mx-4 px-3 sm:px-4 mb-2">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+              {stepMeta.map(step => {
+                const isActive = step.id === activeStep
+                const isComplete = completionMap[step.id]
+                
+                return (
+                  <button
+                    key={step.id}
+                    onClick={() => setActiveStep(step.id)}
+                    className={`flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-full text-sm transition-all duration-200 ${
+                      isActive
+                        ? 'bg-navy text-white'
+                        : isComplete
+                        ? 'bg-emerald-50 text-emerald-700'
+                        : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium ${
+                      isComplete
+                        ? 'bg-emerald-500 text-white'
+                        : isActive
+                        ? 'bg-white text-navy'
+                        : 'border border-gray-300 text-gray-400'
+                    }`}>
+                      {isComplete ? <Check className="w-3 h-3" /> : step.id}
+                    </div>
+                    <span className="whitespace-nowrap">{step.title}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+          
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:block lg:w-72 flex-shrink-0">
             <div className="bg-white rounded-2xl p-6 border border-gray-200 lg:sticky lg:top-24">
               <h3 className="font-semibold text-navy mb-1">Skapa din investerarprofil</h3>
               <p className="text-sm text-gray-500 mb-6">Vi använder informationen för att matcha dig med rätt bolag.</p>
@@ -1100,41 +1135,43 @@ export default function InvestorProfileWizard({
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="bg-navy rounded-3xl p-8 md:p-10 animate-pulse-box-navy">
+            <div className="bg-navy rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-10 animate-pulse-box-navy">
               {renderStepContent()}
             </div>
 
             {/* Navigation */}
-            <div className="flex items-center justify-between mt-6">
+            <div className="flex items-center justify-between mt-4 sm:mt-6 gap-2 pb-[var(--mobile-nav-height)] lg:pb-0">
               <button
                 onClick={goPrev}
                 disabled={activeStep === 1}
-                className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-200 ${
+                className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2.5 sm:py-3 rounded-full font-medium transition-all duration-200 text-sm sm:text-base ${
                   activeStep === 1
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-white text-navy hover:bg-gray-50 border border-gray-200'
+                    : 'bg-white text-navy hover:bg-gray-50 active:bg-gray-100 border border-gray-200'
                 }`}
               >
                 <ArrowLeft className="w-4 h-4" />
-                Föregående
+                <span className="hidden sm:inline">Föregående</span>
               </button>
 
-              <div className="text-sm text-gray-500">
-                {completedCount} av {stepMeta.length} steg klara
+              <div className="text-xs sm:text-sm text-gray-500 text-center">
+                {completedCount}/{stepMeta.length} klara
               </div>
 
               <button
                 onClick={goNext}
-                className="flex items-center gap-2 px-6 py-3 bg-navy text-white rounded-full font-medium hover:bg-navy/90 transition-all duration-200"
+                className="flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2.5 sm:py-3 bg-navy text-white rounded-full font-medium hover:bg-navy/90 active:scale-95 transition-all duration-200 text-sm sm:text-base"
               >
                 {activeStep === stepMeta.length ? (
                   <>
                     <Sparkles className="w-4 h-4" />
-                    {isDemo ? 'Slutför demo' : 'Skapa profil'}
+                    <span className="hidden sm:inline">{isDemo ? 'Slutför demo' : 'Skapa profil'}</span>
+                    <span className="sm:hidden">Klar</span>
                   </>
                 ) : (
                   <>
-                    Nästa steg
+                    <span className="hidden sm:inline">Nästa steg</span>
+                    <span className="sm:hidden">Nästa</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}

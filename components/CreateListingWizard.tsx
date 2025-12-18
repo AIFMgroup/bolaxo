@@ -243,7 +243,7 @@ export default function CreateListingWizard({ onClose }: WizardProps) {
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="min-h-screen px-4 text-center">
+      <div className="min-h-screen px-0 sm:px-4 text-center">
         {/* Backdrop */}
         <div 
           className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -251,33 +251,33 @@ export default function CreateListingWizard({ onClose }: WizardProps) {
         />
 
         {/* Modal */}
-        <div className="inline-block w-full max-w-4xl my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl rounded-3xl" ref={formRef}>
+        <div className="inline-block w-full max-w-4xl sm:my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl sm:rounded-3xl min-h-screen sm:min-h-0" ref={formRef}>
           {/* Header med progress */}
           <div className="sticky top-0 z-40 bg-white border-b border-gray-100">
-            <div className="px-6 py-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-black text-navy uppercase tracking-tight">
+            <div className="px-4 sm:px-6 py-3 sm:py-4">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <h2 className="text-lg sm:text-2xl font-black text-navy uppercase tracking-tight">
                   {t('title')}
                 </h2>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-all"
+                  className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-full transition-all"
                 >
-                  <X className="w-6 h-6 text-gray-400" />
+                  <X className="w-5 sm:w-6 h-5 sm:h-6 text-gray-400" />
                 </button>
               </div>
               
               {/* Progress bar */}
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center gap-2 sm:gap-3 mb-2">
                 <div className="flex-1">
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 sm:h-2">
                     <div
-                      className="bg-navy h-3 rounded-full transition-all duration-500"
+                      className="bg-navy h-2 sm:h-3 rounded-full transition-all duration-500"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
                 </div>
-                <span className="text-sm font-medium text-gray-600">
+                <span className="text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">
                   {t('stepProgress', { current: step, total: totalSteps })}
                 </span>
               </div>
@@ -285,7 +285,7 @@ export default function CreateListingWizard({ onClose }: WizardProps) {
           </div>
 
           {/* Content */}
-          <div className="p-6 md:p-8">
+          <div className="p-4 sm:p-6 md:p-8">
             {/* Step 1: Grunduppgifter */}
             {step === 1 && (
               <div className="space-y-6">
@@ -1016,57 +1016,62 @@ export default function CreateListingWizard({ onClose }: WizardProps) {
           </div>
 
           {/* Footer med knappar */}
-          <div className="sticky bottom-0 bg-white border-t border-gray-100 px-6 py-4">
-            <div className="flex items-center justify-between">
+          <div className="sticky bottom-0 bg-white border-t border-gray-100 px-4 sm:px-6 py-3 sm:py-4 pb-[calc(0.75rem+var(--sab))] sm:pb-4">
+            <div className="flex items-center justify-between gap-2">
               <button
                 onClick={handlePrev}
                 disabled={step === 1}
-                className={`flex items-center gap-2 px-6 py-3 font-medium rounded-full transition-all ${
+                className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2.5 sm:py-3 font-medium rounded-full transition-all text-sm sm:text-base ${
                   step === 1 
                     ? 'text-gray-400 cursor-not-allowed' 
-                    : 'text-navy hover:bg-gray-100'
+                    : 'text-navy hover:bg-gray-100 active:bg-gray-200'
                 }`}
               >
-                <ArrowLeft className="w-5 h-5" />
-                {t('navigation.back')}
+                <ArrowLeft className="w-4 sm:w-5 h-4 sm:h-5" />
+                <span className="hidden sm:inline">{t('navigation.back')}</span>
+                <span className="sm:hidden">Tillbaka</span>
               </button>
 
               {step < totalSteps - 1 ? (
                 <button
                   onClick={handleNext}
                   disabled={!canProceed()}
-                  className={`flex items-center gap-2 px-8 py-3 font-medium rounded-full transition-all ${
+                  className={`flex items-center gap-1 sm:gap-2 px-4 sm:px-8 py-2.5 sm:py-3 font-medium rounded-full transition-all text-sm sm:text-base ${
                     canProceed()
-                      ? 'bg-navy text-white hover:shadow-lg transform hover:scale-105'
+                      ? 'bg-navy text-white hover:shadow-lg active:scale-95'
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   }`}
                 >
-                  {step === 6 ? t('navigation.goToPublish') : t('navigation.nextButton')}
-                  <ArrowRight className="w-5 h-5" />
+                  <span className="hidden sm:inline">{step === 6 ? t('navigation.goToPublish') : t('navigation.nextButton')}</span>
+                  <span className="sm:hidden">Nästa</span>
+                  <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5" />
                 </button>
               ) : step === totalSteps - 1 ? (
                 <button
                   onClick={handleNext}
-                  className="flex items-center gap-2 px-8 py-3 bg-green-600 text-white font-medium rounded-full hover:shadow-lg transform hover:scale-105 transition-all"
+                  className="flex items-center gap-1 sm:gap-2 px-4 sm:px-8 py-2.5 sm:py-3 bg-green-600 text-white font-medium rounded-full hover:shadow-lg active:scale-95 transition-all text-sm sm:text-base"
                 >
-                  {t('navigation.goToPublish')}
-                  <ArrowRight className="w-5 h-5" />
+                  <span className="hidden sm:inline">{t('navigation.goToPublish')}</span>
+                  <span className="sm:hidden">Publicera</span>
+                  <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5" />
                 </button>
               ) : (
                 <button
                   onClick={handlePublish}
                   disabled={loading}
-                  className="flex items-center gap-2 px-8 py-3 bg-green-600 text-white font-medium rounded-full hover:shadow-lg transform hover:scale-105 transition-all"
+                  className="flex items-center gap-1 sm:gap-2 px-4 sm:px-8 py-2.5 sm:py-3 bg-green-600 text-white font-medium rounded-full hover:shadow-lg active:scale-95 transition-all text-sm sm:text-base"
                 >
                   {loading ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      {t('navigation.publishing')}
+                      <div className="w-4 sm:w-5 h-4 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span className="hidden sm:inline">{t('navigation.publishing')}</span>
+                      <span className="sm:hidden">Skapar...</span>
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-5 h-5" />
-                      {t('navigation.create')}
+                      <Sparkles className="w-4 sm:w-5 h-4 sm:h-5" />
+                      <span className="hidden sm:inline">{t('navigation.create')}</span>
+                      <span className="sm:hidden">Skapa</span>
                     </>
                   )}
                 </button>
