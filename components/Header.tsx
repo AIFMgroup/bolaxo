@@ -29,7 +29,7 @@ const getNavigation = (t: (key: string) => string): NavItem[] => {
       label: 'Marknadsplats',
       dropdown: [
         { label: 'Bolag till salu', href: '/sok' },
-        { label: 'Sanitycheck', href: '/sanitycheck' },
+        { label: 'Inför försäljning', href: '/sanitycheck' },
         { label: 'Prismodeller', href: '/priser' },
         { label: 'Kunskapsbank', href: '/kunskapsbank' },
       ]
@@ -40,7 +40,7 @@ const getNavigation = (t: (key: string) => string): NavItem[] => {
         { label: t('footer.howItWorks'), href: '/salja' },
         { label: 'Säljarprofil', href: '/saljarprofil' },
         { label: 'Skapa annons', href: '/salja/skapa-annons' },
-        { label: 'Värderingskoll', href: '/sanitycheck' },
+        { label: 'Inför försäljning', href: '/sanitycheck' },
       ]
     },
     {
@@ -178,12 +178,12 @@ export default function Header() {
     }`}>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-24 md:h-20 lg:h-16">
-          {/* Logo */}
-          <Link href={`/${locale}`} className="flex items-center">
-<img 
+          {/* Logo - positioned slightly lower */}
+          <Link href={`/${locale}`} className="flex items-center mt-2 sm:mt-3 md:mt-4">
+            <img 
               src="/Logo/afterfounder.png" 
               alt="Afterfounder"
-              className="h-44 md:h-40 lg:h-36 w-auto"
+              className="h-36 md:h-32 lg:h-28 w-auto"
             />
           </Link>
 

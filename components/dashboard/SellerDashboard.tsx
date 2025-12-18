@@ -343,14 +343,14 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           <Link 
-            href={`/${locale}/salja/sme-kit`} 
+            href={`/${locale}/sanitycheck`} 
             className="bg-gradient-to-br from-sky/20 to-sky/5 border border-sky/30 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all group"
           >
             <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm group-hover:shadow-md transition-shadow">
               <FileText className="w-7 h-7 text-sky" />
             </div>
-            <p className="font-semibold text-navy mb-1">SME Kit</p>
-            <p className="text-sm text-graphite/70">Förbered försäljning</p>
+            <p className="font-semibold text-navy mb-1">Inför försäljning</p>
+            <p className="text-sm text-graphite/70">7 moduler för förberedelse</p>
             <ChevronRight className="w-5 h-5 text-sky mt-3 group-hover:translate-x-1 transition-transform" />
           </Link>
           

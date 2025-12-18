@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback, useRef } from 'react'
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { 
   ArrowRight, 
   ArrowLeft,
@@ -824,6 +824,9 @@ interface SanitycheckWizardProps {
   onComplete?: (data: SanitycheckState, result: AnalysisResult) => void
 }
 
+const STORAGE_KEY = 'sanitycheck_progress'
+const STORAGE_STEP_KEY = 'sanitycheck_step'
+
 export default function SanitycheckWizard({ onComplete }: SanitycheckWizardProps) {
   const [state, setState] = useState<SanitycheckState>(initialState)
   const [activeStep, setActiveStep] = useState(1)
@@ -833,6 +836,59 @@ export default function SanitycheckWizard({ onComplete }: SanitycheckWizardProps
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
   const [showIndustryModal, setShowIndustryModal] = useState(false)
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFilesState>({})
+  const [hasLoadedSaved, setHasLoadedSaved] = useState(false)
+  const [showSavedNotice, setShowSavedNotice] = useState(false)
+
+  // Load saved progress from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedState = localStorage.getItem(STORAGE_KEY)
+      const savedStep = localStorage.getItem(STORAGE_STEP_KEY)
+      
+      if (savedState) {
+        const parsed = JSON.parse(savedState)
+        setState(prev => ({ ...prev, ...parsed }))
+        setShowSavedNotice(true)
+        // Hide notice after 5 seconds
+        setTimeout(() => setShowSavedNotice(false), 5000)
+      }
+      
+      if (savedStep) {
+        const step = parseInt(savedStep, 10)
+        if (step >= 1 && step <= 11) {
+          setActiveStep(step)
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load saved progress:', err)
+    }
+    setHasLoadedSaved(true)
+  }, [])
+
+  // Auto-save progress to localStorage when state changes
+  useEffect(() => {
+    if (!hasLoadedSaved) return // Don't save until we've loaded
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+      localStorage.setItem(STORAGE_STEP_KEY, activeStep.toString())
+    } catch (err) {
+      console.error('Failed to save progress:', err)
+    }
+  }, [state, activeStep, hasLoadedSaved])
+
+  // Function to clear saved progress
+  const clearSavedProgress = useCallback(() => {
+    try {
+      localStorage.removeItem(STORAGE_KEY)
+      localStorage.removeItem(STORAGE_STEP_KEY)
+      setState(initialState)
+      setActiveStep(1)
+      setUploadedFiles({})
+    } catch (err) {
+      console.error('Failed to clear progress:', err)
+    }
+  }, [])
 
   // Handle file upload changes
   const handleFilesChange = useCallback((key: string, files: UploadedFile[]) => {
@@ -2359,19 +2415,46 @@ export default function SanitycheckWizard({ onComplete }: SanitycheckWizardProps
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="font-bold text-navy tracking-wider">Afterfounder</div>
-          <div className="text-sm text-gray-500">
-            Värderingskoll · {completedCount} av {stepMeta.length} steg klara
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-gray-500">
+              Inför försäljning · {completedCount} av {stepMeta.length} steg klara
+            </div>
+            <button
+              onClick={clearSavedProgress}
+              className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+              title="Börja om från början"
+            >
+              Börja om
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Saved progress notice */}
+      {showSavedNotice && (
+        <div className="bg-emerald-50 border-b border-emerald-200">
+          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-emerald-700 text-sm">
+              <CheckCircle className="w-4 h-4" />
+              <span>Din tidigare framgång har laddats. Du kan fortsätta där du slutade.</span>
+            </div>
+            <button
+              onClick={() => setShowSavedNotice(false)}
+              className="text-emerald-500 hover:text-emerald-700 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <div className="lg:w-72 flex-shrink-0">
             <div className="bg-white rounded-2xl p-6 border border-gray-200 lg:sticky lg:top-24">
-              <h3 className="font-semibold text-navy mb-1">Snabb genomlysning & indikativ värdering</h3>
-              <p className="text-sm text-gray-500 mb-6">Här gör du en snabb genomlysning av bolaget. Dina svar ger både en uppskattning av hur redo ni är att sälja och en indikativ bild av vad företaget kan vara värt.</p>
+              <h3 className="font-semibold text-navy mb-1">Inför försäljning - 7 moduler</h3>
+              <p className="text-sm text-gray-500 mb-6">Här gör du en snabb genomlysning av bolaget. Dina svar sparas automatiskt så du kan fortsätta när du vill.</p>
               
               <div className="space-y-1">
                 {stepMeta.map(step => {
