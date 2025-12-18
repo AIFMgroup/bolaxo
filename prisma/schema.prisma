@@ -1567,3 +1567,32 @@ model SavedSearch {
   @@index([notifyOnNew])
   @@index([lastNotifiedAt])
 }
+
+// ===== SANITYCHECK DOCUMENTS =====
+// Documents uploaded during "Inför försäljning" wizard
+// Stored securely in S3 and linked to user profile
+model SanitycheckDocument {
+  id              String   @id @default(cuid())
+  userId          String
+  
+  // Document metadata
+  fieldKey        String   // Which field/step this belongs to (e.g., "financialDocs", "contracts")
+  fileName        String   // Original file name
+  fileSize        Int      // Size in bytes
+  mimeType        String   // e.g., application/pdf
+  
+  // S3 storage
+  s3Key           String   // Full S3 path
+  s3Bucket        String   // S3 bucket name
+  
+  // Optional metadata
+  description     String?
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([fieldKey])
+  @@index([userId, fieldKey])
+}

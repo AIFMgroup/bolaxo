@@ -36,6 +36,9 @@ interface UploadedFile {
   size: number
   type: string
   uploadedAt: Date
+  s3Key?: string // S3 storage key for persisted files
+  uploading?: boolean // Upload in progress
+  error?: string // Upload error message
 }
 
 interface UploadedFilesState {
@@ -106,33 +109,44 @@ function LabelWithHelp({
   )
 }
 
-// File Upload Component
+// File Upload Component - uploads to S3 securely
 function FileUploadZone({ 
   fieldKey,
   files,
-  onFilesChange,
+  onFileUpload,
+  onFileDelete,
   accept = ".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png"
 }: { 
   fieldKey: string
   files: UploadedFile[]
-  onFilesChange: (key: string, files: UploadedFile[]) => void
+  onFileUpload: (key: string, file: File) => Promise<void>
+  onFileDelete: (key: string, fileId: string) => Promise<void>
   accept?: string
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
 
-  const handleFileSelect = (selectedFiles: FileList | null) => {
-    if (!selectedFiles) return
+  const handleFileSelect = async (selectedFiles: FileList | null) => {
+    if (!selectedFiles || selectedFiles.length === 0) return
     
-    const newFiles: UploadedFile[] = Array.from(selectedFiles).map(file => ({
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      uploadedAt: new Date()
-    }))
+    setIsUploading(true)
     
-    onFilesChange(fieldKey, [...files, ...newFiles])
+    // Upload files one by one
+    for (const file of Array.from(selectedFiles)) {
+      try {
+        await onFileUpload(fieldKey, file)
+      } catch (error) {
+        console.error('Upload error:', error)
+      }
+    }
+    
+    setIsUploading(false)
+    
+    // Clear the input
+    if (inputRef.current) {
+      inputRef.current.value = ''
+    }
   }
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -151,8 +165,12 @@ function FileUploadZone({
     handleFileSelect(e.dataTransfer.files)
   }
 
-  const removeFile = (fileId: string) => {
-    onFilesChange(fieldKey, files.filter(f => f.id !== fileId))
+  const handleRemoveFile = async (fileId: string) => {
+    try {
+      await onFileDelete(fieldKey, fileId)
+    } catch (error) {
+      console.error('Delete error:', error)
+    }
   }
 
   const formatFileSize = (bytes: number) => {
@@ -174,12 +192,13 @@ function FileUploadZone({
     <div className="mt-3 animate-in slide-in-from-top-2 duration-300">
       {/* Drop zone */}
       <div
-        onClick={() => inputRef.current?.click()}
+        onClick={() => !isUploading && inputRef.current?.click()}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={`
-          relative border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all duration-200
+          relative border-2 border-dashed rounded-xl p-4 text-center transition-all duration-200
+          ${isUploading ? 'cursor-wait opacity-70' : 'cursor-pointer'}
           ${isDragging 
             ? 'border-emerald-400 bg-emerald-400/10' 
             : 'border-white/20 hover:border-white/40 hover:bg-white/5'
@@ -193,21 +212,32 @@ function FileUploadZone({
           accept={accept}
           onChange={(e) => handleFileSelect(e.target.files)}
           className="hidden"
+          disabled={isUploading}
         />
         
         <div className="flex flex-col items-center gap-2">
           <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
             isDragging ? 'bg-emerald-400/20' : 'bg-white/10'
           }`}>
-            <Upload className={`w-5 h-5 ${isDragging ? 'text-emerald-400' : 'text-white/60'}`} />
+            {isUploading ? (
+              <Loader2 className="w-5 h-5 text-emerald-400 animate-spin" />
+            ) : (
+              <Upload className={`w-5 h-5 ${isDragging ? 'text-emerald-400' : 'text-white/60'}`} />
+            )}
           </div>
           <div>
-            <p className="text-sm text-white/80">
-              <span className="font-medium text-white">Klicka för att ladda upp</span> eller dra och släpp
-            </p>
-            <p className="text-xs text-white/50 mt-1">
-              PDF, Word, Excel, PowerPoint, bilder (max 10 MB)
-            </p>
+            {isUploading ? (
+              <p className="text-sm text-emerald-400 font-medium">Laddar upp till säker lagring...</p>
+            ) : (
+              <>
+                <p className="text-sm text-white/80">
+                  <span className="font-medium text-white">Klicka för att ladda upp</span> eller dra och släpp
+                </p>
+                <p className="text-xs text-white/50 mt-1">
+                  PDF, Word, Excel, PowerPoint, bilder (max 50 MB)
+                </p>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -218,25 +248,54 @@ function FileUploadZone({
           {files.map(file => (
             <div 
               key={file.id}
-              className="flex items-center gap-3 bg-white/5 rounded-lg px-3 py-2 group"
+              className={`flex items-center gap-3 rounded-lg px-3 py-2 group transition-colors ${
+                file.uploading 
+                  ? 'bg-emerald-400/10 border border-emerald-400/30' 
+                  : file.error 
+                  ? 'bg-red-400/10 border border-red-400/30'
+                  : file.s3Key
+                  ? 'bg-emerald-500/10 border border-emerald-500/30' // Saved to S3
+                  : 'bg-white/5'
+              }`}
             >
-              <span className="text-lg">{getFileIcon(file.type)}</span>
+              {file.uploading ? (
+                <Loader2 className="w-5 h-5 text-emerald-400 animate-spin" />
+              ) : file.s3Key ? (
+                <Shield className="w-5 h-5 text-emerald-500" />
+              ) : (
+                <span className="text-lg">{getFileIcon(file.type)}</span>
+              )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-white truncate">{file.name}</p>
-                <p className="text-xs text-white/50">{formatFileSize(file.size)}</p>
+                <p className="text-xs text-white/50">
+                  {formatFileSize(file.size)}
+                  {file.s3Key && <span className="text-emerald-400 ml-2">✓ Säkert sparad</span>}
+                  {file.uploading && <span className="text-emerald-400 ml-2">Laddar upp...</span>}
+                  {file.error && <span className="text-red-400 ml-2">{file.error}</span>}
+                </p>
               </div>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  removeFile(file.id)
-                }}
-                className="p-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-red-400/10 transition-colors opacity-0 group-hover:opacity-100"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              {!file.uploading && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleRemoveFile(file.id)
+                  }}
+                  className="p-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-red-400/10 transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
             </div>
           ))}
+        </div>
+      )}
+      
+      {/* Security notice */}
+      {files.some(f => f.s3Key) && (
+        <div className="mt-2 flex items-center gap-2 text-xs text-emerald-400/70">
+          <Shield className="w-3 h-3" />
+          <span>Dina filer är krypterade och säkert lagrade. De synkroniseras mellan enheter.</span>
         </div>
       )}
     </div>
@@ -838,6 +897,46 @@ export default function SanitycheckWizard({ onComplete }: SanitycheckWizardProps
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFilesState>({})
   const [hasLoadedSaved, setHasLoadedSaved] = useState(false)
   const [showSavedNotice, setShowSavedNotice] = useState(false)
+  const [isLoadingDocs, setIsLoadingDocs] = useState(true)
+
+  // Load saved documents from database on mount
+  useEffect(() => {
+    const loadDocuments = async () => {
+      try {
+        const res = await fetch('/api/sanitycheck/documents')
+        if (res.ok) {
+          const data = await res.json()
+          // Group documents by fieldKey
+          const grouped: UploadedFilesState = {}
+          for (const doc of data.documents) {
+            if (!grouped[doc.fieldKey]) {
+              grouped[doc.fieldKey] = []
+            }
+            grouped[doc.fieldKey].push({
+              id: doc.id,
+              name: doc.name,
+              size: doc.size,
+              type: doc.type,
+              uploadedAt: new Date(doc.uploadedAt),
+              s3Key: doc.s3Key,
+            })
+          }
+          setUploadedFiles(grouped)
+          
+          if (Object.keys(grouped).length > 0) {
+            setShowSavedNotice(true)
+            setTimeout(() => setShowSavedNotice(false), 5000)
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load documents:', err)
+      } finally {
+        setIsLoadingDocs(false)
+      }
+    }
+    
+    loadDocuments()
+  }, [])
 
   // Load saved progress from localStorage on mount
   useEffect(() => {
@@ -878,22 +977,112 @@ export default function SanitycheckWizard({ onComplete }: SanitycheckWizardProps
   }, [state, activeStep, hasLoadedSaved])
 
   // Function to clear saved progress
-  const clearSavedProgress = useCallback(() => {
+  const clearSavedProgress = useCallback(async () => {
     try {
       localStorage.removeItem(STORAGE_KEY)
       localStorage.removeItem(STORAGE_STEP_KEY)
       setState(initialState)
       setActiveStep(1)
+      
+      // Delete all uploaded files from S3
+      const allFileIds = Object.values(uploadedFiles).flat().map(f => f.id)
+      for (const fileId of allFileIds) {
+        try {
+          await fetch(`/api/sanitycheck/documents?id=${fileId}`, { method: 'DELETE' })
+        } catch (e) {
+          console.error('Failed to delete file:', e)
+        }
+      }
+      
       setUploadedFiles({})
     } catch (err) {
       console.error('Failed to clear progress:', err)
     }
+  }, [uploadedFiles])
+
+  // Handle file upload to S3
+  const handleFileUpload = useCallback(async (fieldKey: string, file: File) => {
+    // Create a temporary file entry with uploading status
+    const tempId = `temp-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+    const tempFile: UploadedFile = {
+      id: tempId,
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      uploadedAt: new Date(),
+      uploading: true,
+    }
+    
+    setUploadedFiles(prev => ({
+      ...prev,
+      [fieldKey]: [...(prev[fieldKey] || []), tempFile]
+    }))
+    
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('fieldKey', fieldKey)
+      
+      const res = await fetch('/api/sanitycheck/documents', {
+        method: 'POST',
+        body: formData,
+      })
+      
+      if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.error || 'Uppladdningen misslyckades')
+      }
+      
+      const data = await res.json()
+      
+      // Replace temp file with actual uploaded file
+      setUploadedFiles(prev => ({
+        ...prev,
+        [fieldKey]: prev[fieldKey].map(f => 
+          f.id === tempId 
+            ? {
+                id: data.document.id,
+                name: data.document.name,
+                size: data.document.size,
+                type: data.document.type,
+                uploadedAt: new Date(data.document.uploadedAt),
+                s3Key: data.document.s3Key,
+              }
+            : f
+        )
+      }))
+    } catch (err) {
+      // Update temp file with error
+      setUploadedFiles(prev => ({
+        ...prev,
+        [fieldKey]: prev[fieldKey].map(f => 
+          f.id === tempId 
+            ? { ...f, uploading: false, error: err instanceof Error ? err.message : 'Fel vid uppladdning' }
+            : f
+        )
+      }))
+    }
   }, [])
 
-  // Handle file upload changes
-  const handleFilesChange = useCallback((key: string, files: UploadedFile[]) => {
-    setUploadedFiles(prev => ({ ...prev, [key]: files }))
-  }, [])
+  // Handle file deletion from S3
+  const handleFileDelete = useCallback(async (fieldKey: string, fileId: string) => {
+    const file = uploadedFiles[fieldKey]?.find(f => f.id === fileId)
+    
+    // If it's a persisted file, delete from S3
+    if (file?.s3Key) {
+      try {
+        await fetch(`/api/sanitycheck/documents?id=${fileId}`, { method: 'DELETE' })
+      } catch (err) {
+        console.error('Failed to delete from S3:', err)
+      }
+    }
+    
+    // Remove from local state
+    setUploadedFiles(prev => ({
+      ...prev,
+      [fieldKey]: prev[fieldKey].filter(f => f.id !== fileId)
+    }))
+  }, [uploadedFiles])
 
   const completionMap = useMemo(() => {
     const map: Record<number, boolean> = {}
@@ -1105,14 +1294,9 @@ export default function SanitycheckWizard({ onComplete }: SanitycheckWizardProps
           <FileUploadZone
             fieldKey={field}
             files={uploadedFiles[field] || []}
-            onFilesChange={handleFilesChange}
+            onFileUpload={handleFileUpload}
+            onFileDelete={handleFileDelete}
           />
-          {(uploadedFiles[field]?.length || 0) > 0 && (
-            <p className="text-xs text-emerald-400/70 mt-2 flex items-center gap-1">
-              <CheckCircle className="w-3 h-3" />
-              {uploadedFiles[field].length} fil(er) uppladdad(e)
-            </p>
-          )}
         </div>
       )}
     </div>
