@@ -89,7 +89,7 @@ export async function checkIPRestriction(
       return { 
         allowed: false, 
         ip, 
-        country,
+        country: country ?? undefined,
         reason: `Access from ${country || 'unknown country'} is not allowed` 
       }
     }
