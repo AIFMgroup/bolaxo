@@ -216,7 +216,7 @@ Förklara varför detta objekt matchar (eller inte matchar) köparens profil. Va
   } catch (error) {
     console.error('LLM error in match explanation:', error)
     // Return a basic explanation if AI fails
-    return generateFallbackExplanation(listing, searchProfile)
+    return generateFallbackExplanation(listing, buyerProfile)
   }
 }
 
