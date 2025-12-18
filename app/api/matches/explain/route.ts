@@ -41,8 +41,8 @@ export async function POST(request: NextRequest) {
         revenue: true,
         ebitda: true,
         askingPrice: true,
-        askingPriceMin: true,
-        askingPriceMax: true,
+        priceMin: true,
+        priceMax: true,
         employees: true,
         foundedYear: true,
         businessModel: true,
@@ -134,8 +134,8 @@ Objektinformation:
 - Omsättning: ${listing.revenue ? formatPrice(listing.revenue) : 'Ej specificerat'}
 - EBITDA: ${listing.ebitda ? formatPrice(listing.ebitda) : 'Ej specificerat'}
 - Pris: ${listing.askingPrice ? formatPrice(listing.askingPrice) : 
-         listing.askingPriceMin && listing.askingPriceMax ? 
-         `${formatPrice(listing.askingPriceMin)} - ${formatPrice(listing.askingPriceMax)}` : 'Ej specificerat'}
+         listing.priceMin && listing.priceMax ? 
+         `${formatPrice(listing.priceMin)} - ${formatPrice(listing.priceMax)}` : 'Ej specificerat'}
 - Anställda: ${listing.employees || 'Ej specificerat'}
 - Grundat: ${listing.foundedYear || 'Ej specificerat'}
 - Affärsmodell: ${listing.businessModel || 'Ej specificerat'}
@@ -260,7 +260,7 @@ function generateFallbackExplanation(listing: any, buyerProfile: any) {
   }
 
   // Check price match
-  const listingPrice = listing.askingPrice || listing.askingPriceMin
+  const listingPrice = listing.askingPrice || listing.priceMin
   if (listingPrice && buyerProfile?.priceMin && buyerProfile?.priceMax) {
     if (listingPrice >= buyerProfile.priceMin && listingPrice <= buyerProfile.priceMax) {
       reasons.push({
