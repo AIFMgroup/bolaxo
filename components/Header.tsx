@@ -180,10 +180,10 @@ export default function Header() {
         <div className="flex justify-between items-center h-24 md:h-20 lg:h-16">
           {/* Logo */}
           <Link href={`/${locale}`} className="flex items-center">
-            <img 
+<img 
               src="/Logo/afterfounder.png" 
-              alt="Afterfounder" 
-              className="h-36 md:h-32 lg:h-28 w-auto"
+              alt="Afterfounder"
+              className="h-44 md:h-40 lg:h-36 w-auto"
             />
           </Link>
 
@@ -393,7 +393,7 @@ export default function Header() {
             style={{ position: 'relative', zIndex: 1 }}
           >
             <div className="flex justify-between items-center">
-              <img src="/Logo/afterfounder.png" alt="Afterfounder" className="h-28 w-auto" />
+              <img src="/Logo/afterfounder.png" alt="Afterfounder" className="h-36 w-auto" />
               <button
                 onClick={() => setIsMenuOpen(false)}
                 className="p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors"
