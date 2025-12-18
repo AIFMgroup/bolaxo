@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
     const dataRoomAccesses = await prisma.dataRoomPermission.count({
       where: {
         userId,
-        role: { in: ['VIEWER', 'BUYER'] }
+        role: 'VIEWER'
       }
     })
 
