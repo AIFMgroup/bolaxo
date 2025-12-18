@@ -202,37 +202,37 @@ export default function ProcessModal({ isOpen, onClose }: ProcessModalProps) {
   const currentStep = steps.find(s => s.id === selectedStep)
   
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl my-8 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
+      <div className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header with Close Button */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-8 pt-8 pb-6 flex items-start justify-between rounded-t-3xl">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-8 pt-5 sm:pt-8 pb-4 sm:pb-6 flex items-start justify-between rounded-t-3xl flex-shrink-0">
           <div>
-            <h2 className="text-4xl font-bold text-primary-navy">Köpprocessen i 7 steg</h2>
-            <p className="text-gray-600 mt-2">En detaljerad guide genom hela köpjourney</p>
+            <h2 className="text-2xl sm:text-4xl font-bold text-primary-navy">Köpprocessen i 7 steg</h2>
+            <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">En detaljerad guide</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-all flex-shrink-0 ml-4"
+            className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-full transition-all flex-shrink-0 ml-4"
           >
             <X className="w-6 h-6 text-gray-400 hover:text-gray-600" />
           </button>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8 p-8">
-          {/* Sidebar with step buttons */}
-          <div className="lg:w-64 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-4 lg:pb-0">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 p-4 sm:p-8 overflow-y-auto flex-1 min-h-0">
+          {/* Sidebar with step buttons - horizontal scroll on mobile */}
+          <div className="lg:w-64 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 flex-shrink-0 scrollbar-hide">
             {steps.map((step) => (
               <button
                 key={step.id}
                 onClick={() => setSelectedStep(step.id)}
-                className={`flex-shrink-0 lg:flex-shrink px-4 py-3 rounded-xl font-semibold transition-all text-left whitespace-nowrap lg:whitespace-normal ${
+                className={`flex-shrink-0 lg:flex-shrink px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl font-semibold transition-all text-left whitespace-nowrap lg:whitespace-normal active:scale-[0.98] ${
                   selectedStep === step.id
                     ? 'bg-primary-navy text-white shadow-lg'
                     : 'bg-gray-100 text-primary-navy hover:bg-gray-200'
                 }`}
               >
                 <div className="flex items-center lg:items-start gap-2">
-                  <span className="text-lg">{step.id}</span>
+                  <span className="text-base sm:text-lg font-bold">{step.id}</span>
                   <span className="hidden lg:block text-sm line-clamp-2">{step.title.split(' ')[0]}</span>
                 </div>
               </button>
@@ -241,16 +241,16 @@ export default function ProcessModal({ isOpen, onClose }: ProcessModalProps) {
 
           {/* Main content area */}
           {currentStep && (
-            <div className="flex-1">
+            <div className="flex-1 overflow-y-auto">
               {/* Step header */}
-              <div className="mb-8">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className={`w-16 h-16 bg-gradient-to-r ${currentStep.color} rounded-2xl flex items-center justify-center text-white`}>
+              <div className="mb-5 sm:mb-8">
+                <div className="flex items-center gap-3 sm:gap-4 mb-4">
+                  <div className={`w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r ${currentStep.color} rounded-xl sm:rounded-2xl flex items-center justify-center text-white [&>svg]:w-6 [&>svg]:h-6 sm:[&>svg]:w-8 sm:[&>svg]:h-8`}>
                     {currentStep.icon}
                   </div>
-                  <div>
-                    <h3 className="text-3xl font-bold text-primary-navy">{currentStep.title}</h3>
-                    <p className={`text-sm font-semibold text-white bg-gradient-to-r ${currentStep.color} px-3 py-1 rounded-full w-fit mt-2`}>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xl sm:text-3xl font-bold text-primary-navy leading-tight">{currentStep.title}</h3>
+                    <p className={`text-xs sm:text-sm font-semibold text-white bg-gradient-to-r ${currentStep.color} px-2 sm:px-3 py-0.5 sm:py-1 rounded-full w-fit mt-1 sm:mt-2`}>
                       ⏱ {currentStep.time}
                     </p>
                   </div>
@@ -258,39 +258,39 @@ export default function ProcessModal({ isOpen, onClose }: ProcessModalProps) {
               </div>
 
               {/* Overview */}
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 mb-6 border border-gray-200">
-                <h4 className="font-semibold text-primary-navy mb-2">Vad händer?</h4>
-                <p className="text-gray-700 leading-relaxed">{currentStep.details.overview}</p>
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
+                <h4 className="font-semibold text-primary-navy mb-2 text-sm sm:text-base">Vad händer?</h4>
+                <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{currentStep.details.overview}</p>
               </div>
 
               {/* Benefits */}
-              <div className="mb-6">
-                <h4 className="font-semibold text-primary-navy mb-4">Nyckeldetaljer:</h4>
-                <div className="space-y-3">
+              <div className="mb-4 sm:mb-6">
+                <h4 className="font-semibold text-primary-navy mb-3 sm:mb-4 text-sm sm:text-base">Nyckeldetaljer:</h4>
+                <div className="space-y-2 sm:space-y-3">
                   {currentStep.details.benefits.map((benefit, idx) => (
-                    <div key={idx} className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all">
-                      <div className={`w-6 h-6 rounded-full bg-gradient-to-r ${currentStep.color} flex items-center justify-center text-white font-bold text-sm flex-shrink-0 mt-0.5`}>
+                    <div key={idx} className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all">
+                      <div className={`w-5 sm:w-6 h-5 sm:h-6 rounded-full bg-gradient-to-r ${currentStep.color} flex items-center justify-center text-white font-bold text-xs sm:text-sm flex-shrink-0 mt-0.5`}>
                         ✓
                       </div>
-                      <p className="text-gray-700">{benefit}</p>
+                      <p className="text-gray-700 text-sm sm:text-base">{benefit}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Timeline */}
-              <div className="bg-primary-navy/5 rounded-2xl p-6 mb-6 border border-primary-navy/10">
-                <h4 className="font-semibold text-primary-navy mb-2">Tidsplan:</h4>
-                <p className="text-gray-700">{currentStep.details.timeline}</p>
+              <div className="bg-primary-navy/5 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 border border-primary-navy/10">
+                <h4 className="font-semibold text-primary-navy mb-2 text-sm sm:text-base">Tidsplan:</h4>
+                <p className="text-gray-700 text-sm sm:text-base">{currentStep.details.timeline}</p>
               </div>
 
               {/* Tips */}
               {currentStep.details.tips && (
-                <div>
-                  <h4 className="font-semibold text-primary-navy mb-4">💡 Tips för framgång:</h4>
+                <div className="pb-4 sm:pb-0">
+                  <h4 className="font-semibold text-primary-navy mb-3 sm:mb-4 text-sm sm:text-base">💡 Tips för framgång:</h4>
                   <div className="space-y-2">
                     {currentStep.details.tips.map((tip, idx) => (
-                      <div key={idx} className="flex items-start gap-3 text-sm">
+                      <div key={idx} className="flex items-start gap-2 sm:gap-3 text-sm">
                         <span className="text-primary-navy font-bold">•</span>
                         <p className="text-gray-700">{tip}</p>
                       </div>

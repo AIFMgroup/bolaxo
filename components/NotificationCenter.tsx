@@ -113,7 +113,7 @@ export default function NotificationCenter() {
           />
 
           {/* Panel */}
-          <div className="fixed top-20 right-4 z-50 w-96 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className="fixed top-16 sm:top-20 right-0 sm:right-4 left-0 sm:left-auto z-50 w-full sm:w-96 max-h-[calc(100vh-4rem)] sm:max-h-[80vh] bg-white sm:rounded-xl shadow-lg border-t sm:border border-gray-200 overflow-hidden flex flex-col">
             {/* Header */}
             <div className="bg-primary-navy text-white px-6 py-4 flex items-center justify-between">
               <h3 className="font-semibold flex items-center gap-2">
@@ -129,7 +129,7 @@ export default function NotificationCenter() {
             </div>
 
             {/* Notifications List */}
-            <div className="max-h-96 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto">
               {notifications.length === 0 ? (
                 <div className="px-6 py-12 text-center text-gray-500">
                   <Bell className="w-8 h-8 mx-auto mb-3 opacity-50" />
@@ -141,7 +141,7 @@ export default function NotificationCenter() {
                   return (
                   <div
                     key={notification.id}
-                    className={`px-6 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer ${
+                    className={`px-4 sm:px-6 py-4 border-b border-gray-100 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer ${
                       !notification.read ? 'bg-gray-50' : ''
                     }`}
                     onClick={() => !notification.read && markAsRead([notification.id])}
@@ -180,7 +180,7 @@ export default function NotificationCenter() {
 
             {/* Footer */}
             {notifications.length > 0 && (
-              <div className="px-6 py-3 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
+              <div className="px-4 sm:px-6 py-3 border-t border-gray-100 bg-gray-50 flex items-center justify-between flex-shrink-0">
                 <button
                   onClick={() => markAsRead(notifications.filter(n => !n.read).map(n => n.id))}
                   className="text-sm text-primary-navy font-medium hover:underline flex items-center gap-1"

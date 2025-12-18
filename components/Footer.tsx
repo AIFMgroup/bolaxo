@@ -16,9 +16,9 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer className="bg-primary-navy text-white">
+    <footer className="bg-primary-navy text-white pb-[var(--mobile-nav-height)] lg:pb-0">
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 lg:py-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
           {/* Company Info */}
           <div className="lg:col-span-1">
@@ -135,33 +135,33 @@ export default function Footer() {
         <div className="border-t border-white/10 mb-8"></div>
 
         {/* Bottom Section */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
           {/* Legal Links */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 text-xs text-gray-400">
-            <Link href={`/${locale}/juridiskt/integritetspolicy`} className="hover:text-white transition-colors">
+          <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-6 text-xs text-gray-400">
+            <Link href={`/${locale}/juridiskt/integritetspolicy`} className="hover:text-white transition-colors py-1">
               {t('privacy')}
             </Link>
-            <Link href={`/${locale}/juridiskt/anvandarvillkor`} className="hover:text-white transition-colors">
+            <Link href={`/${locale}/juridiskt/anvandarvillkor`} className="hover:text-white transition-colors py-1">
               {t('terms')}
             </Link>
-            <Link href={`/${locale}/juridiskt/cookies`} className="hover:text-white transition-colors">
+            <Link href={`/${locale}/juridiskt/cookies`} className="hover:text-white transition-colors py-1">
               {t('cookies')}
             </Link>
-            <Link href={`/${locale}/juridiskt/gdpr`} className="hover:text-white transition-colors">
+            <Link href={`/${locale}/juridiskt/gdpr`} className="hover:text-white transition-colors py-1">
               {t('gdpr')}
             </Link>
-            <Link href={`/${locale}/konto/radera`} className="hover:text-white transition-colors">
+            <Link href={`/${locale}/konto/radera`} className="hover:text-white transition-colors py-1">
               {t('deleteAccount')}
             </Link>
           </div>
 
           {/* Social Links */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 sm:gap-6">
             <a 
               href="https://facebook.com/afterfounder" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-accent-pink transition-colors"
+              className="text-gray-400 hover:text-accent-pink transition-colors p-2"
               aria-label="Facebook"
             >
               <Facebook className="w-5 h-5" />
@@ -170,7 +170,7 @@ export default function Footer() {
               href="https://linkedin.com/company/pactior-group" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-accent-pink transition-colors"
+              className="text-gray-400 hover:text-accent-pink transition-colors p-2"
               aria-label="LinkedIn"
             >
               <Linkedin className="w-5 h-5" />
@@ -179,7 +179,7 @@ export default function Footer() {
               href="https://twitter.com/afterfounder" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-accent-pink transition-colors"
+              className="text-gray-400 hover:text-accent-pink transition-colors p-2"
               aria-label="Twitter"
             >
               <Twitter className="w-5 h-5" />

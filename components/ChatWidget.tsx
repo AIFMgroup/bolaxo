@@ -283,7 +283,7 @@ export default function ChatWidget() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-40 bg-navy text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 group"
+        className="fixed bottom-[calc(var(--mobile-nav-height)+0.5rem)] lg:bottom-6 right-4 md:right-6 z-40 bg-navy text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 group"
       >
         <div className="flex items-center gap-2 px-4 py-3 md:px-6 md:py-4">
           <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
@@ -296,7 +296,7 @@ export default function ChatWidget() {
   return (
     <>
       {/* Chat Window */}
-      <div className="fixed bottom-0 right-0 md:bottom-6 md:right-6 z-40 w-full md:w-[440px] h-screen md:h-[600px] bg-white md:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+      <div className="fixed bottom-0 right-0 lg:bottom-6 lg:right-6 z-40 w-full lg:w-[440px] h-[calc(100vh-var(--mobile-nav-height))] lg:h-[600px] bg-white lg:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="bg-navy text-white p-4 md:p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">

@@ -230,8 +230,8 @@ export function SavedSearches({ currentFilters, onLoadSearch }: Props) {
 
       {/* Save Modal */}
       {showSaveModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl max-h-[85vh] overflow-y-auto pb-[calc(1.25rem+var(--sab))] sm:pb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Spara sökning</h2>
             
             <div className="space-y-4">
@@ -280,14 +280,14 @@ export function SavedSearches({ currentFilters, onLoadSearch }: Props) {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowSaveModal(false)}
-                className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
+                className="flex-1 px-4 py-3.5 sm:py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 active:bg-gray-300 transition-colors"
               >
                 Avbryt
               </button>
               <button
                 onClick={saveSearch}
                 disabled={saving || !searchName.trim()}
-                className="flex-1 px-4 py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-3.5 sm:py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 active:bg-navy/80 transition-colors disabled:opacity-50"
               >
                 {saving ? 'Sparar...' : 'Spara'}
               </button>
