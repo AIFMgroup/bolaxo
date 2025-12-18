@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 // Helper function to count matches for a filter
 async function countMatches(filters: any): Promise<number> {
   const where: any = {
-    status: 'published',
+    status: 'active',
   }
 
   if (filters.industries && filters.industries.length > 0) {

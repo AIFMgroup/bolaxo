@@ -123,7 +123,7 @@ export async function DELETE(
 // Helper function to get matches for a filter
 async function getMatches(filters: any) {
   const where: any = {
-    status: 'published',
+    status: 'active',
   }
 
   if (filters.industries && filters.industries.length > 0) {
@@ -173,7 +173,7 @@ async function getMatches(filters: any) {
 // Helper function to count matches
 async function countMatches(filters: any): Promise<number> {
   const where: any = {
-    status: 'published',
+    status: 'active',
   }
 
   if (filters.industries && filters.industries.length > 0) {
