@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Lock, Upload, CheckCircle, AlertCircle, File, FolderOpen, Trash2, Eye, Download, Plus } from 'lucide-react'
+import { ArrowLeft, Lock, Upload, CheckCircle, AlertCircle, File, FolderOpen, Trash2, Eye, Download, Plus, Sparkles } from 'lucide-react'
+import { AIPriceSuggestion } from '@/components/AIPriceSuggestion'
 
 interface DataRoomFile {
   id: string
@@ -27,6 +28,8 @@ export default function DataRoomPage() {
   const [selectedFolder, setSelectedFolder] = useState('financials')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showAIPricing, setShowAIPricing] = useState(false)
+  const [suggestedPrice, setSuggestedPrice] = useState<number | null>(null)
 
   const structure: DataRoomStructure = {
     financials: { name: '💰 Finansiell data', icon: '💰', color: 'bg-green-100 border-green-300' },
@@ -251,6 +254,46 @@ export default function DataRoomPage() {
                     </div>
                   )
                 })}
+              </div>
+            )}
+
+            {/* AI Price Suggestion - shows when financial docs are uploaded */}
+            {filesByFolder['financials']?.length > 0 && (
+              <div className="mb-8">
+                <button
+                  onClick={() => setShowAIPricing(!showAIPricing)}
+                  className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-violet-50 to-purple-50 border-2 border-violet-200 rounded-xl hover:border-violet-300 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 text-violet-600" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="font-semibold text-violet-900">AI Prisförslag</h3>
+                      <p className="text-sm text-violet-600">Analysera dina finansiella dokument för ett prisförslag</p>
+                    </div>
+                  </div>
+                  <span className="text-violet-500">{showAIPricing ? '−' : '+'}</span>
+                </button>
+                
+                {showAIPricing && (
+                  <div className="mt-4">
+                    <AIPriceSuggestion 
+                      onApplyPrice={(price) => {
+                        setSuggestedPrice(price)
+                        setShowAIPricing(false)
+                      }}
+                    />
+                  </div>
+                )}
+                
+                {suggestedPrice && (
+                  <div className="mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-xl">
+                    <p className="text-sm text-green-800">
+                      ✓ AI-föreslaget pris: <strong>{(suggestedPrice / 1000000).toFixed(1)} MSEK</strong> har sparats
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 

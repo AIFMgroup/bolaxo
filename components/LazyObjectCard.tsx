@@ -3,18 +3,30 @@
 import { useRef, useState, useEffect } from 'react'
 import ObjectCard from './ObjectCard'
 import { BusinessObject } from '@/data/mockObjects'
+import { Scale, Check } from 'lucide-react'
 
 interface LazyObjectCardProps {
   object: BusinessObject
   matchScore?: number
   index: number
+  // Comparison props
+  isInComparison?: boolean
+  onToggleComparison?: (id: string) => void
+  canAddToComparison?: boolean
 }
 
 /**
  * Lazy-loaded ObjectCard using Intersection Observer
  * Only renders when card is about to enter viewport
  */
-export default function LazyObjectCard({ object, matchScore, index }: LazyObjectCardProps) {
+export default function LazyObjectCard({ 
+  object, 
+  matchScore, 
+  index,
+  isInComparison = false,
+  onToggleComparison,
+  canAddToComparison = true
+}: LazyObjectCardProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [hasBeenVisible, setHasBeenVisible] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
@@ -64,7 +76,33 @@ export default function LazyObjectCard({ object, matchScore, index }: LazyObject
       }}
     >
       {hasBeenVisible ? (
-        <ObjectCard object={object} matchScore={matchScore} />
+        <div className="relative group">
+          <ObjectCard object={object} matchScore={matchScore} />
+          {onToggleComparison && (
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onToggleComparison(object.id)
+              }}
+              disabled={!isInComparison && !canAddToComparison}
+              className={`absolute top-3 right-3 p-2 rounded-lg transition-all z-10 ${
+                isInComparison 
+                  ? 'bg-primary-navy text-white shadow-lg'
+                  : canAddToComparison
+                    ? 'bg-white/90 text-gray-600 hover:bg-primary-navy hover:text-white opacity-0 group-hover:opacity-100 shadow-md'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed opacity-0 group-hover:opacity-50'
+              }`}
+              title={isInComparison ? 'Ta bort från jämförelse' : canAddToComparison ? 'Lägg till i jämförelse' : 'Max 3 bolag kan jämföras'}
+            >
+              {isInComparison ? (
+                <Check className="w-4 h-4" />
+              ) : (
+                <Scale className="w-4 h-4" />
+              )}
+            </button>
+          )}
+        </div>
       ) : (
         // Skeleton placeholder
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 animate-pulse">

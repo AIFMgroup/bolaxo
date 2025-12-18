@@ -11,7 +11,9 @@ import MultiSelect from '@/components/MultiSelect'
 import PriceRangeSlider from '@/components/PriceRangeSlider'
 import AdvancedFilterDropdown from '@/components/AdvancedFilterDropdown'
 import { useDebounce, useDebouncedCallback } from '@/lib/hooks/useDebounce'
-import { Search, SlidersHorizontal, ChevronDown, X, TrendingUp, AlertCircle, MapPin, Briefcase, DollarSign, Users, Calendar, Shield, BarChart3, Filter, Zap, HelpCircle, Loader2 } from 'lucide-react'
+import { Search, SlidersHorizontal, ChevronDown, X, TrendingUp, AlertCircle, MapPin, Briefcase, DollarSign, Users, Calendar, Shield, BarChart3, Filter, Zap, HelpCircle, Loader2, Bookmark, Scale } from 'lucide-react'
+import { SavedSearches } from '@/components/SavedSearches'
+import { ListingComparison, useListingComparison } from '@/components/ListingComparison'
 
 export default function SearchPageContent() {
   const router = useRouter()
@@ -42,6 +44,18 @@ export default function SearchPageContent() {
     verified: 'all',
     broker: 'all'
   })
+
+  // Comparison feature
+  const { 
+    comparisonIds, 
+    addToComparison, 
+    removeFromComparison, 
+    clearComparison, 
+    isInComparison,
+    canAdd: canAddToComparison 
+  } = useListingComparison(3)
+  const [showComparison, setShowComparison] = useState(false)
+  const [showSavedSearches, setShowSavedSearches] = useState(false)
 
   // Check buyer profile on mount
   useEffect(() => {
@@ -684,18 +698,97 @@ export default function SearchPageContent() {
         </div>
       </div>
 
+      {/* Comparison Floating Bar */}
+      {comparisonIds.length > 0 && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-primary-navy text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Scale className="w-5 h-5" />
+            <span className="font-medium">{comparisonIds.length} bolag valda</span>
+          </div>
+          <button
+            onClick={() => setShowComparison(true)}
+            className="px-4 py-2 bg-white text-primary-navy rounded-xl text-sm font-semibold hover:bg-gray-100 transition-colors"
+          >
+            Jämför nu
+          </button>
+          <button
+            onClick={clearComparison}
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* Comparison Modal */}
+      {showComparison && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <ListingComparison 
+              listingIds={comparisonIds}
+              onRemove={removeFromComparison}
+              onClose={() => setShowComparison(false)}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Results Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+        {/* Saved Searches Toggle */}
+        {user && (
+          <div className="mb-6">
+            <button
+              onClick={() => setShowSavedSearches(!showSavedSearches)}
+              className="flex items-center gap-2 text-sm text-primary-navy hover:text-primary-navy/80 transition-colors"
+            >
+              <Bookmark className={`w-4 h-4 ${showSavedSearches ? 'fill-current' : ''}`} />
+              <span>{showSavedSearches ? 'Dölj' : 'Visa'} sparade sökningar</span>
+            </button>
+            
+            {showSavedSearches && (
+              <div className="mt-4">
+                <SavedSearches 
+                  currentFilters={{
+                    industries: filters.categories,
+                    regions: filters.locations,
+                    priceMin: filters.priceRange[0] > 0 ? filters.priceRange[0] : undefined,
+                    priceMax: filters.priceRange[1] < 150000000 ? filters.priceRange[1] : undefined,
+                  }}
+                  onLoadSearch={(savedFilters) => {
+                    setFilters(prev => ({
+                      ...prev,
+                      categories: savedFilters.industries || [],
+                      locations: savedFilters.regions || [],
+                      priceRange: [
+                        savedFilters.priceMin || 0,
+                        savedFilters.priceMax || 150000000
+                      ] as [number, number]
+                    }))
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Results Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mb-4 sm:mb-6 md:mb-8">
           <h2 className="text-base sm:text-lg md:text-xl font-semibold text-text-dark">
             {filteredObjects.length} företag {activeFilterCount > 0 && 'matchade'}
           </h2>
-          {!loading && filteredObjects.length > 0 && (
-            <p className="text-xs sm:text-sm text-text-gray hidden lg:block">
-              Alla annonser är verifierade
-            </p>
-          )}
+          <div className="flex items-center gap-4">
+            {!loading && filteredObjects.length > 0 && (
+              <p className="text-xs sm:text-sm text-text-gray hidden lg:block">
+                Alla annonser är verifierade
+              </p>
+            )}
+            {comparisonIds.length > 0 && comparisonIds.length < 3 && (
+              <span className="text-xs text-primary-blue">
+                Välj {3 - comparisonIds.length} till för att jämföra
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Loading State */}
@@ -724,6 +817,15 @@ export default function SearchPageContent() {
                 object={object} 
                 matchScore={object.matchScore}
                 index={index}
+                isInComparison={isInComparison(object.id)}
+                onToggleComparison={(id) => {
+                  if (isInComparison(id)) {
+                    removeFromComparison(id)
+                  } else {
+                    addToComparison(id)
+                  }
+                }}
+                canAddToComparison={canAddToComparison}
               />
             ))}
           </div>

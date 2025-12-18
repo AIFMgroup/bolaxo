@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import ClientDashboardLayout from '@/components/dashboard/ClientDashboardLayout'
 import DashboardAnalytics from '@/components/DashboardAnalytics'
 import Link from 'next/link'
-import { Building, Eye, Shield, MessageSquare, Edit, Pause, Play, MoreVertical, TrendingUp, Calendar, Download, Bookmark, Trash2, CheckCircle, XCircle, ChevronDown, ChevronUp } from 'lucide-react'
+import { Building, Eye, Shield, MessageSquare, Edit, Pause, Play, MoreVertical, TrendingUp, Calendar, Download, Bookmark, Trash2, CheckCircle, XCircle, ChevronDown, ChevronUp, Sparkles } from 'lucide-react'
+import { AIPriceSuggestion } from '@/components/AIPriceSuggestion'
 import { mockObjects } from '@/data/mockObjects'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
@@ -58,6 +59,7 @@ export default function ListingsPage() {
   const [loading, setLoading] = useState(true)
   const [showNDAPanel, setShowNDAPanel] = useState(false)
   const [showAnalytics, setShowAnalytics] = useState(true)
+  const [showAIPricing, setShowAIPricing] = useState(false)
 
   // Fetch real data from API
   useEffect(() => {
@@ -213,6 +215,42 @@ export default function ListingsPage() {
                 role="seller"
                 listingId={listings[0]?.id}
               />
+            )}
+          </div>
+        )}
+
+        {/* AI Price Suggestion Section */}
+        {user && listings.length > 0 && (
+          <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl border border-violet-200 p-4 sm:p-6">
+            <button
+              onClick={() => setShowAIPricing(!showAIPricing)}
+              className="w-full flex items-center justify-between"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-violet-600" />
+                </div>
+                <div className="text-left">
+                  <h2 className="text-lg font-semibold text-violet-900">AI Prisförslag</h2>
+                  <p className="text-sm text-violet-600">Få ett AI-baserat prisförslag baserat på dina dokument</p>
+                </div>
+              </div>
+              {showAIPricing ? (
+                <ChevronUp className="w-5 h-5 text-violet-400" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-violet-400" />
+              )}
+            </button>
+            {showAIPricing && (
+              <div className="mt-4">
+                <AIPriceSuggestion 
+                  listingId={listings[0]?.id}
+                  onApplyPrice={(price) => {
+                    // Could update listing price here
+                    success(`Pris ${(price / 1000000).toFixed(1)} MSEK har applicerats`)
+                  }}
+                />
+              </div>
             )}
           </div>
         )}

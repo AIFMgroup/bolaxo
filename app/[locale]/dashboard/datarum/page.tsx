@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import ClientDashboardLayout from '@/components/dashboard/ClientDashboardLayout'
 import DataRoomManager from '@/components/dataroom/DataRoomManager'
 import ReadinessChecklist from '@/components/ReadinessChecklist'
+import { AIPriceSuggestion } from '@/components/AIPriceSuggestion'
 import { useAuth } from '@/contexts/AuthContext'
 import Link from 'next/link'
 

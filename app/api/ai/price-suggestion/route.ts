@@ -135,7 +135,8 @@ Företagsinformation:
 - Bransch: ${listing.industry || 'Ej angiven'}
 - Region: ${listing.region || 'Ej angiven'}
 - Omsättning: ${listing.revenue ? `${listing.revenue.toLocaleString('sv-SE')} SEK` : 'Ej angiven'}
-- Vinst/EBITDA: ${listing.profit ? `${listing.profit.toLocaleString('sv-SE')} SEK` : 'Ej angiven'}
+- EBITDA: ${listing.ebitda ? `${listing.ebitda.toLocaleString('sv-SE')} SEK` : 'Ej angiven'}
+- Vinstmarginal: ${listing.profitMargin ? `${listing.profitMargin}%` : 'Ej angiven'}
 - Anställda: ${listing.employees || 'Ej angiven'}
 - Nuvarande pris: ${listing.askingPrice ? `${listing.askingPrice.toLocaleString('sv-SE')} SEK` : 'Ej satt'}
 ` : ''
