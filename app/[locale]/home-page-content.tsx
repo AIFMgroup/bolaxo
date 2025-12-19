@@ -29,7 +29,7 @@ export default function HomePageContent() {
     <main className="bg-gray-50 min-h-screen">
       {/* HERO SECTION - Full width image hero */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-        {/* Background image */}
+        {/* Background image - no gradient overlay */}
         <div className="absolute inset-0">
           <Image
             src="/polaroid/premium_photo-1712016875326-7dbba3f6ec26.jpg"
@@ -38,37 +38,36 @@ export default function HomePageContent() {
             className="object-cover"
             priority
             sizes="100vw"
-            quality={70}
+            quality={65}
           />
-          {/* Simplified overlay - less gradient, more subtle */}
-          <div className="absolute inset-0 bg-navy/60" />
         </div>
         
         <div className="relative z-10 max-w-6xl mx-auto px-4 py-20 sm:py-24 md:py-32">
-          <div className="max-w-2xl">
+          {/* White content box with pulsating navy shadow */}
+          <div className="max-w-2xl bg-white rounded-3xl p-8 sm:p-10 md:p-12 animate-pulse-navy-glow">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium mb-8 border border-white/20">
+            <div className="inline-flex items-center gap-2 bg-navy/10 text-navy px-4 py-2 rounded-full text-sm font-medium mb-8">
               <Sparkles className="w-4 h-4" />
               <span>Sveriges smartaste företagsförmedling</span>
             </div>
             
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-navy leading-tight mb-6">
               Köp och sälj företag
-              <span className="block text-white/80 mt-2">tryggt och transparent</span>
+              <span className="block text-navy/70 mt-2">tryggt och transparent</span>
             </h1>
             
             {/* Intro Text */}
-            <p className="text-lg sm:text-xl text-white/80 max-w-xl mb-10 leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-xl mb-10 leading-relaxed">
               Afterfounder kopplar samman kvalificerade köpare med 
               verifierade säljare. Anonymt tills NDA är signerat.
             </p>
             
             {/* Primary CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 mb-10">
               <Link
                 href={`/${locale}/sok`}
-                className="group inline-flex items-center justify-center gap-3 bg-white text-navy font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 active:scale-95 sm:hover:scale-105 shadow-lg shadow-black/20 min-h-[56px]"
+                className="group inline-flex items-center justify-center gap-3 bg-navy text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 active:scale-95 sm:hover:scale-105 shadow-lg shadow-navy/30 min-h-[56px]"
               >
                 <Search className="w-5 h-5" />
                 <span>Utforska bolag till salu</span>
@@ -77,7 +76,7 @@ export default function HomePageContent() {
               
               <Link
                 href={`/${locale}/salja/skapa-annons`}
-                className="group inline-flex items-center justify-center gap-3 bg-white/10 backdrop-blur-sm text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 active:scale-95 sm:hover:bg-white/20 border border-white/30 min-h-[56px]"
+                className="group inline-flex items-center justify-center gap-3 bg-navy/10 text-navy font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 active:scale-95 sm:hover:bg-navy/20 border-2 border-navy/20 min-h-[56px]"
               >
                 <FileText className="w-5 h-5" />
                 <span>Annonsera ditt företag</span>
@@ -85,17 +84,17 @@ export default function HomePageContent() {
             </div>
             
             {/* Trust indicators */}
-            <div className="flex flex-wrap gap-6 text-sm text-white/70">
+            <div className="flex flex-wrap gap-6 text-sm text-gray-600">
               <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-white/90" />
+                <Lock className="w-4 h-4 text-navy" />
                 <span>Anonymt tills NDA</span>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-white/90" />
+                <Shield className="w-4 h-4 text-navy" />
                 <span>Verifierade uppgifter</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-white/90" />
+                <CheckCircle className="w-4 h-4 text-navy" />
                 <span>Inga success fees</span>
               </div>
             </div>
