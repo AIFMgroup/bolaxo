@@ -20,7 +20,7 @@ const BUCKET = process.env.AWS_S3_BUCKET_NAME || 'trestor-dataroom-prod'
 export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies()
-    const userId = cookieStore.get('afterfounder_user_id')?.value
+    const userId = cookieStore.get('bolaxo_user_id')?.value
 
     if (!userId) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const cookieStore = await cookies()
-    const userId = cookieStore.get('afterfounder_user_id')?.value
+    const userId = cookieStore.get('bolaxo_user_id')?.value
 
     if (!userId) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })

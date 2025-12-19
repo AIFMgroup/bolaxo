@@ -537,8 +537,8 @@ function buildSources({
   // If using fallback and no other sources
   if (usedFallback && sources.length === 0) {
     sources.push({
-      title: 'Afterfounder analys',
-      url: 'https://afterfounder.com/sv/analysera',
+      title: 'BOLAXO analys',
+      url: 'https://bolaxo.com/sv/analysera',
       type: 'internal'
     })
   }

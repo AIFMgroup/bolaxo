@@ -23,7 +23,7 @@ export function generateTOTPSecret(): string {
 export function generateTOTPUri(
   secret: string,
   email: string,
-  issuer: string = 'Afterfounder'
+  issuer: string = 'BOLAXO'
 ): string {
   const encodedIssuer = encodeURIComponent(issuer)
   const encodedEmail = encodeURIComponent(email)

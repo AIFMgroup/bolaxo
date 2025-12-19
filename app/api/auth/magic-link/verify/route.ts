@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     
     // Detektera rätt base URL tidigt
     const protocol = request.headers.get('x-forwarded-proto') || 'https'
-    const host = request.headers.get('host') || 'afterfounder.com'
+    const host = request.headers.get('host') || 'bolaxo.com'
     let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`
     // Ta bort trailing slash om den finns
     baseUrl = baseUrl.replace(/\/$/, '')
@@ -110,7 +110,7 @@ export async function GET(request: Request) {
     // Always use secure for HTTPS - check protocol header
     const isHttps = protocol === 'https' || baseUrl.startsWith('https://')
     // Always use secure cookies for HTTPS, and in production
-    const useSecure = isHttps || process.env.NODE_ENV === 'production' || baseUrl.includes('afterfounder.com')
+    const useSecure = isHttps || process.env.NODE_ENV === 'production' || baseUrl.includes('bolaxo.com')
 
     console.log(' [MAGIC LINK VERIFY] Cookie settings:', {
       protocol,
@@ -135,8 +135,8 @@ export async function GET(request: Request) {
           <script>
             // Set non-httpOnly cookies via JavaScript
             // httpOnly cookies are set via Set-Cookie headers below
-            document.cookie = 'afterfounder_user_email=${encodeURIComponent(user.email)}; path=/; max-age=${60 * 60 * 24 * 30}; ${useSecure ? 'secure; ' : ''}SameSite=Lax';
-            document.cookie = 'afterfounder_user_role=${user.role}; path=/; max-age=${60 * 60 * 24 * 30}; ${useSecure ? 'secure; ' : ''}SameSite=Lax';
+            document.cookie = 'bolaxo_user_email=${encodeURIComponent(user.email)}; path=/; max-age=${60 * 60 * 24 * 30}; ${useSecure ? 'secure; ' : ''}SameSite=Lax';
+            document.cookie = 'bolaxo_user_role=${user.role}; path=/; max-age=${60 * 60 * 24 * 30}; ${useSecure ? 'secure; ' : ''}SameSite=Lax';
             
             console.log('cookie [VERIFY] Cookies set via JavaScript');
             console.log('cookie [VERIFY] Cookies:', document.cookie);
@@ -171,7 +171,7 @@ export async function GET(request: Request) {
 
     // Set ALL cookies via Set-Cookie headers (primary method)
     // httpOnly cookies MUST be set via headers
-    response.cookies.set('afterfounder_user_id', user.id, {
+    response.cookies.set('bolaxo_user_id', user.id, {
       httpOnly: true,
       secure: useSecure,
       sameSite: 'lax',
@@ -179,7 +179,7 @@ export async function GET(request: Request) {
       path: '/',
     })
 
-    response.cookies.set('afterfounder_user_email', user.email, {
+    response.cookies.set('bolaxo_user_email', user.email, {
       httpOnly: false,
       secure: useSecure,
       sameSite: 'lax',
@@ -187,7 +187,7 @@ export async function GET(request: Request) {
       path: '/',
     })
 
-    response.cookies.set('afterfounder_user_role', user.role, {
+    response.cookies.set('bolaxo_user_role', user.role, {
       httpOnly: false,
       secure: useSecure,
       sameSite: 'lax',

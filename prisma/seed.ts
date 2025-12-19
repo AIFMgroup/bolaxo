@@ -5,8 +5,8 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🌱 Minimal production seed...')
 
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@afterfounder.com'
-  const adminName = process.env.ADMIN_NAME || 'Afterfounder Admin'
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@bolaxo.com'
+  const adminName = process.env.ADMIN_NAME || 'BOLAXO Admin'
 
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },

@@ -129,7 +129,7 @@ export default function KomIgangPage() {
         <div className="absolute inset-0">
           <Image
             src="/polaroid/premium_photo-1713981170233-8def6a2faea7.jpg"
-            alt="Kom igång med Afterfounder"
+            alt="Kom igång med BOLAXO"
             fill
             className="object-cover"
             priority
@@ -139,7 +139,7 @@ export default function KomIgangPage() {
         
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
-            Välkommen till Afterfounder
+            Välkommen till BOLAXO
           </h1>
           <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
             Sveriges moderna marknadsplats för företagsöverlåtelser. Vi guidar dig genom hela processen.
@@ -313,7 +313,7 @@ export default function KomIgangPage() {
               <div className={`bg-gradient-to-br ${selectedUserType.color} rounded-xl p-8 text-white sticky top-8`}>
                 <h3 className="text-2xl font-bold mb-4">Redo att komma igång?</h3>
                 <p className="text-white/90 mb-6">
-                  Börja din resa på Afterfounder idag. Det tar bara några minuter att komma igång.
+                  Börja din resa på BOLAXO idag. Det tar bara några minuter att komma igång.
                 </p>
                 <Link
                   href={selectedUserType.cta.href}
@@ -328,7 +328,7 @@ export default function KomIgangPage() {
 
               {/* Trust Indicators */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                <h4 className="font-semibold text-gray-900 mb-4">Varför välja Afterfounder?</h4>
+                <h4 className="font-semibold text-gray-900 mb-4">Varför välja BOLAXO?</h4>
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-green-500" />

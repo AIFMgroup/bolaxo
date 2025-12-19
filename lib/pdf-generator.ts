@@ -53,8 +53,8 @@ export async function generateTeaserPDF(data: TeaserData, buyerEmail?: string): 
       // Set metadata
       doc.info.Title = `${data.companyName} - Teaser`;
       doc.info.Subject = 'Confidential Business Overview';
-      doc.info.Author = 'Afterfounder';
-      doc.info.Creator = 'Afterfounder SME Automation';
+      doc.info.Author = 'BOLAXO';
+      doc.info.Creator = 'BOLAXO SME Automation';
 
       // PAGE 1: Cover page
       addCoverPage(doc, data, 'TEASER');
@@ -96,8 +96,8 @@ export async function generateIMPDF(data: IMData, buyerEmail?: string): Promise<
       // Set metadata
       doc.info.Title = `${data.companyName} - Information Memorandum`;
       doc.info.Subject = 'Confidential Information Memorandum';
-      doc.info.Author = 'Afterfounder';
-      doc.info.Creator = 'Afterfounder SME Automation';
+      doc.info.Author = 'BOLAXO';
+      doc.info.Creator = 'BOLAXO SME Automation';
 
       // PAGE 1: Cover
       addCoverPage(doc, data, 'INFORMATION MEMORANDUM');

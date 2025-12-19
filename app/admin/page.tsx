@@ -259,7 +259,7 @@ export default function AdminDashboard() {
           <Link href="/" className="block hover:opacity-80 transition-opacity">
             <div className="flex items-center gap-3">
               <h1 className={`text-2xl font-black text-white ${!sidebarOpen && 'text-center'}`}>
-                {sidebarOpen ? 'Afterfounder' : 'B'}
+                {sidebarOpen ? 'BOLAXO' : 'B'}
               </h1>
               {sidebarOpen && (
                 <span className="text-xs font-medium text-sky uppercase tracking-wider bg-white/10 px-2 py-1 rounded">

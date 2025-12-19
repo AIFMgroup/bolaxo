@@ -196,8 +196,8 @@ export default function ContactPage() {
                 <Mail className="w-6 h-6 text-[#1F3C58] flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="font-bold text-primary-navy mb-1">{t('email')}</h3>
-                  <a href="mailto:hej@afterfounder.com" className="text-gray-700 hover:text-[#1F3C58] transition-colors">
-                    hej@afterfounder.com
+                  <a href="mailto:hej@bolaxo.com" className="text-gray-700 hover:text-[#1F3C58] transition-colors">
+                    hej@bolaxo.com
                   </a>
                 </div>
               </div>

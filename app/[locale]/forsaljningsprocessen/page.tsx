@@ -1141,7 +1141,7 @@ const steps: Step[] = [
       {
         title: 'Ladda ner PDF-rapport',
         summary: 'En professionell 12-sidig rapport att spara och dela.',
-        expanded: 'Din kompletta analys sammanställs i en snygg PDF-rapport med Afterfounder:s professionella design.\n\nRapporten innehåller alla analyser, diagram, checklistor och rekommendationer.\n\nDetta är ett konfidentiellt dokument som du kan dela med rådgivare, styrelse eller potentiella köpare efter eget val.',
+        expanded: 'Din kompletta analys sammanställs i en snygg PDF-rapport med BOLAXO:s professionella design.\n\nRapporten innehåller alla analyser, diagram, checklistor och rekommendationer.\n\nDetta är ett konfidentiellt dokument som du kan dela med rådgivare, styrelse eller potentiella köpare efter eget val.',
         stats: [
           { value: 'PDF', label: 'Format' },
           { value: '12', label: 'Sidor' },
@@ -1540,7 +1540,7 @@ export default function ForsaljningsprocessenPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <Link href={`/${locale}`} className="text-2xl font-bold text-[#1F3C58] hover:opacity-80 transition-opacity">
-                Afterfounder
+                BOLAXO
               </Link>
               {selectedIndustry && (
                 <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-[#1F3C58]/5 rounded-xl">
@@ -1558,7 +1558,7 @@ export default function ForsaljningsprocessenPage() {
               <div className="hidden lg:block">
                 <Image
                   src="/Maskots/maskot6.png"
-                  alt="Afterfounder maskot"
+                  alt="BOLAXO maskot"
                   width={80}
                   height={80}
                   className="object-contain"

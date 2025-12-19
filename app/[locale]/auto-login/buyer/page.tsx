@@ -10,7 +10,7 @@ export default function AutoLoginBuyerPage() {
     // Auto-login as buyer
     const buyerUser = {
       id: 'buyer-auto-001',
-      email: 'demo-buyer@afterfounder.com',
+      email: 'demo-buyer@bolaxo.com',
       name: 'Demo Köpare',
       role: 'buyer',
       loginTime: new Date().toISOString()

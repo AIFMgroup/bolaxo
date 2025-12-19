@@ -11,7 +11,7 @@ export default function SuccessStoriesPage() {
             Success Stories
           </h1>
           <p className="text-2xl text-primary-navy leading-relaxed">
-            Verkliga berättelser från företagare som sålt sina företag via Afterfounder
+            Verkliga berättelser från företagare som sålt sina företag via BOLAXO
           </p>
         </div>
       </section>
@@ -126,7 +126,7 @@ export default function SuccessStoriesPage() {
               </div>
               <h3 className="text-xl font-bold text-primary-navy mb-3">Hittade mitt drömobjekt</h3>
               <p className="text-gray-700 mb-6">
-                "Jag hade sökt efter e-handelsföretag i över ett år utan resultat. På Afterfounder hittade jag perfekt match på första dagen."
+                "Jag hade sökt efter e-handelsföretag i över ett år utan resultat. På BOLAXO hittade jag perfekt match på första dagen."
               </p>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-gray-600">Köpesumma</span><span className="font-bold text-primary-navy">18M</span></div>

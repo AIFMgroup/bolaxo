@@ -9,7 +9,7 @@ export default function DemoBuyerDashboardPage() {
     // Seed dev auth + cookies so middleware and auth context treat this as logged-in
     const demoUser = {
       id: 'demo-buyer',
-      email: 'demo-buyer@afterfounder.com',
+      email: 'demo-buyer@bolaxo.com',
       name: 'Demo Köpare',
       role: 'buyer',
       loginTime: new Date().toISOString(),
@@ -18,8 +18,8 @@ export default function DemoBuyerDashboardPage() {
     localStorage.setItem('dev-auth-user', JSON.stringify(demoUser))
     localStorage.setItem('dev-auth-token', `dev-token-${demoUser.id}-${Date.now()}`)
 
-    document.cookie = `afterfounder_user_id=${demoUser.id}; path=/; max-age=86400`
-    document.cookie = `afterfounder_user_role=${demoUser.role}; path=/; max-age=86400`
+    document.cookie = `bolaxo_user_id=${demoUser.id}; path=/; max-age=86400`
+    document.cookie = `bolaxo_user_role=${demoUser.role}; path=/; max-age=86400`
   }, [])
 
   return (

@@ -277,7 +277,7 @@ const demoCompanies: DemoCompany[] = [
   {
     label: 'Nimbus Analytics (SaaS)',
     data: {
-      email: 'demo+saas@afterfounder.com',
+      email: 'demo+saas@bolaxo.com',
       companyName: 'Nimbus Analytics AB',
       website: 'https://nimbusanalytics.se',
       orgNumber: '5591234567',
@@ -324,7 +324,7 @@ const demoCompanies: DemoCompany[] = [
   {
     label: 'Nordic Retail Group',
     data: {
-      email: 'demo+retail@afterfounder.com',
+      email: 'demo+retail@bolaxo.com',
       companyName: 'Nordic Retail Group AB',
       website: 'https://nordicretailgroup.se',
       orgNumber: '5569876543',
@@ -370,7 +370,7 @@ const demoCompanies: DemoCompany[] = [
   {
     label: 'CityCare Kliniken',
     data: {
-      email: 'demo+care@afterfounder.com',
+      email: 'demo+care@bolaxo.com',
       companyName: 'CityCare Kliniken AB',
       website: 'https://citycarekliniken.se',
       orgNumber: '5561122334',

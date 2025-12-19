@@ -25,11 +25,11 @@ export default function Footer() {
             <Link href={`/${locale}`} className="inline-block mb-6">
               <div className="flex items-center gap-3">
                 <Image 
-                  src="/Logo/afterfounder.png" 
-                  alt="Afterfounder" 
+                  src="/Logo/bolaxo_logo.png" 
+                  alt="BOLAXO" 
                   width={150} 
                   height={50}
-                  className="h-12 md:h-10 w-auto"
+                  className="h-14 md:h-12 w-auto"
                 />
               </div>
             </Link>
@@ -43,9 +43,9 @@ export default function Footer() {
                 <Phone className="w-4 h-4 flex-shrink-0" />
                 <span>+46 (0)8 123 456 78</span>
               </a>
-              <a href="mailto:kontakt@afterfounder.se" className="flex items-center gap-3 text-gray-300 hover:text-accent-pink transition-colors">
+              <a href="mailto:kontakt@bolaxo.se" className="flex items-center gap-3 text-gray-300 hover:text-accent-pink transition-colors">
                 <Mail className="w-4 h-4 flex-shrink-0" />
-                <span>kontakt@afterfounder.se</span>
+                <span>kontakt@bolaxo.se</span>
               </a>
               <div className="flex items-start gap-3 text-gray-300">
                 <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
@@ -158,7 +158,7 @@ export default function Footer() {
           {/* Social Links */}
           <div className="flex items-center gap-4 sm:gap-6">
             <a 
-              href="https://facebook.com/afterfounder" 
+              href="https://facebook.com/bolaxo" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-accent-pink transition-colors p-2"
@@ -167,7 +167,7 @@ export default function Footer() {
               <Facebook className="w-5 h-5" />
             </a>
             <a 
-              href="https://linkedin.com/company/pactior-group" 
+              href="https://linkedin.com/company/bolaxo" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-accent-pink transition-colors p-2"
@@ -176,7 +176,7 @@ export default function Footer() {
               <Linkedin className="w-5 h-5" />
             </a>
             <a 
-              href="https://twitter.com/afterfounder" 
+              href="https://twitter.com/bolaxo" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-accent-pink transition-colors p-2"

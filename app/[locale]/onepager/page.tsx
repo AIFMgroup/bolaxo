@@ -253,7 +253,7 @@ export default function OnePagerPage() {
             <div className="space-y-6">
             <h3 className="text-xl sm:text-2xl font-bold text-primary-blue mb-6 flex items-center">
               <CheckCircle className="w-6 h-6 text-primary-blue mr-2" />
-              {t('problemSolution.withAfterfounder')}
+              {t('problemSolution.withBOLAXO')}
             </h3>
               
               <div className="bg-gradient-to-br from-green-50 to-light-blue p-6 rounded-2xl border-l-4 border-green-500">

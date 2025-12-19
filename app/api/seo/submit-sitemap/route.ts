@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server'
  * 
  * Användning:
  * POST /api/seo/submit-sitemap
- * Body: { sitemapUrl: 'https://afterfounder.com/sitemap.xml' }
+ * Body: { sitemapUrl: 'https://bolaxo.com/sitemap.xml' }
  */
 export async function POST(request: Request) {
   try {
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     // och att du har verifierat din domain i Google Search Console
     
     const googleSearchConsoleApiKey = process.env.GOOGLE_SEARCH_CONSOLE_API_KEY
-    const googleSiteUrl = process.env.GOOGLE_SITE_URL || 'https://afterfounder.com'
+    const googleSiteUrl = process.env.GOOGLE_SITE_URL || 'https://bolaxo.com'
     
     if (!googleSearchConsoleApiKey) {
       console.warn('Google Search Console API key not configured. Sitemap submission skipped.')
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
  * GET endpoint för att hämta sitemap URL
  */
 export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com'
   const sitemapUrl = `${baseUrl}/sitemap.xml`
   
   return NextResponse.json({

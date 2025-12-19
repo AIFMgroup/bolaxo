@@ -9,7 +9,7 @@ async function resetAdmin() {
 
   try {
     // Delete old admin account
-    const oldEmail = 'admin@afterfounder.se'
+    const oldEmail = 'admin@bolaxo.se'
     console.log(`⏳ Tar bort ${oldEmail}...`)
     
     const deleted = await prisma.user.deleteMany({
@@ -23,7 +23,7 @@ async function resetAdmin() {
     }
 
     // Create new admin account
-    const newEmail = 'admin@afterfounder.com'
+    const newEmail = 'admin@bolaxo.com'
     const password = 'Password123'
     
     console.log(`\n⏳ Skapar nytt admin-konto...`)
@@ -47,7 +47,7 @@ async function resetAdmin() {
     console.log('📋 Inloggningsuppgifter:')
     console.log(`   E-post: ${adminUser.email}`)
     console.log(`   Lösenord: ${password}`)
-    console.log(`   URL: https://afterfounder-production.up.railway.app/admin/login\n`)
+    console.log(`   URL: https://bolaxo-production.up.railway.app/admin/login\n`)
 
   } catch (error) {
     console.error('❌ Fel vid reset av admin:', error)

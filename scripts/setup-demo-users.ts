@@ -29,7 +29,7 @@ async function main() {
   // Create Seller
   const seller = await prisma.user.create({
     data: {
-      email: 'saljare@afterfounder.com',
+      email: 'saljare@bolaxo.com',
       role: 'seller',
       name: 'Säljaren Demo',
       companyName: 'Tech Company AB',
@@ -42,7 +42,7 @@ async function main() {
   // Create Buyer
   const buyer = await prisma.user.create({
     data: {
-      email: 'kopare@afterfounder.com',
+      email: 'kopare@bolaxo.com',
       role: 'buyer',
       name: 'Köparen Demo',
       companyName: 'Investment Partners',
@@ -55,7 +55,7 @@ async function main() {
   // Create Advisor/Broker
   const advisor = await prisma.user.create({
     data: {
-      email: 'maklare@afterfounder.com',
+      email: 'maklare@bolaxo.com',
       role: 'broker',
       name: 'Mäklaren Demo',
       companyName: 'M&A Advisors',
@@ -73,15 +73,15 @@ async function main() {
 📧 LOGIN CREDENTIALS (Magic Link - no password needed):
 
 1️⃣  SÄLJARE (Seller):
-    Email: saljare@afterfounder.com
+    Email: saljare@bolaxo.com
     Role: seller
 
 2️⃣  KÖPARE (Buyer):
-    Email: kopare@afterfounder.com
+    Email: kopare@bolaxo.com
     Role: buyer
 
 3️⃣  MÄKLARE (Advisor/Broker):
-    Email: maklare@afterfounder.com
+    Email: maklare@bolaxo.com
     Role: broker
 
 ═══════════════════════════════════════════════════════════════

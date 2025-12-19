@@ -28,8 +28,8 @@ export default function SellerOnboardingPageContent() {
   const steps = [
     {
       number: 1,
-      title: 'Välkommen till Afterfounder!',
-      description: 'Du är nu redo att publicera ditt företag på Afterfounder – en marknadsplats för företagsöverlåtelser.',
+      title: 'Välkommen till BOLAXO!',
+      description: 'Du är nu redo att publicera ditt företag på BOLAXO – en marknadsplats för företagsöverlåtelser.',
       icon: Building2,
       content: (
         <div className="space-y-4">

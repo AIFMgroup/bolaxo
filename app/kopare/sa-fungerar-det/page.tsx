@@ -75,7 +75,7 @@ export default function BuyerInfoPage() {
         <div className="relative z-10 w-full">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 sm:py-24 md:py-32">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-navy mb-4 sm:mb-6">
-              Afterfounder – Hitta, granska och förvärva tryggt och effektivt
+              BOLAXO – Hitta, granska och förvärva tryggt och effektivt
             </h1>
             <p className="text-lg sm:text-xl text-primary-navy/80 max-w-3xl mx-auto">
               Skapa en trovärdig köparprofil med BankID. Filtrera annonser, signera NDA och få tillgång till datarum – allt i samma flöde.

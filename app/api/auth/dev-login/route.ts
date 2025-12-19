@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 
     // Set session cookies that /api/auth/me endpoint expects
     response.cookies.set({
-      name: 'afterfounder_user_id',
+      name: 'bolaxo_user_id',
       value: user.id,
       httpOnly: true,
       secure: process.env.NODE_ENV !== 'development',
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     })
 
     response.cookies.set({
-      name: 'afterfounder_user_email',
+      name: 'bolaxo_user_email',
       value: user.email,
       httpOnly: false, // Allow client to read
       secure: process.env.NODE_ENV !== 'development',
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     })
 
     response.cookies.set({
-      name: 'afterfounder_user_role',
+      name: 'bolaxo_user_role',
       value: user.role,
       httpOnly: false,
       secure: process.env.NODE_ENV !== 'development',

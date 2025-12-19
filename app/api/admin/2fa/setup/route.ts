@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     // Generate new secret
     const secret = generateTOTPSecret()
-    const uri = generateTOTPUri(secret, user.email, 'Afterfounder Admin')
+    const uri = generateTOTPUri(secret, user.email, 'BOLAXO Admin')
 
     // Store secret temporarily (not enabled yet)
     await prisma.user.update({

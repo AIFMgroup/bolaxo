@@ -1070,7 +1070,7 @@ export default function ListingWizard({ onClose }: ListingWizardProps) {
                       />
                       <div>
                         <div className="font-medium text-white">All dialog via plattformens chatt</div>
-                        <div className="text-sm text-white/60">Köpare skickar intresse direkt i Afterfounder – ni svarar när det passar.</div>
+                        <div className="text-sm text-white/60">Köpare skickar intresse direkt i BOLAXO – ni svarar när det passar.</div>
                       </div>
                     </label>
                     <label className={`flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all duration-200 ${
@@ -1195,7 +1195,7 @@ export default function ListingWizard({ onClose }: ListingWizardProps) {
                     />
                     <div>
                       <div className="font-medium text-white">Bas</div>
-                      <div className="text-sm text-white/60">Grundläggande publicering i Afterfounder med synlighet i relevanta sökningar.</div>
+                      <div className="text-sm text-white/60">Grundläggande publicering i BOLAXO med synlighet i relevanta sökningar.</div>
                     </div>
                   </label>
                   <label className={`flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all duration-200 ${
@@ -1245,7 +1245,7 @@ export default function ListingWizard({ onClose }: ListingWizardProps) {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="font-bold text-navy tracking-wider">Afterfounder</div>
+          <div className="font-bold text-navy tracking-wider">BOLAXO</div>
           <div className="flex items-center gap-4">
             {onClose && (
               <button

@@ -11,7 +11,7 @@ export async function GET(
   try {
     const { id: dataRoomId } = await params
     const cookieStore = await cookies()
-    const userId = cookieStore.get('afterfounder_user_id')?.value
+    const userId = cookieStore.get('bolaxo_user_id')?.value
 
     if (!userId) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })

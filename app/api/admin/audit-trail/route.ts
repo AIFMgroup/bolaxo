@@ -41,7 +41,7 @@ const mockAuditLogs: AuditLogEntry[] = [
   {
     id: '1',
     adminId: 'admin-1',
-    adminEmail: 'admin@afterfounder.se',
+    adminEmail: 'admin@bolaxo.se',
     action: 'verify',
     resourceType: 'listing',
     resourceId: 'listing-123',
@@ -53,7 +53,7 @@ const mockAuditLogs: AuditLogEntry[] = [
   {
     id: '2',
     adminId: 'admin-1',
-    adminEmail: 'admin@afterfounder.se',
+    adminEmail: 'admin@bolaxo.se',
     action: 'suspend',
     resourceType: 'user',
     resourceId: 'user-456',
@@ -65,7 +65,7 @@ const mockAuditLogs: AuditLogEntry[] = [
   {
     id: '3',
     adminId: 'admin-2',
-    adminEmail: 'moderator@afterfounder.se',
+    adminEmail: 'moderator@bolaxo.se',
     action: 'reject',
     resourceType: 'listing',
     resourceId: 'listing-789',
@@ -77,7 +77,7 @@ const mockAuditLogs: AuditLogEntry[] = [
   {
     id: '4',
     adminId: 'admin-1',
-    adminEmail: 'admin@afterfounder.se',
+    adminEmail: 'admin@bolaxo.se',
     action: 'update',
     resourceType: 'payment',
     resourceId: 'payment-111',
@@ -206,7 +206,7 @@ export async function POST(request: NextRequest) {
     const auditLog: AuditLogEntry = {
       id: `audit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       adminId,
-      adminEmail: adminEmail || 'unknown@afterfounder.se',
+      adminEmail: adminEmail || 'unknown@bolaxo.se',
       action,
       resourceType,
       resourceId,

@@ -32,8 +32,8 @@ function safeHeader(request: NextRequest, headerName: string): string {
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
-  const cookieUserId = request.cookies.get('afterfounder_user_id')?.value
-  const cookieUserRole = request.cookies.get('afterfounder_user_role')?.value
+  const cookieUserId = request.cookies.get('bolaxo_user_id')?.value
+  const cookieUserRole = request.cookies.get('bolaxo_user_role')?.value
   
   // Explicit redirect from root to /sv
   if (pathname === '/') {
@@ -93,7 +93,7 @@ export async function middleware(request: NextRequest) {
     
     if (process.env.NODE_ENV === 'production') {
       const currentHost = safeHeader(request, 'host')
-      const isAfterfounderDomain = currentHost.includes('afterfounder.com')
+      const isBOLAXODomain = currentHost.includes('bolaxo.com')
       response.headers.set(
         'Content-Security-Policy',
         [
@@ -104,7 +104,7 @@ export async function middleware(request: NextRequest) {
           "font-src 'self' data: https:",
           "connect-src 'self' https://api.openai.com https://api.brevo.com https://api.sendinblue.com https://*.amazonaws.com https://*.s3.amazonaws.com https://*.s3.eu-north-1.amazonaws.com blob:",
           "frame-src 'self' https://player.vimeo.com https://vimeo.com",
-          `frame-ancestors 'self'${isAfterfounderDomain ? ' https://afterfounder.com https://www.afterfounder.com' : ''}`,
+          `frame-ancestors 'self'${isBOLAXODomain ? ' https://bolaxo.com https://www.bolaxo.com' : ''}`,
           "worker-src 'self' blob:",
           "base-uri 'self'",
           "form-action 'self'",
@@ -151,7 +151,7 @@ export async function middleware(request: NextRequest) {
 
   if (process.env.NODE_ENV === 'production') {
     const currentHost = safeHeader(request, 'host')
-    const isAfterfounderDomain = currentHost.includes('afterfounder.com')
+    const isBOLAXODomain = currentHost.includes('bolaxo.com')
     
     response.headers.set(
       'Content-Security-Policy',
@@ -163,7 +163,7 @@ export async function middleware(request: NextRequest) {
         "font-src 'self' data: https:",
         "connect-src 'self' https://api.openai.com https://api.brevo.com https://api.sendinblue.com https://*.amazonaws.com https://*.s3.amazonaws.com https://*.s3.eu-north-1.amazonaws.com blob:",
         "frame-src 'self' https://player.vimeo.com https://vimeo.com",
-        `frame-ancestors 'self'${isAfterfounderDomain ? ' https://afterfounder.com https://www.afterfounder.com' : ''}`,
+        `frame-ancestors 'self'${isBOLAXODomain ? ' https://bolaxo.com https://www.bolaxo.com' : ''}`,
         "worker-src 'self' blob:",
         "base-uri 'self'",
         "form-action 'self'",

@@ -14,7 +14,7 @@ export interface DDAnalysisPdfData {
   listingName?: string
 }
 
-// Afterfounder Color palette
+// BOLAXO Color palette
 const COLORS = {
   navy: '#0A1628',
   navyLight: '#1a2d4a',
@@ -87,7 +87,7 @@ export async function generateDDAnalysisPDF(data: DDAnalysisPdfData): Promise<Bu
       doc.fillColor(COLORS.white)
         .fontSize(24)
         .font('Helvetica-Bold')
-        .text('AFTERFOUNDER', 50, 35)
+        .text('BOLAXO', 50, 35)
 
       doc.fontSize(12)
         .font('Helvetica')
@@ -233,7 +233,7 @@ export async function generateDDAnalysisPDF(data: DDAnalysisPdfData): Promise<Bu
         .fontSize(9)
         .font('Helvetica')
         .text(
-          'Genererad av Afterfounder DD-Coach | www.afterfounder.com',
+          'Genererad av BOLAXO DD-Coach | www.bolaxo.com',
           50,
           footerY,
           { width: pageWidth, align: 'center' }

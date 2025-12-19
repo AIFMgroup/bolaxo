@@ -324,7 +324,7 @@ export default function CareerPage() {
 
                       <div className="flex flex-col sm:flex-row gap-4">
                         <a
-                          href={`mailto:karriar@afterfounder.se?subject=Ansökan: ${position.title}`}
+                          href={`mailto:karriar@bolaxo.se?subject=Ansökan: ${position.title}`}
                           className="btn-primary text-center"
                         >
                           Skicka ansökan
@@ -354,7 +354,7 @@ export default function CareerPage() {
               Skicka en spontanansökan och berätta hur du kan bidra!
             </p>
             <a
-              href="mailto:karriar@afterfounder.se?subject=Spontanansökan"
+              href="mailto:karriar@bolaxo.se?subject=Spontanansökan"
               className="btn-secondary bg-white text-primary-blue hover:bg-gray-100 inline-flex items-center"
             >
               Skicka spontanansökan

@@ -46,7 +46,7 @@ export default function AccountDeletionForm({ locale = 'sv', backHref = '/' }: P
       // Ge användaren 1s och skicka sedan hem
       setTimeout(() => router.push(`/${locale}`), 1000)
     } catch (e) {
-      setError('Nätverksfel. Försök igen eller kontakta privacy@afterfounder.com')
+      setError('Nätverksfel. Försök igen eller kontakta privacy@bolaxo.com')
     } finally {
       setLoading(false)
     }
@@ -115,7 +115,7 @@ export default function AccountDeletionForm({ locale = 'sv', backHref = '/' }: P
                   <div className="space-y-2 text-sm text-text-gray">
                     <p><strong>Viktigt:</strong> Har du aktiva annonser måste de pausas eller tas bort innan radering.</p>
                     <p>Raderingen anonymiserar ditt konto (mjukt borttag) för att bevara nödvändiga loggar och transaktionshistorik enligt lag.</p>
-                    <p>Om raderingen misslyckas, maila <a href="mailto:privacy@afterfounder.com" className="underline text-primary-blue">privacy@afterfounder.com</a> med den e-postadress du registrerat.</p>
+                    <p>Om raderingen misslyckas, maila <a href="mailto:privacy@bolaxo.com" className="underline text-primary-blue">privacy@bolaxo.com</a> med den e-postadress du registrerat.</p>
                   </div>
                 </div>
               </div>
@@ -161,7 +161,7 @@ export default function AccountDeletionForm({ locale = 'sv', backHref = '/' }: P
                 Om du föredrar manuell hantering eller behöver stöd, kontakta vårt dataskyddsteam.
               </p>
               <div className="text-sm space-y-1">
-                <p><span className="font-semibold">E-post:</span> <a className="underline text-primary-blue" href="mailto:privacy@afterfounder.com">privacy@afterfounder.com</a></p>
+                <p><span className="font-semibold">E-post:</span> <a className="underline text-primary-blue" href="mailto:privacy@bolaxo.com">privacy@bolaxo.com</a></p>
                 <p><span className="font-semibold">Telefon:</span> 08-123 456 78</p>
               </div>
               <div className="text-xs text-text-gray">

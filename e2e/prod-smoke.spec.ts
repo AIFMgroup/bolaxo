@@ -7,7 +7,7 @@
  * - Seller replies; Buyer sees reply
  *
  * Prereqs (set as env when running):
- *  - PROD_BASE_URL=https://afterfounder.com
+ *  - PROD_BASE_URL=https://bolaxo.com
  *  - LOCALE=sv (or en)
  *  - BUYER_MAGIC_LINK_URL=<full magic link URL for test buyer>
  *  - SELLER_MAGIC_LINK_URL=<full magic link URL for test seller>
@@ -23,7 +23,7 @@
 
 import { test, expect, Page } from '@playwright/test'
 
-const BASE = process.env.PROD_BASE_URL || 'https://afterfounder.com'
+const BASE = process.env.PROD_BASE_URL || 'https://bolaxo.com'
 const LOCALE = process.env.LOCALE || 'sv'
 const LISTING_ID = process.env.LISTING_ID
 const BUYER_MAGIC_LINK_URL = process.env.BUYER_MAGIC_LINK_URL

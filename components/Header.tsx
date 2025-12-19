@@ -177,13 +177,13 @@ export default function Header() {
       scrolled ? 'bg-white shadow-md border-b border-gray-100' : 'bg-white'
     }`}>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-24 md:h-20 lg:h-16">
+        <div className="flex justify-between items-center h-28 md:h-24 lg:h-20">
           {/* Logo - positioned slightly lower */}
           <Link href={`/${locale}`} className="flex items-center mt-2 sm:mt-3 md:mt-4">
             <img 
-              src="/Logo/afterfounder.png" 
-              alt="Afterfounder"
-              className="h-36 md:h-32 lg:h-28 w-auto"
+              src="/Logo/bolaxo_logo.png" 
+              alt="BOLAXO"
+              className="h-40 md:h-36 lg:h-32 w-auto"
             />
           </Link>
 
@@ -393,7 +393,7 @@ export default function Header() {
             style={{ position: 'relative', zIndex: 1, paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
           >
             <div className="flex justify-between items-center">
-              <img src="/Logo/afterfounder.png" alt="Afterfounder" className="h-28 sm:h-36 w-auto" />
+              <img src="/Logo/bolaxo_logo.png" alt="BOLAXO" className="h-32 sm:h-40 w-auto" />
               <button
                 onClick={() => setIsMenuOpen(false)}
                 className="p-3 rounded-xl hover:bg-gray-100 active:bg-gray-200 transition-colors min-h-[48px] min-w-[48px] flex items-center justify-center"

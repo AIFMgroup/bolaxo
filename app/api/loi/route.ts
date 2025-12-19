@@ -10,7 +10,7 @@ const prisma = new PrismaClient()
 export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies()
-    const userId = cookieStore.get('afterfounder_user_id')?.value
+    const userId = cookieStore.get('bolaxo_user_id')?.value
 
     if (!userId) {
       return NextResponse.json(
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Send email notification to seller
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com'
     const listingTitle = listing.companyName || listing.anonymousTitle || 'Objektet'
     
     try {
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const cookieStore = await cookies()
-    const userId = cookieStore.get('afterfounder_user_id')?.value
+    const userId = cookieStore.get('bolaxo_user_id')?.value
 
     if (!userId) {
       return NextResponse.json(

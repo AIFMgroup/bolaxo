@@ -12,8 +12,8 @@ function VerifySuccessContent() {
     // Check if cookies are set
     const checkCookies = () => {
       const cookies = document.cookie
-      const hasUserId = cookies.includes('afterfounder_user_id=')
-      const hasUserRole = cookies.includes('afterfounder_user_role=')
+      const hasUserId = cookies.includes('bolaxo_user_id=')
+      const hasUserRole = cookies.includes('bolaxo_user_role=')
       
       console.log('🍪 [VERIFY SUCCESS] Checking cookies:', {
         cookies: cookies.substring(0, 200),

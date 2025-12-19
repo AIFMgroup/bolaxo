@@ -33,7 +33,7 @@ export default function HomePageContent() {
         <div className="absolute inset-0">
           <Image
             src="/polaroid/premium_photo-1712016875326-7dbba3f6ec26.jpg"
-            alt="Afterfounder Hero"
+            alt="BOLAXO Hero"
             fill
             className="object-cover"
             priority
@@ -59,7 +59,7 @@ export default function HomePageContent() {
             
             {/* Intro Text */}
             <p className="text-lg sm:text-xl text-gray-600 max-w-xl mb-10 leading-relaxed">
-              Afterfounder kopplar samman kvalificerade köpare med 
+              BOLAXO kopplar samman kvalificerade köpare med 
               verifierade säljare. Anonymt tills NDA är signerat.
             </p>
             
@@ -293,7 +293,7 @@ export default function HomePageContent() {
         </div>
       </section>
 
-      {/* Varför Afterfounder - med bild */}
+      {/* Varför BOLAXO - med bild */}
       <section className="py-20 md:py-28 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -302,7 +302,7 @@ export default function HomePageContent() {
               <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl shadow-navy/20">
                 <Image
                   src="/polaroid/premium_photo-1711984441568-9b15d0a082ed.jpg"
-                  alt="Varför Afterfounder"
+                  alt="Varför BOLAXO"
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 50vw"
@@ -329,7 +329,7 @@ export default function HomePageContent() {
                 Fördelar
               </span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy mb-8">
-                Varför välja Afterfounder?
+                Varför välja BOLAXO?
               </h2>
               
               <div className="space-y-6">
@@ -403,7 +403,7 @@ export default function HomePageContent() {
                 En del av Pactior Group
               </h2>
               <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto">
-                Afterfounder utvecklas tillsammans med Pactior Group och erfarna M&A-rådgivare. 
+                BOLAXO utvecklas tillsammans med Pactior Group och erfarna M&A-rådgivare. 
                 Kombinationen av modern teknologi och klassisk transaktionskompetens gör processen 
                 både effektiv och trygg.
               </p>

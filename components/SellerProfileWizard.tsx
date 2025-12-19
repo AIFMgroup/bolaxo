@@ -629,7 +629,7 @@ export default function SellerProfileWizard({
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="font-bold text-navy tracking-wider">Afterfounder</div>
+          <div className="font-bold text-navy tracking-wider">BOLAXO</div>
           <div className="flex items-center gap-4">
             {saveMessage && (
               <span className={`text-sm font-medium ${saveMessage.includes('Fel') ? 'text-red-600' : 'text-emerald-600'}`}>

@@ -17,14 +17,14 @@ export default function GDPRPage() {
           </div>
           
           <p className="text-text-gray mb-8">
-            Information om hur Afterfounder hanterar dina personuppgifter enligt GDPR
+            Information om hur BOLAXO hanterar dina personuppgifter enligt GDPR
           </p>
 
           <div className="prose prose-lg max-w-none space-y-8">
             <section>
               <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">Vårt åtagande</h2>
               <p className="text-text-gray leading-relaxed">
-                Afterfounder följer EU:s dataskyddsförordning (GDPR) och svensk dataskyddslag. Vi behandlar dina 
+                BOLAXO följer EU:s dataskyddsförordning (GDPR) och svensk dataskyddslag. Vi behandlar dina 
                 personuppgifter med största försiktighet och transparens.
               </p>
             </section>
@@ -150,9 +150,9 @@ export default function GDPRPage() {
               <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">Kontakta oss</h2>
               <div className="bg-primary-blue/5 p-6 rounded-card">
                 <p className="text-text-dark font-medium mb-4">För alla GDPR-relaterade frågor:</p>
-                <p className="text-text-gray">E-post: privacy@afterfounder.com</p>
+                <p className="text-text-gray">E-post: privacy@bolaxo.com</p>
                 <p className="text-text-gray">Telefon: 08-123 456 78</p>
-                <p className="text-text-gray">Post: Afterfounder AB, Regeringsgatan 38, 111 56 Stockholm</p>
+                <p className="text-text-gray">Post: BOLAXO AB, Regeringsgatan 38, 111 56 Stockholm</p>
               </div>
             </section>
           </div>

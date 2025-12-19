@@ -30,7 +30,7 @@ export default async function SellerCityLandingPage({ params }: PageProps) {
             Sälj ditt företag i {city.name}
           </h1>
           <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-            Med Afterfounder får du tillgång till hundratals verifierade köpare. Sätt ditt företag på marknaden 
+            Med BOLAXO får du tillgång till hundratals verifierade köpare. Sätt ditt företag på marknaden 
             och få ett professionellt stöd genom hela processen.
           </p>
           <Link
@@ -45,7 +45,7 @@ export default async function SellerCityLandingPage({ params }: PageProps) {
 
       {/* Benefits Grid */}
       <div className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-bold text-primary-navy mb-12 text-center">Varför Afterfounder?</h2>
+        <h2 className="text-3xl font-bold text-primary-navy mb-12 text-center">Varför BOLAXO?</h2>
         <div className="grid md:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => (
             <div key={index} className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition">

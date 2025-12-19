@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { SWEDISH_CITIES } from '@/lib/cities'
 import { locales } from '@/i18n'
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com'
 
 // Static pages without locale prefix
 const staticPages = [

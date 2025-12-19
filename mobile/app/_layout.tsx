@@ -13,7 +13,7 @@ export default function RootLayout() {
         },
       }}
     >
-      <Stack.Screen name="index" options={{ title: 'Afterfounder' }} />
+      <Stack.Screen name="index" options={{ title: 'BOLAXO' }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(buyer)" options={{ headerShown: false }} />
       <Stack.Screen name="(seller)" options={{ headerShown: false }} />

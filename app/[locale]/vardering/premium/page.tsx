@@ -41,7 +41,7 @@ function PremiumValuationContent() {
     if (demoMode) {
       setIsDemo(true)
       setPurchaseData({
-        email: 'demo@afterfounder.com',
+        email: 'demo@bolaxo.com',
         paymentId: 'demo-preview-' + Date.now(),
         inputData: {}
       })

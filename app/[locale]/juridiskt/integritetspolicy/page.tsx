@@ -24,7 +24,7 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">1. Introduktion</h2>
               <p className="text-text-gray leading-relaxed mb-4">
-                Afterfounder AB ("Afterfounder", "vi", "oss") värnar om din integritet. Denna policy förklarar hur vi 
+                BOLAXO AB ("BOLAXO", "vi", "oss") värnar om din integritet. Denna policy förklarar hur vi 
                 samlar in, använder och skyddar dina personuppgifter i enlighet med GDPR och svensk dataskyddslag.
               </p>
               <div className="bg-green-50 border border-green-200 p-4 rounded-xl">
@@ -34,7 +34,7 @@ export default function PrivacyPolicyPage() {
                 </p>
                 <ul className="text-sm text-green-700 space-y-1">
                   <li>• <Link href="/api/user/export-data" className="underline font-semibold">Exportera din data</Link> (Article 15 & 20)</li>
-                  <li>• Radera ditt konto (Article 17) - kontakta privacy@afterfounder.com</li>
+                  <li>• Radera ditt konto (Article 17) - kontakta privacy@bolaxo.com</li>
                   <li>• Rätta felaktig information</li>
                   <li>• Invända mot behandling</li>
                 </ul>
@@ -44,10 +44,10 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">2. Personuppgiftsansvarig</h2>
               <div className="bg-light-blue/20 p-4 rounded-card">
-                <p className="text-text-dark font-medium">Afterfounder AB</p>
+                <p className="text-text-dark font-medium">BOLAXO AB</p>
                 <p className="text-text-gray">Org.nr: 559123-4567</p>
                 <p className="text-text-gray">Regeringsgatan 38, 111 56 Stockholm</p>
-                <p className="text-text-gray">E-post: privacy@afterfounder.com</p>
+                <p className="text-text-gray">E-post: privacy@bolaxo.com</p>
               </div>
             </section>
 
@@ -126,7 +126,7 @@ export default function PrivacyPolicyPage() {
                 <li><strong>Invändning:</strong> Invända mot viss behandling</li>
               </ul>
               <p className="text-text-gray leading-relaxed mt-3">
-                För att utöva dina rättigheter, kontakta privacy@afterfounder.com
+                För att utöva dina rättigheter, kontakta privacy@bolaxo.com
               </p>
             </section>
 
@@ -171,7 +171,7 @@ export default function PrivacyPolicyPage() {
               </p>
               <div className="bg-light-blue/20 p-6 rounded-card">
                 <p className="text-text-dark font-medium mb-2">Dataskyddsombud:</p>
-                <p className="text-text-gray">E-post: privacy@afterfounder.com</p>
+                <p className="text-text-gray">E-post: privacy@bolaxo.com</p>
                 <p className="text-text-gray">Telefon: 08-123 456 78</p>
               </div>
             </section>

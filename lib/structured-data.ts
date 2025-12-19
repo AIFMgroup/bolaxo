@@ -45,24 +45,24 @@ export function StructuredData({ type, data }: StructuredDataProps) {
 export const defaultOrganizationData = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Afterfounder',
+  name: 'BOLAXO',
   alternateName: 'En del av Pactior Group',
-  url: 'https://afterfounder.com',
-  logo: 'https://afterfounder.com/Logo/afterfounder.png',
+  url: 'https://bolaxo.com',
+  logo: 'https://bolaxo.com/Logo/bolaxo_logo.png',
   description: 'Sveriges smartaste företagsförmedling med verifierade uppgifter, NDA innan detaljer och kvalificerade köpare.',
   foundingDate: '2024',
   sameAs: [
     // Lägg till social media länkar här när de finns
-    // 'https://www.linkedin.com/company/afterfounder',
-    // 'https://twitter.com/afterfounder',
-    // 'https://www.facebook.com/afterfounder',
+    // 'https://www.linkedin.com/company/bolaxo',
+    // 'https://twitter.com/bolaxo',
+    // 'https://www.facebook.com/bolaxo',
   ],
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'Customer Service',
     availableLanguage: ['Swedish', 'English'],
-    email: 'kontakt@afterfounder.com',
-    url: 'https://afterfounder.com/kontakt',
+    email: 'kontakt@bolaxo.com',
+    url: 'https://bolaxo.com/kontakt',
   },
   areaServed: {
     '@type': 'Country',
@@ -81,14 +81,14 @@ export const defaultOrganizationData = {
 export const websiteStructuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'Afterfounder',
-  url: 'https://afterfounder.com',
+  name: 'BOLAXO',
+  url: 'https://bolaxo.com',
   description: 'Sveriges smartaste företagsförmedling - Köp och sälj företag säkert och enkelt',
   potentialAction: {
     '@type': 'SearchAction',
     target: {
       '@type': 'EntryPoint',
-      urlTemplate: 'https://afterfounder.com/sok?q={search_term_string}',
+      urlTemplate: 'https://bolaxo.com/sok?q={search_term_string}',
     },
     'query-input': 'required name=search_term_string',
   },
@@ -101,7 +101,7 @@ export const serviceStructuredData = {
   serviceType: 'Företagsförmedling',
   provider: {
     '@type': 'Organization',
-    name: 'Afterfounder',
+    name: 'BOLAXO',
   },
   areaServed: {
     '@type': 'Country',
@@ -161,10 +161,10 @@ export function generateArticleStructuredData(article: {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Afterfounder',
+      name: 'BOLAXO',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://afterfounder.com/Logo/afterfounder.png',
+        url: 'https://bolaxo.com/Logo/bolaxo_logo.png',
       },
     },
     datePublished: article.datePublished,

@@ -15,7 +15,7 @@ export default function BuyerAllCitiesPage() {
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Utforska verifierade akquisitionsmöjligheter i hundratals svenska städer. Från Stockholm till Hemse - 
-            hitta ditt nästa företag med Afterfounder.
+            hitta ditt nästa företag med BOLAXO.
           </p>
           <Link
             href="/sok"
@@ -46,7 +46,7 @@ export default function BuyerAllCitiesPage() {
       {/* Why Buy */}
       <div className="bg-gray-50 py-16">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-primary-navy mb-12 text-center">Köp företag med Afterfounder</h2>
+          <h2 className="text-3xl font-bold text-primary-navy mb-12 text-center">Köp företag med BOLAXO</h2>
           <div className="grid md:grid-cols-2 gap-8">
             {[
               { title: 'Nationell räckvidd', desc: '100+ städer med verifierade företag' },

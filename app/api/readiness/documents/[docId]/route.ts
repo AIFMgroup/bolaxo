@@ -21,7 +21,7 @@ export async function DELETE(
   try {
     const { docId } = await context.params
     const cookieStore = await cookies()
-    const userId = cookieStore.get('afterfounder_user_id')?.value
+    const userId = cookieStore.get('bolaxo_user_id')?.value
 
     if (!userId) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })

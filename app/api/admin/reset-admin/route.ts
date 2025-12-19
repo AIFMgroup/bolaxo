@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     console.log(' Starting admin account reset...')
 
     // Delete old admin account
-    const oldEmail = 'admin@afterfounder.se'
+    const oldEmail = 'admin@bolaxo.se'
     console.log(` Deleting ${oldEmail}...`)
     
     const deleted = await prisma.user.deleteMany({
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     console.log(`OK Deleted ${deleted.count} old account(s)`)
 
     // Create new admin account
-    const newEmail = 'admin@afterfounder.com'
+    const newEmail = 'admin@bolaxo.com'
     const password = 'Password123'
     
     console.log(` Creating new admin account...`)
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       message: 'Admin account reset completed',
       email: adminUser.email,
       password: password,
-      loginUrl: process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}/admin/login` : 'https://afterfounder.com/admin/login'
+      loginUrl: process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}/admin/login` : 'https://bolaxo.com/admin/login'
     })
 
   } catch (error) {

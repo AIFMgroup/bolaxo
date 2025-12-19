@@ -166,7 +166,7 @@ export async function PATCH(
 
       // Send email notification to buyer
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com'
         const listingTitle = updated.listing.anonymousTitle || updated.listing.companyName || 'Objektet'
         await sendNDAApprovalEmail(
           updated.buyer.email,
@@ -190,7 +190,7 @@ export async function PATCH(
     } else if (status === 'rejected') {
       // Send email notification to buyer
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com'
         const listingTitle = updated.listing.anonymousTitle || updated.listing.companyName || 'Objektet'
         await sendNDARejectionEmail(
           updated.buyer.email,

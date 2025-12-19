@@ -250,7 +250,7 @@ function getMatchReasons(listing: any, buyerProfile: any): string[] {
 }
 
 async function notifyNewBuyerMatches(buyerId: string, matches: any[]) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com'
   
   // Get buyer info for email
   const buyer = await prisma.user.findUnique({

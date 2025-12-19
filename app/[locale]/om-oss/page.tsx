@@ -17,7 +17,7 @@ export default function AboutPage() {
         <div className="absolute inset-0">
           <Image
             src="/polaroid/premium_photo-1712016875079-5c42a61067e2.jpg"
-            alt="Om Afterfounder"
+            alt="Om BOLAXO"
             fill
             className="object-cover opacity-40"
             priority
@@ -184,7 +184,7 @@ export default function AboutPage() {
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-navy mb-6">Pactior Group</h2>
               <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                Afterfounder utvecklas tillsammans med Pactior Group och erfarna M&A-rådgivare. 
+                BOLAXO utvecklas tillsammans med Pactior Group och erfarna M&A-rådgivare. 
                 Kombinationen av modern teknologi och klassisk transaktionskompetens gör processen 
                 både effektiv och trygg.
               </p>

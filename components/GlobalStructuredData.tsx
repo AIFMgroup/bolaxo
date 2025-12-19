@@ -10,7 +10,7 @@ import { StructuredData, defaultOrganizationData, websiteStructuredData, service
  */
 export function GlobalStructuredData() {
   const pathname = usePathname()
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com'
 
   useEffect(() => {
     // Add Organization data to all pages

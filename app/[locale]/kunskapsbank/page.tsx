@@ -239,7 +239,7 @@ export default function KunskapsbankPage() {
               <div className="bg-white rounded-2xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
                 <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Nivå</span>
                 <h3 className="text-lg font-bold text-navy mt-1 mb-2">Bas</h3>
-                <p className="text-sm font-medium text-navy mb-4">Gör hela jobbet direkt i Afterfounder.</p>
+                <p className="text-sm font-medium text-navy mb-4">Gör hela jobbet direkt i BOLAXO.</p>
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
@@ -496,7 +496,7 @@ export default function KunskapsbankPage() {
       <section className="py-8 bg-white border-t border-gray-200">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <p className="text-sm text-gray-500">
-            Kunskapsbanken är Freemium-nivån i Afterfounder. Uppgradera när du vill fortsätta arbetet direkt i plattformen.
+            Kunskapsbanken är Freemium-nivån i BOLAXO. Uppgradera när du vill fortsätta arbetet direkt i plattformen.
           </p>
         </div>
       </section>

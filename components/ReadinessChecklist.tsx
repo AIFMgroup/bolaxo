@@ -56,13 +56,13 @@ interface Props {
 }
 
 // LocalStorage key for demo documents
-const DEMO_DOCS_KEY = 'afterfounder_demo_readiness_docs'
+const DEMO_DOCS_KEY = 'bolaxo_demo_readiness_docs'
 
 // Helper to check if we're in demo mode (check both cookie and listingId)
 const isDemoMode = (listingId?: string) => {
   if (typeof window === 'undefined') return false
   if (listingId?.startsWith('demo')) return true
-  const userId = document.cookie.split('; ').find(row => row.startsWith('afterfounder_user_id='))?.split('=')[1]
+  const userId = document.cookie.split('; ').find(row => row.startsWith('bolaxo_user_id='))?.split('=')[1]
   return userId?.startsWith('demo') || false
 }
 
@@ -243,9 +243,9 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
           type: file.type,
           data: reader.result as string, // base64
         }
-        const storedFiles = JSON.parse(localStorage.getItem('afterfounder_demo_files') || '{}')
+        const storedFiles = JSON.parse(localStorage.getItem('bolaxo_demo_files') || '{}')
         storedFiles[docId] = fileData
-        localStorage.setItem('afterfounder_demo_files', JSON.stringify(storedFiles))
+        localStorage.setItem('bolaxo_demo_files', JSON.stringify(storedFiles))
       }
       reader.readAsDataURL(file)
     } catch (e) {
@@ -257,7 +257,7 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
   const handleDownloadDoc = async (doc: UploadedDoc) => {
     try {
       // First, try to get from localStorage (for demo uploads)
-      const storedFiles = JSON.parse(localStorage.getItem('afterfounder_demo_files') || '{}')
+      const storedFiles = JSON.parse(localStorage.getItem('bolaxo_demo_files') || '{}')
       const storedFile = storedFiles[doc.id]
       
       if (storedFile) {
@@ -372,9 +372,9 @@ export default function ReadinessChecklist({ listingId, onComplete, readOnly = f
     // Also remove from demo files storage
     if (isDemo) {
       try {
-        const storedFiles = JSON.parse(localStorage.getItem('afterfounder_demo_files') || '{}')
+        const storedFiles = JSON.parse(localStorage.getItem('bolaxo_demo_files') || '{}')
         delete storedFiles[docId]
-        localStorage.setItem('afterfounder_demo_files', JSON.stringify(storedFiles))
+        localStorage.setItem('bolaxo_demo_files', JSON.stringify(storedFiles))
       } catch (e) {
         console.error('Error removing file from localStorage:', e)
       }

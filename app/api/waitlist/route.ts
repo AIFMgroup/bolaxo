@@ -32,12 +32,12 @@ export async function POST(request: NextRequest) {
     })
     
     // Send confirmation email
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com'
     
     try {
       await sendEmail({
         to: email,
-        subject: 'Välkommen till Afterfounders väntelista! 🎉',
+        subject: 'Välkommen till BOLAXOs väntelista! 🎉',
         html: `
           <!DOCTYPE html>
           <html>
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
                     <tr>
                       <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                         <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700;">
-                          Afterfounder
+                          BOLAXO
                         </h1>
                         <p style="color: #94a3b8; margin: 10px 0 0 0; font-size: 14px;">
                           Sveriges marknadsplats för företagsöverlåtelser
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
                         </h2>
                         
                         <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                          Du är nu på väntelistan för Afterfounder. Vi kommer att kontakta dig så snart vi har nyheter eller exklusiva erbjudanden.
+                          Du är nu på väntelistan för BOLAXO. Vi kommer att kontakta dig så snart vi har nyheter eller exklusiva erbjudanden.
                         </p>
                         
                         <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
                     <tr>
                       <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                         <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                          <strong style="color: #1F3C58;">Afterfounder</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                          <strong style="color: #1F3C58;">BOLAXO</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                         </p>
                         <p style="color: #9ca3af; font-size: 12px; margin: 0;">
                           <a href="${baseUrl}/juridiskt/integritetspolicy" style="color: #9ca3af; text-decoration: underline;">Integritetspolicy</a>
@@ -111,8 +111,8 @@ export async function POST(request: NextRequest) {
           </body>
           </html>
         `,
-        fromName: 'Afterfounder',
-        from: 'noreply@afterfounder.com'
+        fromName: 'BOLAXO',
+        from: 'noreply@bolaxo.com'
       })
     } catch (emailError) {
       console.error('Error sending waitlist confirmation email:', emailError)

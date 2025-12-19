@@ -253,7 +253,7 @@ export async function POST(request: NextRequest) {
 
     // Send email notification to recipient
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com'
       const listingTitle = created.listing?.anonymousTitle || created.listing?.companyName || 'Objektet'
       await sendNewMessageEmail(
         created.recipient.email,

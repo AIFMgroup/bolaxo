@@ -56,7 +56,7 @@ async function createSeller() {
       console.log('   Giltig till:', expiresAt.toISOString())
       
       // Generate magic link URL
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder-production.up.railway.app'
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo-production.up.railway.app'
       const magicLink = `${baseUrl}/auth/verify?token=${token}`
       
       console.log('\n🔗 Magic Link:')
@@ -99,7 +99,7 @@ async function createSeller() {
     console.log('   Giltig till:', expiresAt.toISOString())
     
     // Generate magic link URL
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder-production.up.railway.app'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo-production.up.railway.app'
     const magicLink = `${baseUrl}/auth/verify?token=${token}`
     
     console.log('\n🔗 Magic Link:')

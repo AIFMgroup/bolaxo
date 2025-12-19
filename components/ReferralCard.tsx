@@ -13,7 +13,7 @@ export default function ReferralCard({ referralCode }: ReferralCardProps) {
   
   const baseUrl = typeof window !== 'undefined'
     ? window.location.origin
-    : (process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com');
+    : (process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com');
   const referralLink = `${baseUrl}/login?ref=${referralCode}`;
 
   useEffect(() => {

@@ -33,7 +33,7 @@
     "getStarted": "Get started now",
     "discoverTitle": "Discover all possibilities",
     "discoverSubtitle": "Explore our services and tools to maximize your deal",
-    "reviewsTitle": "Our customers love Afterfounder",
+    "reviewsTitle": "Our customers love BOLAXO",
     "reviewsSubtitle": "98% of our sellers recommend us",
     "ctaTitle": "Ready to sell your company?",
     "ctaSubtitle": "Start with a free valuation and see what your company is worth today",
@@ -75,8 +75,8 @@
     "stepModal": {
       "step1": {
         "title": "STEP 1: REGISTER",
-        "header": "Start your journey on Afterfounder",
-        "description": "Registration on Afterfounder is simple and takes only 2-3 minutes. You just need to fill in some basic information about yourself and your company to get started.",
+        "header": "Start your journey on BOLAXO",
+        "description": "Registration on BOLAXO is simple and takes only 2-3 minutes. You just need to fill in some basic information about yourself and your company to get started.",
         "step1Title": "Create your account",
         "step1Desc": "Use email or BankID to register. BankID gives you extra security and verification from the start.",
         "step2Title": "Fill in company information",
@@ -139,7 +139,7 @@
       "step4": {
         "title": "STEP 4: NEGOTIATE",
         "header": "Secure negotiation from start to finish",
-        "description": "Afterfounder ensures a safe and professional negotiation process with automatic NDA, secure data room and legal tools that save both time and money.",
+        "description": "BOLAXO ensures a safe and professional negotiation process with automatic NDA, secure data room and legal tools that save both time and money.",
         "nda": {
           "title": "Automatic NDA",
           "desc": "Before the buyer sees sensitive information, they must sign a digital confidentiality agreement with BankID. You are always protected."
@@ -258,15 +258,15 @@
   "about": {
     "title": "About us",
     "heroTitle": "WE SIMPLIFY BUSINESS SALES",
-    "heroSubtitle": "Afterfounder was created to make M&A transparent, secure and accessible to everyone.",
+    "heroSubtitle": "BOLAXO was created to make M&A transparent, secure and accessible to everyone.",
     "missionTitle": "Our mission",
     "missionText": "To democratize business sales by making the process transparent, secure and accessible to all Swedish entrepreneurs.",
     "visionTitle": "Our vision",
     "visionText": "To become the Nordic region's leading platform for business transactions where every entrepreneur can sell and buy companies digitally.",
     "whyStartedTitle": "Why we started",
     "whyStartedText1": "We saw how many small and medium-sized entrepreneurs wanted to sell their life's work, but lacked a modern, digital platform for it. Most were forced to engage expensive traditional brokers or search far and wide without structure.",
-    "whyStartedText2": "We believe that technology can make this process easier, faster and more accessible. That's why we created Afterfounder - a platform that automates the cumbersome and lets sellers and buyers focus on what matters.",
-    "teamTitle": "The team behind Afterfounder",
+    "whyStartedText2": "We believe that technology can make this process easier, faster and more accessible. That's why we created BOLAXO - a platform that automates the cumbersome and lets sellers and buyers focus on what matters.",
+    "teamTitle": "The team behind BOLAXO",
     "teamSubtitle": "Experienced entrepreneurs and tech-builders with a passion for M&A",
     "team": [
       {
@@ -326,7 +326,7 @@
     "securityDesc": "Bank-level security for your information and data",
     "partners": "Our partners",
     "partnersDesc": "Partnerships with leading players in the financial world",
-    "copyright": "(C) {year} Afterfounder AB. All rights reserved.",
+    "copyright": "(C) {year} BOLAXO AB. All rights reserved.",
     "description": "Security & Privacy Our partners",
     "address": "Norrmälarstrand 10\n114 62 Stockholm\nSweden",
     "sellInYourCity": "Sell in your city",
@@ -334,7 +334,7 @@
     "faq": "FAQ",
     "buyInYourCity": "Buy in your city",
     "blog": "Blog",
-    "howItWorksDesc": "How Afterfounder works"
+    "howItWorksDesc": "How BOLAXO works"
   },
   "register": {
     "title": "CREATE ACCOUNT",
@@ -370,7 +370,7 @@
   },
   "faq": {
     "title": "FREQUENTLY ASKED QUESTIONS",
-    "subtitle": "Find answers to the most common questions about Afterfounder",
+    "subtitle": "Find answers to the most common questions about BOLAXO",
     "categories": {
       "general": "General",
       "sellers": "Sellers",
@@ -384,15 +384,15 @@
     "items": {
       "general": {
         "whatIs": {
-          "q": "What is Afterfounder?",
-          "a": "Afterfounder is an automated marketplace for buying and selling companies. We connect sellers and buyers of SME companies in a secure and efficient way, with automatic valuation, smart matching and complete anonymity until NDA signing."
+          "q": "What is BOLAXO?",
+          "a": "BOLAXO is an automated marketplace for buying and selling companies. We connect sellers and buyers of SME companies in a secure and efficient way, with automatic valuation, smart matching and complete anonymity until NDA signing."
         },
         "howItWorks": {
           "q": "How does the process work?",
           "a": "Sellers start with free valuation (5 min), then create an ad and publish. The system automatically matches with relevant buyers. Buyers search, sign NDA digitally for full information, and can then send LOI. The entire process from NDA to closing is handled in our deal management platform."
         },
         "cost": {
-          "q": "What does it cost to use Afterfounder?",
+          "q": "What does it cost to use BOLAXO?",
           "a": "Valuation is always free! For sellers: Free (0 SEK - draft), Basic (495 SEK/month), Pro (895 SEK/month), Pro+ Featured (1,495 SEK/month). For buyers it is completely free to search and browse."
         }
       },
@@ -486,7 +486,7 @@
     "faqInvoice": "Can I invoice my customers through the platform?",
     "faqInvoiceAnswer": "Yes, in the Premium license you can add your margin and invoice customers directly through the system.",
     "faqApi": "How does API access work?",
-    "faqApiAnswer": "The Premium license includes REST API to integrate Afterfounder with your CRM or website.",
+    "faqApiAnswer": "The Premium license includes REST API to integrate BOLAXO with your CRM or website.",
     "verified": "You are verified and can purchase a license",
     "createAccount": "Create account and verify to get started",
     "createBroker": "Create broker account →",
@@ -775,10 +775,10 @@
   },
   "kopare": {
     "heroTitle": "Buy companies in Sweden",
-    "heroSubtitle": "Explore verified acquisition opportunities in hundreds of Swedish cities. From Stockholm to Hemse - find your next company with Afterfounder.",
+    "heroSubtitle": "Explore verified acquisition opportunities in hundreds of Swedish cities. From Stockholm to Hemse - find your next company with BOLAXO.",
     "browseButton": "Browse all companies",
     "citiesTitle": "Cities in Sweden",
-    "whyBuyTitle": "Buy companies with Afterfounder",
+    "whyBuyTitle": "Buy companies with BOLAXO",
     "benefits": [
       {
         "title": "National reach",
@@ -862,7 +862,7 @@
     "errorGeneric": "An error occurred"
   },
   "kopareSaFungerarDet": {
-    "heroTitle": "Afterfounder – Find, review and acquire safely and efficiently",
+    "heroTitle": "BOLAXO – Find, review and acquire safely and efficiently",
     "heroSubtitle": "Create a credible buyer profile with BankID. Filter listings, sign NDA and get access to data room – all in the same flow.",
     "createProfileButton": "Create buyer profile",
     "watchButton": "Set watch",
@@ -1183,10 +1183,10 @@
   "chatWidget": {
     "button": "Chat",
     "header": {
-      "title": "Afterfounder Support",
+      "title": "BOLAXO Support",
       "subtitle": "Always ready to help"
     },
-    "initialMessage": "Hi! I'm your AI assistant for Afterfounder. How can I help you today?",
+    "initialMessage": "Hi! I'm your AI assistant for BOLAXO. How can I help you today?",
     "commonQuestions": "Common questions:",
     "contactMe": "I want to be contacted",
     "inputPlaceholder": "Type your message...",
@@ -1216,7 +1216,7 @@
       "valuation": "Our AI valuation takes only 5 minutes and is completely free! You get a professional assessment based on industry standards and real deals. Would you like to start a valuation now?",
       "selling": "Perfect that you want to sell! The process is simple: 1) Do a free valuation, 2) Create an ad, 3) Get matched with buyers, 4) Complete the deal safely. Should I guide you to the valuation?",
       "buying": "As a buyer you get access to verified sellers and smart matches. It's completely free for buyers! You can filter by industry, region and size. Would you like to create a buyer account?",
-      "contact": "I'm happy to help! You can also click on \"I want to be contacted\" below and we'll call you. Or email us at kontakt@afterfounder.com.",
+      "contact": "I'm happy to help! You can also click on \"I want to be contacted\" below and we'll call you. Or email us at kontakt@bolaxo.com.",
       "default": "Thanks for your question! I'm here to help you with everything related to business sales and purchases. Can you tell me a bit more about what you need help with? You can also click on \"I want to be contacted\" if you prefer to talk to a human."
     },
     "contactForm": {
@@ -1254,7 +1254,7 @@
   },
   "onepager": {
     "hero": {
-      "socialProof": "entrepreneurs use Afterfounder",
+      "socialProof": "entrepreneurs use BOLAXO",
       "title": "Sell your company.",
       "titleHighlight": "Simple. Secure.",
       "titleSubtext": "On your terms.",
@@ -1314,7 +1314,7 @@
       "titleEnd": "to sell your company?",
       "subtitle": "We understand the frustration. That's why we built a better solution.",
       "traditional": "Traditional way",
-      "withAfterfounder": "With Afterfounder",
+      "withBOLAXO": "With BOLAXO",
       "problems": {
         "longTime": {
           "title": "Takes up to 2 years",
@@ -1452,13 +1452,13 @@
     },
     "testimonials": {
       "title": "Real entrepreneurs. Real results.",
-      "subtitle": "Over 2,800 entrepreneurs have achieved their dreams through Afterfounder",
+      "subtitle": "Over 2,800 entrepreneurs have achieved their dreams through BOLAXO",
       "stories": [
         {
           "name": "Stefan Andersson",
           "age": 62,
           "company": "Construction company, 15 employees",
-          "quote": "After 30 years it was time to retire. Afterfounder helped me find a buyer who really cares about my employees. Got 6.2M over my valuation.",
+          "quote": "After 30 years it was time to retire. BOLAXO helped me find a buyer who really cares about my employees. Got 6.2M over my valuation.",
           "result": "6.2M over valuation",
           "metric": "Sold in 78 days"
         },
@@ -1466,7 +1466,7 @@
           "name": "Lisa Chen",
           "age": 34,
           "company": "SaaS startup",
-          "quote": "We needed to grow quickly. Afterfounder matched us with a strategic buyer who had the right network. Exit at 18.5M gave us the opportunity to start the next venture.",
+          "quote": "We needed to grow quickly. BOLAXO matched us with a strategic buyer who had the right network. Exit at 18.5M gave us the opportunity to start the next venture.",
           "result": "18.5M exit",
           "metric": "12 bids first week"
         },
@@ -1489,7 +1489,7 @@
       "cta": "Activate My Offer Now"
     },
     "guarantee": {
-      "title": "Our Afterfounder Guarantee",
+      "title": "Our BOLAXO Guarantee",
       "subtitle": "If you don't get at least 3 qualified bids within 90 days you get",
       "subtitleHighlight": "money back + 90 days free extension",
       "items": [

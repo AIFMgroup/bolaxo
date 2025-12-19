@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 
-const DEFAULT_FROM_EMAIL = process.env.EMAIL_FROM || 'noreply@afterfounder.com'
-const DEFAULT_FROM_NAME = process.env.EMAIL_FROM_NAME || 'Afterfounder'
+const DEFAULT_FROM_EMAIL = process.env.EMAIL_FROM || 'noreply@bolaxo.com'
+const DEFAULT_FROM_NAME = process.env.EMAIL_FROM_NAME || 'BOLAXO'
 
 export interface EmailOptions {
   to: string | string[]
@@ -128,7 +128,7 @@ export async function sendMagicLinkEmail(
 ): Promise<{ success: boolean; messageId?: string; error?: string }> {
   return sendEmail({
     to: email,
-    subject: 'Din inloggningslänk till Afterfounder',
+    subject: 'Din inloggningslänk till BOLAXO',
     html: `
       <!DOCTYPE html>
       <html>
@@ -145,7 +145,7 @@ export async function sendMagicLinkEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -154,7 +154,7 @@ export async function sendMagicLinkEmail(
                 <tr>
                   <td style="padding: 40px 30px;">
                     <h2 style="color: #1F3C58; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">
-                      Välkommen till Afterfounder
+                      Välkommen till BOLAXO
                     </h2>
                     
                     <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
@@ -170,7 +170,7 @@ export async function sendMagicLinkEmail(
                       <tr>
                         <td align="center" style="padding: 0 0 30px 0;">
                           <a href="${magicLink}" style="display: inline-block; background-color: #1F3C58; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; letter-spacing: 0.3px;">
-                            Logga in på Afterfounder
+                            Logga in på BOLAXO
                           </a>
                         </td>
                       </tr>
@@ -195,7 +195,7 @@ export async function sendMagicLinkEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                     <p style="color: #9ca3af; font-size: 12px; margin: 0;">
                       Verifierade uppgifter • NDA innan detaljer • Kvalificerade köpare
@@ -246,7 +246,7 @@ export async function sendLOINotificationEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -282,7 +282,7 @@ export async function sendLOINotificationEmail(
                     </table>
                     
                     <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0;">
-                      Logga in på Afterfounder för att se detaljer och godkänna eller avslå budet.
+                      Logga in på BOLAXO för att se detaljer och godkänna eller avslå budet.
                     </p>
                   </td>
                 </tr>
@@ -291,7 +291,7 @@ export async function sendLOINotificationEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -302,8 +302,8 @@ export async function sendLOINotificationEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO',
+    from: 'noreply@bolaxo.com'
   })
 }
 
@@ -338,7 +338,7 @@ export async function sendLOIApprovalEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -374,7 +374,7 @@ export async function sendLOIApprovalEmail(
                     </table>
                     
                     <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0;">
-                      <strong>Nästa steg:</strong> Logga in på Afterfounder för att se transaktionsdashboarden och börja med Due Diligence.
+                      <strong>Nästa steg:</strong> Logga in på BOLAXO för att se transaktionsdashboarden och börja med Due Diligence.
                     </p>
                   </td>
                 </tr>
@@ -383,7 +383,7 @@ export async function sendLOIApprovalEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -394,8 +394,8 @@ export async function sendLOIApprovalEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO',
+    from: 'noreply@bolaxo.com'
   })
 }
 
@@ -430,7 +430,7 @@ export async function sendNDAApprovalEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -466,7 +466,7 @@ export async function sendNDAApprovalEmail(
                     </table>
                     
                     <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0;">
-                      <strong>Nästa steg:</strong> Logga in på Afterfounder för att se all information om företaget och skicka meddelanden till säljaren.
+                      <strong>Nästa steg:</strong> Logga in på BOLAXO för att se all information om företaget och skicka meddelanden till säljaren.
                     </p>
                   </td>
                 </tr>
@@ -475,7 +475,7 @@ export async function sendNDAApprovalEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -486,8 +486,8 @@ export async function sendNDAApprovalEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO',
+    from: 'noreply@bolaxo.com'
   })
 }
 
@@ -522,7 +522,7 @@ export async function sendNDARejectionEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -549,7 +549,7 @@ export async function sendNDARejectionEmail(
                     ` : ''}
                     
                     <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
-                      Det finns många andra spännande företag att utforska på Afterfounder. Fortsätt söka efter ditt nästa möjlighet!
+                      Det finns många andra spännande företag att utforska på BOLAXO. Fortsätt söka efter ditt nästa möjlighet!
                     </p>
                     
                     <!-- Button -->
@@ -569,7 +569,7 @@ export async function sendNDARejectionEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -580,8 +580,8 @@ export async function sendNDARejectionEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO',
+    from: 'noreply@bolaxo.com'
   })
 }
 
@@ -617,7 +617,7 @@ export async function sendNewNDARequestEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -653,7 +653,7 @@ export async function sendNewNDARequestEmail(
                     </table>
                     
                     <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0;">
-                      Logga in på Afterfounder för att se köparens profil och godkänna eller avslå förfrågan.
+                      Logga in på BOLAXO för att se köparens profil och godkänna eller avslå förfrågan.
                     </p>
                   </td>
                 </tr>
@@ -662,7 +662,7 @@ export async function sendNewNDARequestEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -673,8 +673,8 @@ export async function sendNewNDARequestEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO',
+    from: 'noreply@bolaxo.com'
   })
 }
 
@@ -711,7 +711,7 @@ export async function sendNewMessageEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -749,7 +749,7 @@ export async function sendNewMessageEmail(
                     </table>
                     
                     <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0;">
-                      Logga in på Afterfounder för att läsa hela meddelandet och svara.
+                      Logga in på BOLAXO för att läsa hela meddelandet och svara.
                     </p>
                   </td>
                 </tr>
@@ -758,7 +758,7 @@ export async function sendNewMessageEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -769,8 +769,8 @@ export async function sendNewMessageEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO',
+    from: 'noreply@bolaxo.com'
   })
 }
 
@@ -823,7 +823,7 @@ export async function sendMatchNotificationEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -860,7 +860,7 @@ export async function sendMatchNotificationEmail(
                     </table>
                     
                     <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0;">
-                      ${isBuyer ? 'Logga in på Afterfounder för att se objektet och skicka en NDA-förfrågan.' : 'Logga in på Afterfounder för att se alla matchningar och kontakta köpare.'}
+                      ${isBuyer ? 'Logga in på BOLAXO för att se objektet och skicka en NDA-förfrågan.' : 'Logga in på BOLAXO för att se alla matchningar och kontakta köpare.'}
                     </p>
                   </td>
                 </tr>
@@ -869,7 +869,7 @@ export async function sendMatchNotificationEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> (C) 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -880,8 +880,8 @@ export async function sendMatchNotificationEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO',
+    from: 'noreply@bolaxo.com'
   })
 }
 
@@ -935,7 +935,7 @@ export async function sendWelcomeEmail(
   
   return sendEmail({
     to: email,
-    subject: 'Välkommen till Afterfounder - Din resa börjar här!',
+    subject: 'Välkommen till BOLAXO - Din resa börjar här!',
     html: `
       <!DOCTYPE html>
       <html>
@@ -952,7 +952,7 @@ export async function sendWelcomeEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                     <p style="color: #94a3b8; margin: 10px 0 0 0; font-size: 14px;">
                       Sveriges moderna marknadsplats för företagsöverlåtelser
@@ -964,7 +964,7 @@ export async function sendWelcomeEmail(
                 <tr>
                   <td style="padding: 40px 30px;">
                     <h2 style="color: #1F3C58; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">
-                      Välkommen till Afterfounder! 🎉
+                      Välkommen till BOLAXO! 🎉
                     </h2>
                     
                     <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
@@ -991,7 +991,7 @@ export async function sendWelcomeEmail(
                     <!-- Help section -->
                     <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
                       <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0;">
-                        <strong>Behöver du hjälp?</strong> Besök vår <a href="${baseUrl}/hjalp" style="color: #1F3C58;">hjälpcentral</a> eller kontakta oss på <a href="mailto:support@afterfounder.com" style="color: #1F3C58;">support@afterfounder.com</a>
+                        <strong>Behöver du hjälp?</strong> Besök vår <a href="${baseUrl}/hjalp" style="color: #1F3C58;">hjälpcentral</a> eller kontakta oss på <a href="mailto:support@bolaxo.com" style="color: #1F3C58;">support@bolaxo.com</a>
                       </p>
                     </div>
                   </td>
@@ -1001,7 +1001,7 @@ export async function sendWelcomeEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                     <p style="color: #9ca3af; font-size: 12px; margin: 0;">
                       Verifierade uppgifter • NDA innan detaljer • Kvalificerade köpare
@@ -1015,8 +1015,8 @@ export async function sendWelcomeEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO',
+    from: 'noreply@bolaxo.com'
   })
 }
 
@@ -1056,7 +1056,7 @@ export async function sendPaymentConfirmationEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -1113,7 +1113,7 @@ export async function sendPaymentConfirmationEmail(
                     ` : ''}
                     
                     <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 20px 0 0 0;">
-                      Om du har frågor om din betalning, kontakta oss på <a href="mailto:faktura@afterfounder.com" style="color: #1F3C58;">faktura@afterfounder.com</a>
+                      Om du har frågor om din betalning, kontakta oss på <a href="mailto:faktura@bolaxo.com" style="color: #1F3C58;">faktura@bolaxo.com</a>
                     </p>
                   </td>
                 </tr>
@@ -1122,7 +1122,7 @@ export async function sendPaymentConfirmationEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -1133,8 +1133,8 @@ export async function sendPaymentConfirmationEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder Faktura',
-    from: 'faktura@afterfounder.com'
+    fromName: 'BOLAXO Faktura',
+    from: 'faktura@bolaxo.com'
   })
 }
 
@@ -1192,7 +1192,7 @@ export async function sendInvoiceReminderEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -1241,7 +1241,7 @@ export async function sendInvoiceReminderEmail(
                     </table>
                     
                     <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 20px 0 0 0;">
-                      Om du redan har betalat, vänligen ignorera detta meddelande. Vid frågor, kontakta oss på <a href="mailto:faktura@afterfounder.com" style="color: #1F3C58;">faktura@afterfounder.com</a>
+                      Om du redan har betalat, vänligen ignorera detta meddelande. Vid frågor, kontakta oss på <a href="mailto:faktura@bolaxo.com" style="color: #1F3C58;">faktura@bolaxo.com</a>
                     </p>
                   </td>
                 </tr>
@@ -1250,7 +1250,7 @@ export async function sendInvoiceReminderEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -1261,8 +1261,8 @@ export async function sendInvoiceReminderEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder Faktura',
-    from: 'faktura@afterfounder.com'
+    fromName: 'BOLAXO Faktura',
+    from: 'faktura@bolaxo.com'
   })
 }
 
@@ -1295,7 +1295,7 @@ export async function sendNDAPendingReminderEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -1339,7 +1339,7 @@ export async function sendNDAPendingReminderEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -1350,8 +1350,8 @@ export async function sendNDAPendingReminderEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO',
+    from: 'noreply@bolaxo.com'
   })
 }
 
@@ -1418,7 +1418,7 @@ export async function sendWeeklyDigestEmail(
   
   return sendEmail({
     to: email,
-    subject: `Din veckosammanfattning från Afterfounder`,
+    subject: `Din veckosammanfattning från BOLAXO`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -1435,7 +1435,7 @@ export async function sendWeeklyDigestEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                     <p style="color: #94a3b8; margin: 10px 0 0 0; font-size: 14px;">
                       Veckosammanfattning
@@ -1451,7 +1451,7 @@ export async function sendWeeklyDigestEmail(
                     </h2>
                     
                     <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                      Här är din veckosammanfattning från Afterfounder:
+                      Här är din veckosammanfattning från BOLAXO:
                     </p>
                     
                     ${statsHtml ? `
@@ -1486,7 +1486,7 @@ export async function sendWeeklyDigestEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 10px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                     <p style="color: #9ca3af; font-size: 11px; margin: 0;">
                       <a href="${baseUrl}/installningar/notifikationer" style="color: #6b7280;">Hantera email-inställningar</a>
@@ -1500,8 +1500,8 @@ export async function sendWeeklyDigestEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO',
+    from: 'noreply@bolaxo.com'
   })
 }
 
@@ -1557,7 +1557,7 @@ export async function sendTransactionMilestoneEmail(
     },
     deal_closed: {
       title: 'Affären Avslutad! 🎊',
-      message: 'Grattis! Affären är nu officiellt avslutad. Tack för att du använde Afterfounder!',
+      message: 'Grattis! Affären är nu officiellt avslutad. Tack för att du använde BOLAXO!',
       icon: '🏆',
       color: '#22c55e'
     }
@@ -1589,7 +1589,7 @@ export async function sendTransactionMilestoneEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -1631,7 +1631,7 @@ export async function sendTransactionMilestoneEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -1642,8 +1642,8 @@ export async function sendTransactionMilestoneEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO',
+    from: 'noreply@bolaxo.com'
   })
 }
 
@@ -1656,7 +1656,7 @@ export async function sendTestEmail(
 ): Promise<{ success: boolean; messageId?: string; error?: string }> {
   return sendEmail({
     to: email,
-    subject: `[TEST] Afterfounder Email Test - ${testType}`,
+    subject: `[TEST] BOLAXO Email Test - ${testType}`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -1673,7 +1673,7 @@ export async function sendTestEmail(
                 <tr>
                   <td style="background-color: #1F3C58; padding: 40px 30px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                      Afterfounder
+                      BOLAXO
                     </h1>
                   </td>
                 </tr>
@@ -1713,7 +1713,7 @@ export async function sendTestEmail(
                     </div>
                     
                     <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 20px 0 0 0; text-align: center;">
-                      Detta är ett testmail skickat från Afterfounder admin.
+                      Detta är ett testmail skickat från BOLAXO admin.
                     </p>
                   </td>
                 </tr>
@@ -1722,7 +1722,7 @@ export async function sendTestEmail(
                 <tr>
                   <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="color: #9ca3af; font-size: 12px; margin: 0 0 5px 0;">
-                      <strong style="color: #1F3C58;">Afterfounder</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
+                      <strong style="color: #1F3C58;">BOLAXO</strong> © 2025 | Sveriges moderna marknadsplats för företagsöverlåtelser
                     </p>
                   </td>
                 </tr>
@@ -1733,8 +1733,8 @@ export async function sendTestEmail(
       </body>
       </html>
     `,
-    fromName: 'Afterfounder Test',
-    from: 'noreply@afterfounder.com'
+    fromName: 'BOLAXO Test',
+    from: 'noreply@bolaxo.com'
   })
 }
 

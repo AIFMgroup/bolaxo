@@ -36,9 +36,9 @@ export default function ReceiptPage() {
           {/* Header */}
           <div className="flex justify-between items-start mb-12">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-primary-blue mb-2">Afterfounder</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-primary-blue mb-2">BOLAXO</h1>
               <p className="text-sm text-text-gray">
-                Afterfounder AB<br />
+                BOLAXO AB<br />
                 Org.nr: 559123-4567<br />
                 Drottninggatan 33<br />
                 111 51 Stockholm<br />
@@ -153,7 +153,7 @@ export default function ReceiptPage() {
           <div className="text-center text-xs text-text-gray">
             <p>Tack för ditt köp!</p>
             <p className="mt-2">
-              Frågor? Kontakta support@afterfounder.se
+              Frågor? Kontakta support@bolaxo.se
             </p>
           </div>
         </div>

@@ -24,18 +24,18 @@ export default function UserTermsPage() {
             <section>
               <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">1. Allmänt</h2>
               <p className="text-text-gray leading-relaxed">
-                Dessa användarvillkor ("Villkoren") reglerar din användning av Afterfounder:s plattform och tjänster 
+                Dessa användarvillkor ("Villkoren") reglerar din användning av BOLAXO:s plattform och tjänster 
                 ("Tjänsten"). Genom att registrera ett konto eller använda Tjänsten godkänner du dessa Villkor.
               </p>
               <p className="text-text-gray leading-relaxed">
-                Afterfounder tillhandahålls av Afterfounder AB (org.nr 559123-4567), med säte i Stockholm, Sverige.
+                BOLAXO tillhandahålls av BOLAXO AB (org.nr 559123-4567), med säte i Stockholm, Sverige.
               </p>
             </section>
 
             <section>
               <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">2. Tjänstens omfattning</h2>
               <p className="text-text-gray leading-relaxed mb-3">
-                Afterfounder är en digital marknadsplats där säljare kan annonsera företag till försäljning och 
+                BOLAXO är en digital marknadsplats där säljare kan annonsera företag till försäljning och 
                 köpare kan söka efter investeringsmöjligheter. Tjänsten inkluderar:
               </p>
               <ul className="list-disc ml-6 text-text-gray space-y-2">
@@ -80,7 +80,7 @@ export default function UserTermsPage() {
                 Du har rätt att vara anonym tills NDA signeras, men måste ändå tillhandahålla korrekta uppgifter.
               </p>
               <p className="text-text-gray leading-relaxed">
-                Afterfounder förbehåller sig rätten att granska och vid behov ta bort annonser som bryter mot 
+                BOLAXO förbehåller sig rätten att granska och vid behov ta bort annonser som bryter mot 
                 dessa Villkor eller svensk lag.
               </p>
             </section>
@@ -89,7 +89,7 @@ export default function UserTermsPage() {
               <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">6. NDA och sekretess</h2>
               <p className="text-text-gray leading-relaxed">
                 NDA-avtal signerade via plattformen är juridiskt bindande. Båda parter är skyldiga att följa 
-                sekretessåtaganden. Afterfounder är inte part i NDA-avtalet utan endast faciliterar signeringen.
+                sekretessåtaganden. BOLAXO är inte part i NDA-avtalet utan endast faciliterar signeringen.
               </p>
             </section>
 
@@ -108,7 +108,7 @@ export default function UserTermsPage() {
             <section>
               <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">8. Ansvarsbegränsning</h2>
               <p className="text-text-gray leading-relaxed">
-                Afterfounder tillhandahåller en plattform för att koppla samman köpare och säljare. Vi är inte 
+                BOLAXO tillhandahåller en plattform för att koppla samman köpare och säljare. Vi är inte 
                 part i transaktionen och tar inget ansvar för:
               </p>
               <ul className="list-disc ml-6 text-text-gray space-y-2">
@@ -125,7 +125,7 @@ export default function UserTermsPage() {
             <section>
               <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">9. Immateriella rättigheter</h2>
               <p className="text-text-gray leading-relaxed">
-                Allt innehåll på plattformen, inklusive design, logotyper, texter och kod, ägs av Afterfounder eller 
+                Allt innehåll på plattformen, inklusive design, logotyper, texter och kod, ägs av BOLAXO eller 
                 våra licensgivare. Du får inte kopiera, reproducera eller använda vårt material utan tillstånd.
               </p>
             </section>
@@ -133,7 +133,7 @@ export default function UserTermsPage() {
             <section>
               <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">10. Uppsägning</h2>
               <p className="text-text-gray leading-relaxed">
-                Du kan när som helst avsluta ditt konto. Afterfounder förbehåller sig rätten att stänga av konton 
+                Du kan när som helst avsluta ditt konto. BOLAXO förbehåller sig rätten att stänga av konton 
                 som bryter mot dessa Villkor.
               </p>
             </section>
@@ -160,7 +160,7 @@ export default function UserTermsPage() {
                 Har du frågor om dessa villkor? Kontakta oss:
               </p>
               <div className="mt-4 space-y-2 text-text-gray">
-                <p>E-post: legal@afterfounder.com</p>
+                <p>E-post: legal@bolaxo.com</p>
                 <p>Telefon: 08-123 456 78</p>
                 <p>Adress: Regeringsgatan 38, 111 56 Stockholm</p>
               </div>

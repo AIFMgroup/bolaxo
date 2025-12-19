@@ -5,7 +5,7 @@ import { cookies } from 'next/headers'
 export async function PATCH(req: NextRequest) {
   try {
     const cookieStore = await cookies()
-    const userId = cookieStore.get('afterfounder_user_id')?.value
+    const userId = cookieStore.get('bolaxo_user_id')?.value
 
     if (!userId) {
       return NextResponse.json(

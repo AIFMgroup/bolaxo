@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Profilinställningar - Afterfounder',
+  title: 'Profilinställningar - BOLAXO',
   description: 'Uppdatera din profil och kontaktuppgifter'
 }
 

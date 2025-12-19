@@ -336,7 +336,7 @@ export default function InvestorPage() {
             </ul>
           </div>
 
-          <p className="text-gray-300 mb-6">Kontakta oss: <span className="text-accent-pink font-bold">investors@afterfounder.se</span></p>
+          <p className="text-gray-300 mb-6">Kontakta oss: <span className="text-accent-pink font-bold">investors@bolaxo.se</span></p>
         </div>
       </section>
     </main>

@@ -14,7 +14,7 @@ export async function POST(
   try {
     const params = await context.params
     const cookieStore = await cookies()
-    const userId = cookieStore.get('afterfounder_user_id')?.value
+    const userId = cookieStore.get('bolaxo_user_id')?.value
 
     if (!userId) {
       return NextResponse.json(
@@ -234,7 +234,7 @@ export async function POST(
         })
 
         // Send email notifications to buyer
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com'
         const listingTitle = loi.listing.companyName || loi.listing.anonymousTitle || 'Objektet'
         
         try {

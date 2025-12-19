@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma'
 export async function GET() {
   try {
     const cookieStore = await cookies()
-    const userId = cookieStore.get('afterfounder_user_id')?.value
+    const userId = cookieStore.get('bolaxo_user_id')?.value
 
     if (!userId) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
@@ -140,7 +140,7 @@ export async function GET() {
     return new NextResponse(JSON.stringify(exportData, null, 2), {
       headers: {
         'Content-Type': 'application/json',
-        'Content-Disposition': `attachment; filename="afterfounder_data_export_${user.id}_${new Date()
+        'Content-Disposition': `attachment; filename="bolaxo_data_export_${user.id}_${new Date()
           .toISOString()
           .split('T')[0]}.json"`,
       },

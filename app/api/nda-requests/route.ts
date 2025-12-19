@@ -184,7 +184,7 @@ export async function POST(request: NextRequest) {
 
       // Send email notification to seller
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://afterfounder.com'
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://bolaxo.com'
         const listingTitle = created.listing.anonymousTitle || 'Objektet'
         await sendNewNDARequestEmail(
           created.seller.email,

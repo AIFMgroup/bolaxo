@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Köparkommunikation - Afterfounder',
+  title: 'Köparkommunikation - BOLAXO',
   description: 'Hantera förfrågningar och chatta med intresserade köpare'
 }
 

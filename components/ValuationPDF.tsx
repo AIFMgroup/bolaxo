@@ -310,7 +310,7 @@ export default function ValuationPDF({ companyName, result, generatedAt, company
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.logoContainer}>
-            <Text style={styles.logo}>Afterfounder</Text>
+            <Text style={styles.logo}>BOLAXO</Text>
             <Text style={styles.tagline}>AI-driven företagsvärdering</Text>
           </View>
           <Text style={styles.title}>Värderingsrapport</Text>
@@ -463,7 +463,7 @@ export default function ValuationPDF({ companyName, result, generatedAt, company
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <View style={styles.logoContainer}>
-            <Text style={styles.logo}>Afterfounder</Text>
+            <Text style={styles.logo}>BOLAXO</Text>
           </View>
           <Text style={styles.title}>Företagsanalys</Text>
           <Text style={styles.subtitle}>{companyName}</Text>
@@ -533,7 +533,7 @@ export default function ValuationPDF({ companyName, result, generatedAt, company
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.disclaimer}>
-            Afterfounder © 2025 | info@afterfounder.com | www.afterfounder.com
+            BOLAXO © 2025 | info@bolaxo.com | www.bolaxo.com
           </Text>
         </View>
       </Page>
@@ -542,7 +542,7 @@ export default function ValuationPDF({ companyName, result, generatedAt, company
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <View style={styles.logoContainer}>
-            <Text style={styles.logo}>Afterfounder</Text>
+            <Text style={styles.logo}>BOLAXO</Text>
           </View>
           <Text style={styles.title}>Rekommendationer för värdeökning</Text>
           <Text style={styles.subtitle}>{companyName}</Text>
@@ -579,9 +579,9 @@ export default function ValuationPDF({ companyName, result, generatedAt, company
             </Text>
           </View>
           <View style={styles.methodBox}>
-            <Text style={styles.methodTitle}>3. Publicera på Afterfounder</Text>
+            <Text style={styles.methodTitle}>3. Publicera på BOLAXO</Text>
             <Text style={styles.methodText}>
-              Lista ditt företag på Afterfounder för att nå kvalificerade köpare och få en transparent försäljningsprocess.
+              Lista ditt företag på BOLAXO för att nå kvalificerade köpare och få en transparent försäljningsprocess.
             </Text>
           </View>
         </View>

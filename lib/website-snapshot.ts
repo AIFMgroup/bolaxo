@@ -65,7 +65,7 @@ export async function fetchWebsiteSnapshot(rawUrl?: string, companyName?: string
     try {
       const response = await fetch(targetUrl, {
         headers: {
-          'User-Agent': 'AfterfounderBot/1.0 (https://afterfounder.com)'
+          'User-Agent': 'BOLAXOBot/1.0 (https://bolaxo.com)'
         },
         signal: createTimeoutSignal(8000)
       })

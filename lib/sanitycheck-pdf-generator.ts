@@ -26,7 +26,7 @@ export interface SanitycheckPdfData {
   formData: Record<string, unknown>
 }
 
-// Afterfounder Color palette - primarily dark navy
+// BOLAXO Color palette - primarily dark navy
 const COLORS = {
   navy: '#0A1628',
   navyLight: '#1a2d4a',
@@ -81,9 +81,9 @@ export async function generateSanitycheckPDF(data: SanitycheckPdfData): Promise<
         autoFirstPage: true,
         info: {
           Title: `Värderingsrapport - ${data.companyName}`,
-          Author: 'Afterfounder',
+          Author: 'BOLAXO',
           Subject: 'Företagsanalys och indikativ värdering',
-          Creator: 'Afterfounder Sanitycheck'
+          Creator: 'BOLAXO Sanitycheck'
         }
       })
 
@@ -130,7 +130,7 @@ export async function generateSanitycheckPDF(data: SanitycheckPdfData): Promise<
           
           doc.fontSize(8)
              .fillColor(COLORS.gray)
-             .text('Afterfounder | Konfidentiellt', margin, pageHeight - 35)
+             .text('BOLAXO | Konfidentiellt', margin, pageHeight - 35)
         }
       }
 
@@ -164,7 +164,7 @@ function drawCoverPage(
   // Logo
   doc.fontSize(42)
      .fillColor(COLORS.white)
-     .text('Afterfounder', margin, 60)
+     .text('BOLAXO', margin, 60)
 
   // Subtitle line
   doc.fontSize(11)
@@ -525,6 +525,6 @@ function drawValuationPage(
        .text('Kontakta oss för personlig rådgivning och matchning med kvalificerade köpare.', margin + 20, y + 40, { width: contentWidth - 40 })
        .opacity(1)
     doc.roundedRect(margin + 20, y + 60, 140, 28, 4).fill(COLORS.emerald)
-    doc.fontSize(10).fillColor(COLORS.white).text('afterfounder.com', margin + 20, y + 68, { width: 140, align: 'center' })
+    doc.fontSize(10).fillColor(COLORS.white).text('bolaxo.com', margin + 20, y + 68, { width: 140, align: 'center' })
   }
 }

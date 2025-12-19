@@ -14,7 +14,7 @@ export default function SellarAllCitiesPage() {
             Sälj ditt företag i Sverige
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Välj din stad och starta en gratis värdering av ditt företag. Afterfounder tillhandahåller en professionell 
+            Välj din stad och starta en gratis värdering av ditt företag. BOLAXO tillhandahåller en professionell 
             försäljningsprocess med verifierade köpare i hela Sverige.
           </p>
           <Link
@@ -46,7 +46,7 @@ export default function SellarAllCitiesPage() {
       {/* Benefits Section */}
       <div className="bg-gray-50 py-16">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-primary-navy mb-12 text-center">Varför välja Afterfounder?</h2>
+          <h2 className="text-3xl font-bold text-primary-navy mb-12 text-center">Varför välja BOLAXO?</h2>
           <div className="grid md:grid-cols-2 gap-8">
             {[
               { title: '100+ städer', desc: 'Tillgång till köpare i hela Sverige' },

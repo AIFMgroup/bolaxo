@@ -59,10 +59,10 @@ async function main() {
 
   // 1. Skapa demo-users
   const demoSeller = await prisma.user.upsert({
-    where: { email: 'demo.seller@afterfounder.com' },
+    where: { email: 'demo.seller@bolaxo.com' },
     update: {},
     create: {
-      email: 'demo.seller@afterfounder.com',
+      email: 'demo.seller@bolaxo.com',
       name: 'Anna Andersson',
       role: 'seller',
       verified: true,
@@ -75,10 +75,10 @@ async function main() {
   })
 
   const demoBuyer = await prisma.user.upsert({
-    where: { email: 'demo.buyer@afterfounder.com' },
+    where: { email: 'demo.buyer@bolaxo.com' },
     update: {},
     create: {
-      email: 'demo.buyer@afterfounder.com',
+      email: 'demo.buyer@bolaxo.com',
       name: 'Erik Johansson',
       role: 'buyer',
       verified: true,
@@ -89,10 +89,10 @@ async function main() {
   })
 
   const demoAdvisor = await prisma.user.upsert({
-    where: { email: 'advisor@afterfounder.com' },
+    where: { email: 'advisor@bolaxo.com' },
     update: {},
     create: {
-      email: 'advisor@afterfounder.com',
+      email: 'advisor@bolaxo.com',
       name: 'Maria Svensson',
       role: 'advisor',
       verified: true,
@@ -373,10 +373,10 @@ async function main() {
   
   for (const mockObj of mockObjects) {
     const seller = await prisma.user.upsert({
-      where: { email: `seller-${mockObj.id}@afterfounder.com` },
+      where: { email: `seller-${mockObj.id}@bolaxo.com` },
       update: {},
       create: {
-        email: `seller-${mockObj.id}@afterfounder.com`,
+        email: `seller-${mockObj.id}@bolaxo.com`,
         name: mockObj.companyName,
         role: 'seller',
         verified: mockObj.verified,
@@ -508,10 +508,10 @@ async function main() {
   
   // Skapa ett par test-köpare
   const testBuyer1 = await prisma.user.upsert({
-    where: { email: 'testbuyer1@afterfounder.com' },
+    where: { email: 'testbuyer1@bolaxo.com' },
     update: {},
     create: {
-      email: 'testbuyer1@afterfounder.com',
+      email: 'testbuyer1@bolaxo.com',
       name: 'Test Köpare 1',
       role: 'buyer',
       verified: true,
@@ -522,10 +522,10 @@ async function main() {
   })
 
   const testBuyer2 = await prisma.user.upsert({
-    where: { email: 'testbuyer2@afterfounder.com' },
+    where: { email: 'testbuyer2@bolaxo.com' },
     update: {},
     create: {
-      email: 'testbuyer2@afterfounder.com',
+      email: 'testbuyer2@bolaxo.com',
       name: 'Test Köpare 2',
       role: 'buyer',
       verified: true,
@@ -539,7 +539,7 @@ async function main() {
   const firstTwoListings = mockObjects.slice(0, 2)
   for (const mockObj of firstTwoListings) {
     const seller = await prisma.user.findFirst({
-      where: { email: `seller-${mockObj.id}@afterfounder.com` }
+      where: { email: `seller-${mockObj.id}@bolaxo.com` }
     })
 
     if (seller) {
@@ -694,18 +694,18 @@ async function main() {
 
   console.log('\n✅ Seed completed!')
   console.log('\n📊 Demo accounts:')
-  console.log('   Säljare: demo.seller@afterfounder.com')
-  console.log('   Köpare:  demo.buyer@afterfounder.com')
-  console.log('   Advisor: advisor@afterfounder.com')
+  console.log('   Säljare: demo.seller@bolaxo.com')
+  console.log('   Köpare:  demo.buyer@bolaxo.com')
+  console.log('   Advisor: advisor@bolaxo.com')
   console.log('\n👥 Test users for dev-login:')
   console.log(`   Test Buyer 1 ID: ${testBuyer1.id}`)
   console.log(`   Test Buyer 2 ID: ${testBuyer2.id}`)
   console.log('   (Use these IDs in /dev-login page)')
   console.log('\n🏢 Plus 20 seller accounts created for mock objects:')
-  console.log('   Format: seller-obj-XXX@afterfounder.com (same password as above)')
+  console.log('   Format: seller-obj-XXX@bolaxo.com (same password as above)')
   console.log('\n🔗 Direct URLs för investor demo:')
   console.log('   Transaction: /transaktion/demo-transaction-001')
-  console.log('   Full URL: https://afterfounder-production.up.railway.app/transaktion/demo-transaction-001')
+  console.log('   Full URL: https://bolaxo-production.up.railway.app/transaktion/demo-transaction-001')
   console.log('\n💡 Logga in via /login för att se dashboards med data!')
 }
 

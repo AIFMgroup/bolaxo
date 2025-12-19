@@ -165,7 +165,7 @@ export default function CareerPage() {
         <div className="absolute inset-0">
           <Image
             src="/polaroid/premium_photo-1713980018323-255e2eb4cfef.jpg"
-            alt="Karriär på Afterfounder"
+            alt="Karriär på BOLAXO"
             fill
             className="object-cover"
             priority
@@ -336,7 +336,7 @@ export default function CareerPage() {
 
                       <div className="flex flex-col sm:flex-row gap-4">
                         <a
-                          href={`mailto:karriar@afterfounder.se?subject=Ansökan: ${position.title}`}
+                          href={`mailto:karriar@bolaxo.se?subject=Ansökan: ${position.title}`}
                           className="btn-primary text-center"
                         >
                           Skicka ansökan
@@ -366,7 +366,7 @@ export default function CareerPage() {
               Skicka en spontanansökan och berätta hur du kan bidra!
             </p>
             <a
-              href="mailto:karriar@afterfounder.se?subject=Spontanansökan"
+              href="mailto:karriar@bolaxo.se?subject=Spontanansökan"
               className="btn-secondary bg-white text-primary-blue hover:bg-gray-100 inline-flex items-center"
             >
               Skicka spontanansökan

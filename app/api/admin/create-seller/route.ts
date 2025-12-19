@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     // Generate magic link URL
     const protocol = request.headers.get('x-forwarded-proto') || 'https'
-    const host = request.headers.get('host') || 'afterfounder.com'
+    const host = request.headers.get('host') || 'bolaxo.com'
     let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`
     baseUrl = baseUrl.replace(/\/$/, '')
     const magicLink = `${baseUrl}/auth/verify?token=${token}`

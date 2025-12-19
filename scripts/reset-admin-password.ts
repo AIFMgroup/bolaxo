@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt'
 const prisma = new PrismaClient()
 
 async function resetAdminPassword() {
-  const email = 'admin@afterfounder.com'
+  const email = 'admin@bolaxo.com'
   const newPassword = 'Password123!' // Minst 12 tecken krävs
 
   try {
@@ -30,14 +30,14 @@ async function resetAdminPassword() {
           passwordHash,
           verified: true,
           bankIdVerified: true,
-          companyName: 'Afterfounder Admin'
+          companyName: 'BOLAXO Admin'
         }
       })
 
       console.log(`✅ Admin user created successfully!`)
       console.log(`📧 Email: ${newUser.email}`)
       console.log(`🔑 Password: ${newPassword}`)
-      console.log(`\n🌐 Login at: https://app.afterfounder.com/admin/login`)
+      console.log(`\n🌐 Login at: https://app.bolaxo.com/admin/login`)
       return
     }
 
@@ -66,7 +66,7 @@ async function resetAdminPassword() {
     console.log(`✅ Password updated successfully!`)
     console.log(`📧 Email: ${updatedUser.email}`)
     console.log(`🔑 New password: ${newPassword}`)
-    console.log(`\n🌐 Login at: https://app.afterfounder.com/admin/login`)
+    console.log(`\n🌐 Login at: https://app.bolaxo.com/admin/login`)
 
   } catch (error) {
     console.error('❌ Error:', error)

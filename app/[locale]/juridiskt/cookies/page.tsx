@@ -30,7 +30,7 @@ export default function CookiePolicyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">Hur använder Afterfounder cookies?</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">Hur använder BOLAXO cookies?</h2>
               
               <div className="space-y-6">
                 {/* Necessary Cookies */}
@@ -125,7 +125,7 @@ export default function CookiePolicyPage() {
             <section className="pt-8 border-t border-gray-100">
               <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">Kontakt</h2>
               <p className="text-text-gray leading-relaxed">
-                Frågor om cookies? Kontakta privacy@afterfounder.com
+                Frågor om cookies? Kontakta privacy@bolaxo.com
               </p>
             </section>
           </div>
