@@ -209,11 +209,10 @@ export default function HomePageContent() {
                     src="/polaroid/premium_photo-1712852503960-82f6fd804694.jpg"
                     alt="För köpare"
                     fill
-                    className="object-cover opacity-70 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500"
+                    className="object-cover group-hover:scale-105 transition-all duration-500"
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    quality={70}
+                    quality={65}
                   />
-                  <div className="absolute inset-0 bg-navy/40" />
                   <div className="absolute bottom-6 left-6">
                     <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4">
                       <Briefcase className="w-7 h-7 text-white" />
@@ -257,9 +256,8 @@ export default function HomePageContent() {
                     fill
                     className="object-cover group-hover:scale-105 transition-all duration-500"
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    quality={70}
+                    quality={65}
                   />
-                  <div className="absolute inset-0 bg-white/20" />
                   <div className="absolute bottom-6 left-6">
                     <div className="w-14 h-14 bg-navy/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4">
                       <Building2 className="w-7 h-7 text-navy" />
