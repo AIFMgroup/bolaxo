@@ -28,7 +28,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     setError('')
     
     // You can change this password
-    if (password === 'Afterfounder') {
+    if (password === 'Bolaxo1%') {
       sessionStorage.setItem('site-authenticated', 'true')
       setIsAuthenticated(true)
     } else {

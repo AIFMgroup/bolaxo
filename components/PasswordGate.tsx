@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { Lock, ArrowRight, Eye, EyeOff, Check } from 'lucide-react'
 
-const CORRECT_PASSWORD = 'afterfounder123%'
+const CORRECT_PASSWORD = 'Bolaxo1%'
 const STORAGE_KEY = 'afterfounder_auth'
 
 export default function PasswordGate({ children }: { children: React.ReactNode }) {
@@ -45,7 +45,7 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (password.toLowerCase() === CORRECT_PASSWORD) {
+    if (password === CORRECT_PASSWORD) {
       setIsSuccess(true)
       setError('')
       
