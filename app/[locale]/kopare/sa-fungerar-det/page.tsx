@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { CheckCircle, Lock, User, Search, Shield, ChartBar, Building2, Key, Eye, FileText, MessagesSquare, BarChart3, Target } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 
@@ -61,16 +62,33 @@ export default function BuyerInfoPage() {
   return (
     <main className="bg-gray-100">
       {/* Hero Section */}
-      <section className="pt-32 pb-24 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="relative pt-32 pb-24 px-4 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/polaroid/premium_photo-1713887090765-5fb598f7ca9d.jpg"
+            alt=""
+            fill
+            className="object-cover opacity-10"
+            sizes="100vw"
+            quality={50}
+            priority
+          />
+        </div>
+        <div className="max-w-6xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-            {/* Mascot - Left side */}
+            {/* Image - Left side */}
             <div className="flex-shrink-0">
-              <img 
-                src="/Home/maskot3.png" 
-                alt="Afterfounder maskot" 
-                className="w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 object-contain"
-              />
+              <div className="relative w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-2xl overflow-hidden shadow-2xl animate-gentle-float">
+                <Image 
+                  src="/polaroid/premium_photo-1712305833911-f699d00ebc2a.jpg" 
+                  alt="Hitta rätt förvärv" 
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 192px, (max-width: 1024px) 224px, 256px"
+                  quality={75}
+                />
+              </div>
             </div>
 
             {/* Content - Right side */}
@@ -309,9 +327,20 @@ export default function BuyerInfoPage() {
         </section>
 
         {/* CTA Row */}
-        <section className="bg-white py-24 sm:py-32 md:py-48">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-primary-navy to-primary-navy/90 rounded-2xl p-8 sm:p-12 text-center text-white shadow-2xl">
+        <section className="relative bg-white py-24 sm:py-32 md:py-48 overflow-hidden">
+        {/* Background accent image */}
+        <div className="absolute right-0 top-0 w-1/3 h-full hidden lg:block">
+          <Image
+            src="/polaroid/premium_photo-1713539610706-3a724c85fd5b.jpg"
+            alt=""
+            fill
+            className="object-cover opacity-8"
+            sizes="33vw"
+            quality={40}
+          />
+        </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="bg-primary-navy rounded-2xl p-8 sm:p-12 text-center text-white shadow-2xl">
             <h2 className="text-2xl sm:text-3xl font-bold mb-6">{t('cta.title')}</h2>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href={`/${locale}/registrera`} className="inline-flex items-center justify-center px-8 py-4 bg-white text-primary-navy font-bold rounded-lg hover:bg-gray-100 transition-all shadow-lg">

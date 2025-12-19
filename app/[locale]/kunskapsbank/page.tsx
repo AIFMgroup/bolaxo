@@ -149,8 +149,19 @@ export default function KunskapsbankPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Hero Section */}
-      <section className="bg-navy text-white py-16 md:py-24">
-        <div className="max-w-6xl mx-auto px-4">
+      <section className="relative bg-navy text-white py-16 md:py-24 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/polaroid/premium_photo-1712171314766-4087f2e84711.jpg"
+            alt=""
+            fill
+            className="object-cover opacity-20"
+            sizes="100vw"
+            quality={60}
+          />
+        </div>
+        <div className="max-w-6xl mx-auto px-4 relative z-10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="lg:w-2/3">
               <div className="flex items-center gap-3 mb-6">
@@ -169,13 +180,16 @@ export default function KunskapsbankPage() {
               </p>
             </div>
             <div className="lg:w-1/3 flex justify-center lg:justify-end">
-              <Image
-                src="/Maskots/maskot7.png"
-                alt="Afterfounder maskot"
-                width={280}
-                height={280}
-                className="object-contain"
-              />
+              <div className="relative w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden shadow-2xl animate-gentle-float">
+                <Image
+                  src="/polaroid/premium_photo-1713112356951-402c687642ec.jpg"
+                  alt="Professionell rådgivning"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 192px, 224px"
+                  quality={75}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -412,8 +426,19 @@ export default function KunskapsbankPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 border-t border-gray-200">
-        <div className="max-w-6xl mx-auto px-4">
+      <section className="relative py-16 border-t border-gray-200 overflow-hidden">
+        {/* Subtle background image */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1/3 h-full hidden lg:block">
+          <Image
+            src="/polaroid/premium_photo-1713399247260-3b9c33e244ec.jpg"
+            alt=""
+            fill
+            className="object-cover opacity-10"
+            sizes="33vw"
+            quality={50}
+          />
+        </div>
+        <div className="max-w-6xl mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-5 gap-8 items-center">
             <div className="lg:col-span-3">
               <h2 className="text-2xl md:text-3xl font-bold text-navy mb-4">

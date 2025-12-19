@@ -37,10 +37,11 @@ export default function HomePageContent() {
             fill
             className="object-cover"
             priority
+            sizes="100vw"
+            quality={70}
           />
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/70 to-navy/40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent" />
+          {/* Simplified overlay - less gradient, more subtle */}
+          <div className="absolute inset-0 bg-navy/60" />
         </div>
         
         <div className="relative z-10 max-w-6xl mx-auto px-4 py-20 sm:py-24 md:py-32">
@@ -117,12 +118,14 @@ export default function HomePageContent() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Steg 1 */}
             <div className="relative group">
-              <div className="polaroid-image floating aspect-[4/3] mb-6 overflow-hidden">
+              <div className="relative aspect-[4/3] mb-6 overflow-hidden rounded-xl shadow-lg">
                 <Image
                   src="/polaroid/premium_photo-1712171314294-629a8cd44f15.jpg"
                   alt="Utforska anonymt"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  quality={70}
                 />
               </div>
               <div className="text-center">
@@ -138,12 +141,14 @@ export default function HomePageContent() {
             
             {/* Steg 2 */}
             <div className="relative group md:mt-8">
-              <div className="polaroid-image floating aspect-[4/3] mb-6 overflow-hidden" style={{ animationDelay: '1s' }}>
+              <div className="relative aspect-[4/3] mb-6 overflow-hidden rounded-xl shadow-lg">
                 <Image
                   src="/polaroid/premium_photo-1712312886917-7feb1ec0f060.jpg"
                   alt="Signera NDA"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  quality={70}
                 />
               </div>
               <div className="text-center">
@@ -159,12 +164,14 @@ export default function HomePageContent() {
             
             {/* Steg 3 */}
             <div className="relative group">
-              <div className="polaroid-image floating aspect-[4/3] mb-6 overflow-hidden" style={{ animationDelay: '2s' }}>
+              <div className="relative aspect-[4/3] mb-6 overflow-hidden rounded-xl shadow-lg">
                 <Image
                   src="/polaroid/premium_photo-1713112356951-402c687642ec.jpg"
                   alt="Genomför affären"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  quality={70}
                 />
               </div>
               <div className="text-center">
@@ -202,9 +209,11 @@ export default function HomePageContent() {
                     src="/polaroid/premium_photo-1712852503960-82f6fd804694.jpg"
                     alt="För köpare"
                     fill
-                    className="object-cover opacity-60 group-hover:opacity-70 group-hover:scale-105 transition-all duration-500"
+                    className="object-cover opacity-70 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    quality={70}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
+                  <div className="absolute inset-0 bg-navy/40" />
                   <div className="absolute bottom-6 left-6">
                     <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4">
                       <Briefcase className="w-7 h-7 text-white" />
@@ -247,8 +256,10 @@ export default function HomePageContent() {
                     alt="För säljare"
                     fill
                     className="object-cover group-hover:scale-105 transition-all duration-500"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    quality={70}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />
+                  <div className="absolute inset-0 bg-white/20" />
                   <div className="absolute bottom-6 left-6">
                     <div className="w-14 h-14 bg-navy/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4">
                       <Building2 className="w-7 h-7 text-navy" />
@@ -291,12 +302,14 @@ export default function HomePageContent() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Bild */}
             <div className="relative order-2 lg:order-1">
-              <div className="polaroid-image glow-strong aspect-[4/3] rounded-3xl overflow-hidden">
+              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl shadow-navy/20">
                 <Image
                   src="/polaroid/premium_photo-1711984441568-9b15d0a082ed.jpg"
                   alt="Varför Afterfounder"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  quality={70}
                 />
               </div>
               {/* Floating stat card */}
@@ -373,15 +386,17 @@ export default function HomePageContent() {
         <div className="max-w-6xl mx-auto">
           <div className="relative overflow-hidden bg-navy text-white rounded-3xl">
             {/* Background image */}
-            <div className="absolute inset-0 opacity-20">
+            <div className="absolute inset-0">
               <Image
                 src="/polaroid/premium_photo-1712016875078-3935da1b9730.jpg"
                 alt="Pactior Group"
                 fill
-                className="object-cover"
+                className="object-cover opacity-30"
+                sizes="100vw"
+                quality={60}
               />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/95 to-navy/90" />
+            <div className="absolute inset-0 bg-navy/70" />
             
             <div className="relative z-10 p-10 md:p-16 text-center">
               <span className="inline-block text-sm font-bold text-white/60 uppercase tracking-widest mb-4">
@@ -511,9 +526,11 @@ export default function HomePageContent() {
                 src="/polaroid/premium_photo-1713980018127-cac075aede35.jpg"
                 alt="CTA bakgrund"
                 fill
-                className="object-cover"
+                className="object-cover opacity-40"
+                sizes="(max-width: 1024px) 100vw, 896px"
+                quality={60}
               />
-              <div className="absolute inset-0 bg-gradient-to-br from-navy/95 via-navy/90 to-navy/85" />
+              <div className="absolute inset-0 bg-navy/75" />
             </div>
             
             <div className="relative z-10 p-10 md:p-16 text-center">

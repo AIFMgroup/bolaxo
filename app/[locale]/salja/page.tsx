@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { CheckCircle, ArrowRight, Shield, TrendingUp, Users, FileText } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 
@@ -51,8 +52,20 @@ export default function SaljaInfoPage() {
   return (
     <main className="bg-gray-100">
       {/* Hero Section */}
-      <section className="pt-32 pb-24 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="relative pt-32 pb-24 px-4 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/polaroid/premium_photo-1712016875326-7dbba3f6ec26.jpg"
+            alt=""
+            fill
+            className="object-cover opacity-10"
+            sizes="100vw"
+            quality={50}
+            priority
+          />
+        </div>
+        <div className="max-w-6xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
             {/* Content - Left side */}
             <div className="flex-1 text-center md:text-left order-2 md:order-1">
@@ -82,13 +95,18 @@ export default function SaljaInfoPage() {
               </div>
             </div>
 
-            {/* Mascot - Right side */}
+            {/* Image - Right side */}
             <div className="flex-shrink-0 order-1 md:order-2">
-              <img 
-                src="/Home/maskot2.png" 
-                alt="Afterfounder maskot" 
-                className="w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 object-contain"
-              />
+              <div className="relative w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-2xl overflow-hidden shadow-2xl animate-gentle-float">
+                <Image 
+                  src="/polaroid/premium_photo-1712852503914-e892c988df70.jpg" 
+                  alt="Professionell företagsförsäljning" 
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 192px, (max-width: 1024px) 224px, 256px"
+                  quality={75}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -344,8 +362,19 @@ export default function SaljaInfoPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-white py-24 sm:py-32 md:py-48">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="relative bg-white py-24 sm:py-32 md:py-48 overflow-hidden">
+        {/* Background accent image */}
+        <div className="absolute left-0 bottom-0 w-1/4 h-2/3 hidden lg:block">
+          <Image
+            src="/polaroid/premium_photo-1713980018127-cac075aede35.jpg"
+            alt=""
+            fill
+            className="object-cover opacity-10"
+            sizes="25vw"
+            quality={40}
+          />
+        </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="bg-accent-pink rounded-2xl p-8 sm:p-10 md:p-12 text-center shadow-2xl border-2 border-accent-pink">
           <h2 className="text-2xl sm:text-3xl font-bold text-primary-navy mb-4 sm:mb-6">{t('cta.title')}</h2>
           <p className="text-base sm:text-lg text-primary-navy mb-6 sm:mb-8 max-w-2xl mx-auto px-4 sm:px-0">
