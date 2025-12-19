@@ -693,6 +693,150 @@
   -webkit-line-clamp: 4;
 }
 
+/* ============================================
+   POLAROID IMAGE STYLES - Professional fintech aesthetic
+   ============================================ */
+
+/* Pulsating navy shadow for images */
+@keyframes pulse-navy-glow {
+  0%, 100% {
+    box-shadow: 
+      0 4px 20px rgba(31, 60, 88, 0.15),
+      0 0 40px rgba(31, 60, 88, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 8px 40px rgba(31, 60, 88, 0.25),
+      0 0 60px rgba(31, 60, 88, 0.15);
+  }
+}
+
+@keyframes pulse-navy-border {
+  0%, 100% {
+    border-color: rgba(31, 60, 88, 0.1);
+  }
+  50% {
+    border-color: rgba(31, 60, 88, 0.25);
+  }
+}
+
+/* Subtle floating animation for images */
+@keyframes gentle-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Image container with pulsating effect */
+.polaroid-image {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  animation: pulse-navy-glow 4s ease-in-out infinite;
+  border: 3px solid rgba(31, 60, 88, 0.1);
+  background: white;
+}
+
+.polaroid-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 3px;
+  background: linear-gradient(135deg, rgba(31, 60, 88, 0.1), transparent, rgba(31, 60, 88, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: pulse-navy-border 4s ease-in-out infinite;
+}
+
+.polaroid-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease-out;
+}
+
+.polaroid-image:hover img {
+  transform: scale(1.02);
+}
+
+/* Floating variant */
+.polaroid-image.floating {
+  animation: pulse-navy-glow 4s ease-in-out infinite, gentle-float 6s ease-in-out infinite;
+}
+
+/* Larger glow variant */
+.polaroid-image.glow-strong {
+  animation-name: pulse-navy-glow-strong;
+}
+
+@keyframes pulse-navy-glow-strong {
+  0%, 100% {
+    box-shadow: 
+      0 8px 30px rgba(31, 60, 88, 0.2),
+      0 0 60px rgba(31, 60, 88, 0.15);
+  }
+  50% {
+    box-shadow: 
+      0 16px 60px rgba(31, 60, 88, 0.35),
+      0 0 90px rgba(31, 60, 88, 0.2);
+  }
+}
+
+/* Hero image special treatment */
+.hero-image {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  animation: pulse-navy-glow-strong 4s ease-in-out infinite;
+  border: 4px solid rgba(31, 60, 88, 0.08);
+  background: white;
+  box-shadow: 0 20px 60px rgba(31, 60, 88, 0.2);
+}
+
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Tilted polaroid style */
+.polaroid-tilted {
+  transform: rotate(-2deg);
+  transition: all 0.4s ease-out;
+}
+
+.polaroid-tilted:hover {
+  transform: rotate(0deg) scale(1.02);
+}
+
+.polaroid-tilted-right {
+  transform: rotate(2deg);
+  transition: all 0.4s ease-out;
+}
+
+.polaroid-tilted-right:hover {
+  transform: rotate(0deg) scale(1.02);
+}
+
+/* Grid image layout */
+.image-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .image-grid-3 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 /* Hero wave animations */
 @keyframes wave-slide {
   0% {

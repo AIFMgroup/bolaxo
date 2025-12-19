@@ -123,14 +123,25 @@ export default function KomIgangPage() {
   const selectedUserType = userTypes.find(t => t.id === selectedType)
 
   return (
-    <main className="bg-neutral-white min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-navy/10 to-accent-pink/10 py-16 sm:py-24">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-navy mb-4">
+    <main className="bg-white min-h-screen">
+      {/* Hero Section med bakgrundsbild */}
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/polaroid/premium_photo-1713981170233-8def6a2faea7.jpg"
+            alt="Kom igång med Afterfounder"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/60" />
+        </div>
+        
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
             Välkommen till Afterfounder
           </h1>
-          <p className="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
             Sveriges moderna marknadsplats för företagsöverlåtelser. Vi guidar dig genom hela processen.
           </p>
         </div>

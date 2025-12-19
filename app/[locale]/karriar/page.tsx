@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { MapPin, Briefcase, Clock, Users, Heart, Target, Zap, Award, ArrowRight } from 'lucide-react'
 
 interface JobPosition {
@@ -158,28 +159,39 @@ export default function CareerPage() {
   )
 
   return (
-    <main className="min-h-screen bg-background-off-white">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-blue via-primary-blue to-blue-800 text-white py-6 sm:py-8 md:py-12">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+    <main className="min-h-screen bg-white">
+      {/* Hero Section med bakgrundsbild */}
+      <section className="relative min-h-[60vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/polaroid/premium_photo-1713980018323-255e2eb4cfef.jpg"
+            alt="Karriär på Afterfounder"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/60" />
+        </div>
+        
+        <div className="relative z-10 max-w-6xl mx-auto px-4 text-center py-20">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
             Bygg framtiden med oss
           </h1>
-          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl mb-8 text-white/80 max-w-2xl mx-auto">
             Vi revolutionerar hur företag köps och säljs. Bli en del av vår resa och 
             hjälp tusentals entreprenörer att ta nästa steg.
           </p>
-          <div className="flex flex-wrap justify-center gap-4 text-lg">
+          <div className="flex flex-wrap justify-center gap-6 text-lg text-white/70">
             <div className="flex items-center">
-              <Users className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <Users className="w-5 h-5 mr-2" />
               <span>15+ medarbetare</span>
             </div>
             <div className="flex items-center">
-              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <MapPin className="w-5 h-5 mr-2" />
               <span>Stockholm & Remote</span>
             </div>
             <div className="flex items-center">
-              <Zap className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <Zap className="w-5 h-5 mr-2" />
               <span>Snabbväxande startup</span>
             </div>
           </div>
@@ -365,30 +377,51 @@ export default function CareerPage() {
       </section>
 
       {/* Culture Section */}
-      <section className="py-6 sm:py-8 md:py-12 bg-white">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4">
+      <section className="py-16 md:py-24 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="heading-2 mb-4">Vår kultur</h2>
-            <p className="text-lg text-text-gray max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Vår kultur</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Vi tror på transparens, tillit och att ha kul på jobbet. 
               Här är några bilder från vardagen.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
-            <div className="aspect-square bg-gradient-to-br from-light-blue to-primary-blue/20 rounded-2xl"></div>
-            <div className="aspect-square bg-gradient-to-br from-primary-blue/20 to-light-blue rounded-2xl"></div>
-            <div className="aspect-square bg-gradient-to-br from-light-blue to-primary-blue/20 rounded-2xl"></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="polaroid-image floating aspect-square rounded-2xl overflow-hidden">
+              <Image
+                src="/polaroid/premium_photo-1712933121311-dcdc41d9fb17.jpg"
+                alt="Vår kultur"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="polaroid-image floating aspect-square rounded-2xl overflow-hidden" style={{ animationDelay: '1s' }}>
+              <Image
+                src="/polaroid/premium_photo-1713041546655-8a12addf9ab8.jpg"
+                alt="Teamet"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="polaroid-image floating aspect-square rounded-2xl overflow-hidden" style={{ animationDelay: '2s' }}>
+              <Image
+                src="/polaroid/premium_photo-1713183390322-807e6bcd84c6.jpg"
+                alt="Kontoret"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
 
           <div className="mt-12 text-center">
-            <p className="text-text-gray mb-4">Följ vår resa</p>
+            <p className="text-gray-600 mb-4">Följ vår resa</p>
             <div className="flex justify-center gap-4">
-              <a href="#" className="text-primary-blue hover:underline">LinkedIn</a>
-              <span className="text-text-gray">•</span>
-              <a href="#" className="text-primary-blue hover:underline">Instagram</a>
-              <span className="text-text-gray">•</span>
-              <a href="#" className="text-primary-blue hover:underline">Blog</a>
+              <a href="#" className="text-navy hover:underline">LinkedIn</a>
+              <span className="text-gray-400">•</span>
+              <a href="#" className="text-navy hover:underline">Instagram</a>
+              <span className="text-gray-400">•</span>
+              <a href="#" className="text-navy hover:underline">Blog</a>
             </div>
           </div>
         </div>

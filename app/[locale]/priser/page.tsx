@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useLocale } from 'next-intl'
 import { 
   Check, 
@@ -63,27 +64,36 @@ export default function PriserPage() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Hero */}
-      <section className="bg-navy text-white pt-32 pb-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white">
-              Transparent prissättning
-            </h1>
-            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
-              Gratis för köpare. Fasta månadsavgifter för säljare. Inga dolda avgifter eller success fees.
-            </p>
-            <div className="flex flex-wrap gap-3 mt-8 justify-center">
-              <span className="px-4 py-2 bg-white text-navy font-semibold rounded-full text-sm">
-                Gratis för köpare
-              </span>
-              <span className="px-4 py-2 bg-white/10 text-white/80 rounded-full text-sm">
-                Inga success fees
-              </span>
-              <span className="px-4 py-2 bg-white/10 text-white/80 rounded-full text-sm">
-                Ingen bindningstid
-              </span>
-            </div>
+      {/* Hero med bakgrundsbild */}
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/polaroid/premium_photo-1713539604721-17578c76cfe1.jpg"
+            alt="Priser"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-navy/75" />
+        </div>
+        
+        <div className="relative z-10 max-w-6xl mx-auto px-4 py-20 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white">
+            Transparent prissättning
+          </h1>
+          <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
+            Gratis för köpare. Fasta månadsavgifter för säljare. Inga dolda avgifter eller success fees.
+          </p>
+          <div className="flex flex-wrap gap-3 mt-8 justify-center">
+            <span className="px-4 py-2 bg-white text-navy font-semibold rounded-full text-sm">
+              Gratis för köpare
+            </span>
+            <span className="px-4 py-2 bg-white/10 backdrop-blur-sm text-white/90 rounded-full text-sm border border-white/20">
+              Inga success fees
+            </span>
+            <span className="px-4 py-2 bg-white/10 backdrop-blur-sm text-white/90 rounded-full text-sm border border-white/20">
+              Ingen bindningstid
+            </span>
           </div>
         </div>
       </section>
@@ -638,9 +648,19 @@ export default function PriserPage() {
         )}
       </div>
 
-      {/* Bottom CTA */}
-      <section className="bg-navy text-white py-16">
-        <div className="max-w-3xl mx-auto px-4 text-center">
+      {/* Bottom CTA med bakgrundsbild */}
+      <section className="relative py-20 overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/polaroid/premium_photo-1712612245294-e9d28aee57cb.jpg"
+            alt="Kom igång"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-navy/90" />
+        </div>
+        
+        <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4 text-white">Redo att komma igång?</h2>
           <p className="text-white/80 mb-8">
             Köpare börjar gratis. Säljare väljer mellan Standard och Premium.
@@ -655,7 +675,7 @@ export default function PriserPage() {
             </Link>
             <Link
               href={`/${locale}/salja/skapa-annons`}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 text-white font-bold rounded-full hover:bg-white/20 transition-colors border border-white/20"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-bold rounded-full hover:bg-white/20 transition-colors border border-white/20"
             >
               <Building2 className="w-5 h-5" />
               Skapa annons

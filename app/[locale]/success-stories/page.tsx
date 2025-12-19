@@ -1,16 +1,30 @@
+'use client'
+
+import Image from 'next/image'
 import Link from 'next/link'
 import { BarChart3, CheckCircle, DollarSign } from 'lucide-react'
 
 export default function SuccessStoriesPage() {
   return (
-    <main className="bg-neutral-white">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-navy/10 to-accent-pink/10 py-20 sm:py-32">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl sm:text-6xl font-bold text-primary-navy mb-6 uppercase">
+    <main className="bg-white">
+      {/* Hero Section med bakgrundsbild */}
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/polaroid/premium_photo-1712313711204-e1d28cc361fa.jpg"
+            alt="Success Stories"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/60" />
+        </div>
+        
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 uppercase">
             Success Stories
           </h1>
-          <p className="text-2xl text-primary-navy leading-relaxed">
+          <p className="text-xl md:text-2xl text-white/80 leading-relaxed max-w-2xl mx-auto">
             Verkliga berättelser från företagare som sålt sina företag via Afterfounder
           </p>
         </div>
@@ -91,23 +105,32 @@ export default function SuccessStoriesPage() {
               </div>
             </div>
 
-            {/* Stats Sidebar */}
-            <div className="bg-gradient-to-br from-primary-navy/5 to-accent-pink/5 p-10 lg:p-12 flex flex-col justify-center">
-              <div className="space-y-8">
+            {/* Stats Sidebar with Image */}
+            <div className="relative p-10 lg:p-12 flex flex-col justify-center">
+              <div className="absolute inset-0">
+                <Image
+                  src="/polaroid/premium_photo-1712612245469-38f90696fa4f.jpg"
+                  alt="Statistik"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-navy/90 to-navy/80" />
+              </div>
+              <div className="relative z-10 space-y-8">
                 <div>
-                  <div className="text-5xl font-bold text-primary-navy mb-2">14</div>
-                  <div className="text-xl font-semibold text-primary-navy mb-1">MSEK</div>
-                  <p className="text-gray-600">Försäljningspris</p>
+                  <div className="text-5xl font-bold text-white mb-2">14</div>
+                  <div className="text-xl font-semibold text-white/80 mb-1">MSEK</div>
+                  <p className="text-white/60">Försäljningspris</p>
                 </div>
                 <div>
-                  <div className="text-5xl font-bold text-primary-navy mb-2">45</div>
-                  <div className="text-xl font-semibold text-primary-navy mb-1">dagar</div>
-                  <p className="text-gray-600">Från annons till avslut</p>
+                  <div className="text-5xl font-bold text-white mb-2">45</div>
+                  <div className="text-xl font-semibold text-white/80 mb-1">dagar</div>
+                  <p className="text-white/60">Från annons till avslut</p>
                 </div>
                 <div>
-                  <div className="text-5xl font-bold text-primary-navy mb-2">3</div>
-                  <div className="text-xl font-semibold text-primary-navy mb-1">veckor</div>
-                  <p className="text-gray-600">Till första erbjudande</p>
+                  <div className="text-5xl font-bold text-white mb-2">3</div>
+                  <div className="text-xl font-semibold text-white/80 mb-1">veckor</div>
+                  <p className="text-white/60">Till första erbjudande</p>
                 </div>
               </div>
             </div>
@@ -181,25 +204,36 @@ export default function SuccessStoriesPage() {
           </div>
         </div>
 
-        {/* Statistics */}
-        <div className="bg-primary-navy text-white rounded-2xl p-12 text-center">
-          <h2 className="text-4xl font-bold mb-12 uppercase">Samlad statistik</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <div className="text-5xl font-bold text-accent-pink mb-2">580M</div>
-              <p className="text-lg text-gray-300">Totalt transaktionsvärde</p>
-            </div>
-            <div>
-              <div className="text-5xl font-bold text-accent-pink mb-2">74</div>
-              <p className="text-lg text-gray-300">Genomsnittlig försäljningstid (dagar)</p>
-            </div>
-            <div>
-              <div className="text-5xl font-bold text-accent-pink mb-2">8.2</div>
-              <p className="text-lg text-gray-300">NDA-förfrågningar per annons</p>
-            </div>
-            <div>
-              <div className="text-5xl font-bold text-accent-pink mb-2">92%</div>
-              <p className="text-lg text-gray-300">Nöjda säljare (4.6/5)</p>
+        {/* Statistics med bakgrundsbild */}
+        <div className="relative rounded-2xl p-12 text-center overflow-hidden">
+          <div className="absolute inset-0">
+            <Image
+              src="/polaroid/premium_photo-1729262342290-bf3cd5cb6cfa.jpg"
+              alt="Statistik bakgrund"
+              fill
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-navy/90" />
+          </div>
+          <div className="relative z-10">
+            <h2 className="text-4xl font-bold mb-12 uppercase text-white">Samlad statistik</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div>
+                <div className="text-5xl font-bold text-accent-pink mb-2">580M</div>
+                <p className="text-lg text-white/70">Totalt transaktionsvärde</p>
+              </div>
+              <div>
+                <div className="text-5xl font-bold text-accent-pink mb-2">74</div>
+                <p className="text-lg text-white/70">Genomsnittlig försäljningstid (dagar)</p>
+              </div>
+              <div>
+                <div className="text-5xl font-bold text-accent-pink mb-2">8.2</div>
+                <p className="text-lg text-white/70">NDA-förfrågningar per annons</p>
+              </div>
+              <div>
+                <div className="text-5xl font-bold text-accent-pink mb-2">92%</div>
+                <p className="text-lg text-white/70">Nöjda säljare (4.6/5)</p>
+              </div>
             </div>
           </div>
         </div>

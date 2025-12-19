@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { ChevronDown, HelpCircle, Users, Shield, CreditCard, FileText } from 'lucide-react'
 import { generateFAQStructuredData } from '@/lib/structured-data'
 import { useTranslations, useLocale } from 'next-intl'
@@ -115,12 +116,23 @@ export default function FAQPage() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-neutral-white">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-navy/10 to-accent-pink/10 py-20 sm:py-32">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl sm:text-6xl font-bold text-primary-navy mb-6">{t('title')}</h1>
-          <p className="text-2xl text-primary-navy leading-relaxed">
+    <main className="min-h-screen bg-white">
+      {/* Hero med bakgrundsbild */}
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/polaroid/premium_photo-1712171314766-4087f2e84711.jpg"
+            alt="FAQ"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/60" />
+        </div>
+        
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">{t('title')}</h1>
+          <p className="text-xl md:text-2xl text-white/80 leading-relaxed max-w-2xl mx-auto">
             {t('subtitle')}
           </p>
         </div>

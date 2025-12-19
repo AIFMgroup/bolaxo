@@ -299,12 +299,22 @@ function LoginForm() {
             </div>
           </div>
 
-          {/* Right Side - Info */}
+          {/* Right Side - Info with Image */}
           <div className="hidden lg:block">
             <div className="space-y-8">
+              {/* Polaroid Image */}
+              <div className="polaroid-image glow-strong aspect-[4/3] rounded-2xl overflow-hidden mb-8">
+                <Image
+                  src="/polaroid/premium_photo-1712204394870-e5dc510d0e89.jpg"
+                  alt="Säker inloggning"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              
               {/* Security Features */}
               <div>
-                <h2 className="text-3xl font-bold text-primary-navy mb-6">Säker inloggning utan lösenord</h2>
+                <h2 className="text-2xl font-bold text-primary-navy mb-6">Säker inloggning utan lösenord</h2>
                 <div className="space-y-4">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-accent-pink/10 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -334,17 +344,6 @@ function LoginForm() {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Trust Indicators */}
-              <div className="bg-primary-navy/5 p-8 rounded-2xl">
-                <div className="flex items-center gap-3 mb-4">
-                  <Lock className="w-5 h-5 text-primary-navy" />
-                  <h3 className="font-bold text-primary-navy">Bank-nivå säkerhet</h3>
-                </div>
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  Alla dina uppgifter är krypterade och säkert lagrade. Vi använder samma säkerhetsstandarder som banker och finansiella institutioner.
-                </p>
               </div>
             </div>
           </div>

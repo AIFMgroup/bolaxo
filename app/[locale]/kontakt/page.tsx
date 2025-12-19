@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import Image from 'next/image'
 import { Mail, Phone, MapPin, Clock, CheckCircle2, Calendar, User, ShoppingCart, DollarSign, Handshake, HelpCircle, ChevronDown, X } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 
@@ -162,11 +163,25 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-white">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-navy/10 to-accent-pink/10 py-20 sm:py-32">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl sm:text-6xl font-bold text-primary-navy mb-6">{t('title').toUpperCase()}</h1>
+    <main className="min-h-screen bg-white">
+      {/* Hero med bakgrundsbild */}
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/polaroid/premium_photo-1713887090765-5fb598f7ca9d.jpg"
+            alt="Kontakta oss"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/60" />
+        </div>
+        
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">{t('title').toUpperCase()}</h1>
+          <p className="text-xl text-white/80 max-w-xl mx-auto">
+            Vi hjälper dig gärna med frågor om köp eller försäljning av företag
+          </p>
         </div>
       </section>
 
