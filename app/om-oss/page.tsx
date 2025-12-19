@@ -64,50 +64,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team */}
-      <section className="py-24 bg-neutral-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-primary-navy mb-6">Teamet bakom Afterfounder</h2>
-            <p className="text-xl text-primary-navy">
-              Erfarna entreprenörer och tech-builders med passion för M&A
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: 'Erik Andersson',
-                title: 'Grundare & VD',
-                desc: '15+ år inom M&A och PE. Tidigare Investment Manager på Investor AB.',
-                initials: 'EA'
-              },
-              {
-                name: 'Sara Bergström',
-                title: 'CTO',
-                desc: 'Tech entrepreneur med 12 år erfarenhet. Tidigare Senior Tech Lead på iZettle.',
-                initials: 'SB'
-              },
-              {
-                name: 'David Lundström',
-                title: 'CFO',
-                desc: 'Finansanalytiker. 10 år på Goldman Sachs. Expert på värderingsmodeller.',
-                initials: 'DL'
-              }
-            ].map((member, idx) => (
-              <div key={idx} className="bg-neutral-off-white p-10 rounded-lg border border-gray-200 text-center">
-                <div className="w-20 h-20 bg-accent-pink/10 rounded-lg flex items-center justify-center mx-auto mb-6 text-2xl font-bold text-accent-pink">
-                  {member.initials}
-                </div>
-                <h3 className="text-xl font-bold text-primary-navy mb-1">{member.name}</h3>
-                <div className="text-sm font-semibold text-primary-navy mb-4">{member.title}</div>
-                <p className="text-gray-700">{member.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Values */}
       <section className="py-24 bg-accent-pink">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

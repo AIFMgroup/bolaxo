@@ -8,29 +8,23 @@ export default function AboutPage() {
   const t = useTranslations('about')
   const locale = useLocale()
   
-  const teamMembers = t.raw('team')
   const values = t.raw('values')
-  
-  // Map team member images
-  const teamImages = [
-    '/polaroid/premium_photo-1712852503914-e892c988df70.jpg',
-    '/polaroid/premium_photo-1712418419981-86f289e68598.jpg',
-    '/polaroid/premium_photo-1713399247260-3b9c4f2c4575.jpg'
-  ]
   
   return (
     <main className="bg-white">
       {/* Hero med bakgrundsbild */}
-      <section className="relative min-h-[60vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src="/polaroid/premium_photo-1712016875079-5c42a61067e2.jpg"
             alt="Om Afterfounder"
             fill
-            className="object-cover"
+            className="object-cover opacity-40"
             priority
+            sizes="100vw"
+            quality={60}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/60" />
+          <div className="absolute inset-0 bg-navy/70" />
         </div>
         
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20">
@@ -49,12 +43,14 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Mission */}
             <div className="group">
-              <div className="polaroid-image aspect-video mb-8 overflow-hidden">
+              <div className="relative aspect-video mb-8 overflow-hidden rounded-xl shadow-lg">
                 <Image
                   src="/polaroid/premium_photo-1711984441590-2de9543b4ae2.jpg"
                   alt="Vår mission"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  quality={65}
                 />
               </div>
               <div className="flex items-start gap-4">
@@ -72,12 +68,14 @@ export default function AboutPage() {
 
             {/* Vision */}
             <div className="group">
-              <div className="polaroid-image aspect-video mb-8 overflow-hidden">
+              <div className="relative aspect-video mb-8 overflow-hidden rounded-xl shadow-lg">
                 <Image
                   src="/polaroid/premium_photo-1712000450367-08f949135a62.jpg"
                   alt="Vår vision"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  quality={65}
                 />
               </div>
               <div className="flex items-start gap-4">
@@ -116,48 +114,17 @@ export default function AboutPage() {
             </div>
             
             <div className="order-1 lg:order-2">
-              <div className="polaroid-image glow-strong aspect-square rounded-3xl overflow-hidden">
+              <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
                 <Image
                   src="/polaroid/premium_photo-1712171314341-d427afbf66b5.jpg"
                   alt="Varför vi startade"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  quality={65}
                 />
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Team med bilder */}
-      <section className="py-20 md:py-28 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-navy mb-6">{t('teamTitle')}</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              {t('teamSubtitle')}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {teamMembers.map((member: any, idx: number) => (
-              <div key={idx} className="group">
-                <div className="polaroid-image floating aspect-[3/4] rounded-2xl overflow-hidden mb-6" style={{ animationDelay: `${idx * 0.5}s` }}>
-                  <Image
-                    src={teamImages[idx] || teamImages[0]}
-                    alt={member.name}
-                    fill
-                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                <div className="text-center">
-                  <h3 className="text-xl font-bold text-navy mb-1">{member.name}</h3>
-                  <div className="text-sm font-semibold text-navy/60 mb-3">{member.title}</div>
-                  <p className="text-gray-600">{member.desc}</p>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -169,9 +136,11 @@ export default function AboutPage() {
             src="/polaroid/premium_photo-1712016875086-6af5b078671f.jpg"
             alt="Våra värderingar"
             fill
-            className="object-cover"
+            className="object-cover opacity-30"
+            sizes="100vw"
+            quality={50}
           />
-          <div className="absolute inset-0 bg-navy/90" />
+          <div className="absolute inset-0 bg-navy/80" />
         </div>
         
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -198,12 +167,14 @@ export default function AboutPage() {
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="polaroid-image glow-strong aspect-video rounded-3xl overflow-hidden">
+            <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl">
               <Image
                 src="/polaroid/premium_photo-1713980018081-ce8029f61463.jpg"
                 alt="Pactior Group"
                 fill
                 className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                quality={65}
               />
             </div>
             
