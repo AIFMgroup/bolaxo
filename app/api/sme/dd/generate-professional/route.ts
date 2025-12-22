@@ -10,7 +10,7 @@ export async function GET(req: NextRequest): Promise<Response> {
         margins: { top: 72, bottom: 72, left: 72, right: 72 },
         info: {
           Title: 'Due Diligence Report - TechVision AB',
-          Author: 'Bolagsportalen M&A Platform',
+          Author: 'BOLAXO',
           Subject: 'Comprehensive Due Diligence Analysis'
         }
       })

@@ -1,8 +1,8 @@
-# Bolagsportalen Admin API - Production Documentation
+# BOLAXO Admin API - Production Documentation
 
 ## 🚀 Overview
 
-The Bolagsportalen Admin API is a production-ready REST API for managing the platform's admin dashboard. All endpoints are protected, rate-limited, and optimized for performance.
+The BOLAXO Admin API is a production-ready REST API for managing the platform's admin dashboard. All endpoints are protected, rate-limited, and optimized for performance.
 
 **Base URL:** `https://bolaxo-production.up.railway.app/api`
 
@@ -517,6 +517,6 @@ https://bolaxo-production.up.railway.app/api/swagger-ui
 ## 📞 Support
 
 For API issues or questions:
-- Email: support@bolagsportalen.se
+- Email: support@bolaxo.se
 - Documentation: `/api/swagger-ui`
 - Status: Check `/api/admin/dashboard-stats` for system health

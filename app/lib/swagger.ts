@@ -1,11 +1,11 @@
 export const swaggerConfig = {
   openapi: '3.0.0',
   info: {
-    title: 'Bolagsportalen Admin API',
+    title: 'BOLAXO Admin API',
     description: 'Production-ready REST API for admin dashboard',
     version: '1.0.0',
     contact: {
-      name: 'Bolagsportalen Support',
+      name: 'BOLAXO Support',
       email: 'support@bolagsportalen.se'
     }
   },
@@ -234,7 +234,7 @@ export function generateSwaggerHTML() {
     <!DOCTYPE html>
     <html>
       <head>
-        <title>Bolagsportalen Admin API Documentation</title>
+        <title>BOLAXO Admin API Documentation</title>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4/swagger-ui.css">

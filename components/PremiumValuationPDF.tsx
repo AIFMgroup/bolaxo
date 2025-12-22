@@ -391,7 +391,7 @@ const PremiumValuationPDF: React.FC<PremiumValuationPDFProps> = ({
         <View style={styles.footer}>
           <Text>
             Detta dokument är konfidentiellt och endast för intern användning.
-            © {new Date().getFullYear()} Bolagsportalen. Alla rättigheter förbehållna.
+            © {new Date().getFullYear()} BOLAXO. Alla rättigheter förbehållna.
           </Text>
         </View>
 
