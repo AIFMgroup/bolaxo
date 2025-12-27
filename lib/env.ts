@@ -42,8 +42,9 @@ export function assertProdEnv(): void {
   // Core runtime: without DB we can't serve most authenticated flows.
   requireEnv('DATABASE_URL')
 
-  // Cron endpoints must be protected.
-  requireEnv('CRON_SECRET')
+  // Cron endpoints are protected by CRON_SECRET, but CRON is optional.
+  // If CRON_SECRET is missing, cron endpoints will reject requests (401),
+  // but the app should still be able to boot and serve normal traffic.
 }
 
 
