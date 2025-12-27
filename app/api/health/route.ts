@@ -13,6 +13,7 @@ type HealthResponse = {
   }
   details?: {
     envMissing?: string[]
+    envMissingOptional?: string[]
     dbError?: string
   }
 }
@@ -25,10 +26,13 @@ function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
 }
 
 export async function GET() {
+  // Healthcheck should be strict only about truly critical runtime env vars.
+  // Optional env vars should not make the service "unhealthy" in Railway.
   const missing: string[] = []
+  const missingOptional: string[] = []
   if (!getEnv('JWT_SECRET')) missing.push('JWT_SECRET')
   if (!getEnv('DATABASE_URL')) missing.push('DATABASE_URL')
-  if (!getEnv('CRON_SECRET')) missing.push('CRON_SECRET')
+  if (!getEnv('CRON_SECRET')) missingOptional.push('CRON_SECRET')
 
   const envOk = missing.length === 0
 
@@ -59,6 +63,7 @@ export async function GET() {
       : {
           details: {
             ...(missing.length ? { envMissing: missing } : {}),
+            ...(missingOptional.length ? { envMissingOptional: missingOptional } : {}),
             ...(!dbOk ? { dbError } : {}),
           },
         }),
