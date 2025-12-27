@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createNotification } from '@/lib/notifications'
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
-// GET /api/notifications?userId=
+// GET /api/notifications
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('userId')
+    const userId = getAuthenticatedUserId(request)
 
     if (!userId) {
       return NextResponse.json({ notifications: [], unreadCount: 0 })
@@ -72,8 +72,9 @@ export async function POST(request: NextRequest) {
 // PATCH /api/notifications - Mark as read
 export async function PATCH(request: NextRequest) {
   try {
+    const userId = getAuthenticatedUserId(request)
     const body = await request.json()
-    const { notificationIds, userId } = body
+    const { notificationIds } = body
 
     if (!Array.isArray(notificationIds) || !userId) {
       return NextResponse.json({ success: false }, { status: 400 })

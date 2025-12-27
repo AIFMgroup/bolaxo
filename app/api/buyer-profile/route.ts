@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 const prisma = new PrismaClient()
 
 // GET - Hämta köparprofil
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('userId')
+    const userId = getAuthenticatedUserId(request)
 
     if (!userId) {
       // Return success with null profile for new users
@@ -41,9 +41,9 @@ export async function GET(request: NextRequest) {
 // POST - Skapa eller uppdatera köparprofil
 export async function POST(request: NextRequest) {
   try {
+    const userId = getAuthenticatedUserId(request)
     const body = await request.json()
     const {
-      userId,
       preferredRegions,
       preferredIndustries,
       preferredEmployeeRanges,
@@ -115,13 +115,12 @@ export async function POST(request: NextRequest) {
 // DELETE - Ta bort köparprofil
 export async function DELETE(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('userId')
+    const userId = getAuthenticatedUserId(request)
 
     if (!userId) {
       return NextResponse.json(
-        { error: 'userId krävs' },
-        { status: 400 }
+        { error: 'Autentisering krävs' },
+        { status: 401 }
       )
     }
 

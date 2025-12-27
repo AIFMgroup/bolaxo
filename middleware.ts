@@ -2,14 +2,12 @@ import createMiddleware from 'next-intl/middleware'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { jwtVerify } from 'jose'
+import { IS_PROD, getEnv } from '@/lib/env'
 
 // Use the same secret as admin-auth.ts
-const JWT_SECRET = process.env.JWT_SECRET
-// In middleware, we can't throw errors - just log warning if missing
-if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
-  console.error('CRITICAL: JWT_SECRET environment variable is required in production!')
-}
-const secret = new TextEncoder().encode(JWT_SECRET || 'dev-only-insecure-key')
+const JWT_SECRET = getEnv('JWT_SECRET')
+// In middleware (edge), prefer to fail closed for protected routes if misconfigured.
+const secret = JWT_SECRET ? new TextEncoder().encode(JWT_SECRET) : null
 
 // Create next-intl middleware
 const intlMiddleware = createMiddleware({
@@ -34,6 +32,13 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const cookieUserId = request.cookies.get('bolaxo_user_id')?.value
   const cookieUserRole = request.cookies.get('bolaxo_user_role')?.value
+
+  // Block any dev-only routes in production.
+  if (IS_PROD && (pathname === '/dev-login' || pathname.startsWith('/dev-login/'))) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/sv'
+    return NextResponse.redirect(url, 308)
+  }
   
   // Explicit redirect from root to /sv
   if (pathname === '/') {
@@ -50,9 +55,21 @@ export async function middleware(request: NextRequest) {
     // Extract current locale
     const currentLocale = pathname.split('/')[1]
     const isDashboard = pathname.startsWith(`/${currentLocale}/dashboard`)
+
+    if (IS_PROD && pathname === `/${currentLocale}/dev-login`) {
+      const url = request.nextUrl.clone()
+      url.pathname = `/${currentLocale}`
+      return NextResponse.redirect(url, 308)
+    }
     
     // Handle admin routes first
     if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+      if (IS_PROD && !secret) {
+        return NextResponse.json(
+          { error: 'Server misconfigured: JWT_SECRET is missing' },
+          { status: 503 }
+        )
+      }
       const adminToken = request.cookies.get('adminToken')?.value
       
       if (!adminToken) {
@@ -60,6 +77,7 @@ export async function middleware(request: NextRequest) {
       }
 
       try {
+        if (!secret) throw new Error('JWT secret missing')
         await jwtVerify(adminToken, secret)
       } catch (err) {
         const loginUrl = new URL('/admin/login', request.url)

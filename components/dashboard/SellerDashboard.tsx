@@ -73,7 +73,9 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
           buyerName: 'Intresserad köpare'
         })))
       } else {
-        const listingsRes = await fetch(`/api/listings?userId=${userId}`)
+        const listingsRes = await fetch(`/api/listings`, {
+          credentials: 'include'
+        })
         if (listingsRes.ok) {
           const data = await listingsRes.json()
           if (data.length > 0) {
@@ -81,13 +83,17 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
           }
         }
 
-        const ndaRes = await fetch(`/api/nda-requests?userId=${userId}&role=seller`)
+        const ndaRes = await fetch(`/api/nda-requests`, {
+          credentials: 'include'
+        })
         if (ndaRes.ok) {
           const data = await ndaRes.json()
           setNdaRequests(data.requests || [])
         }
 
-        const msgRes = await fetch(`/api/messages?userId=${userId}`)
+        const msgRes = await fetch(`/api/messages`, {
+          credentials: 'include'
+        })
         if (msgRes.ok) {
           const data = await msgRes.json()
           setMessages(data.messages || [])
@@ -124,6 +130,7 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
       const response = await fetch('/api/nda-requests', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ id: ndaId, status })
       })
       

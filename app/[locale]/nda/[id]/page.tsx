@@ -25,8 +25,7 @@ export default function NDASigningPage() {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const url = `/api/listings/${objectId}${user?.id ? `?userId=${user.id}` : ''}`
-        const response = await fetch(url)
+        const response = await fetch(`/api/listings/${objectId}`, { credentials: 'include' })
         if (response.ok) {
           const data = await response.json()
           setObject(data)
@@ -170,10 +169,9 @@ export default function NDASigningPage() {
       const ndaResponse = await fetch('/api/nda-requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           listingId: objectId,
-          buyerId: user.id,
-          sellerId: listing.userId,
           message: interestReason || t('defaultInterest')
         })
       })

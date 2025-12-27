@@ -67,7 +67,9 @@ export default function SearchPageContent() {
       }
 
       try {
-        const response = await fetch(`/api/buyer-profile?userId=${user.id}`)
+        const response = await fetch(`/api/buyer-profile`, {
+          credentials: 'include'
+        })
         if (!response.ok) {
           info('Du behöver slutföra din profil innan du kan söka')
           router.push('/kopare/start')
@@ -101,10 +103,9 @@ export default function SearchPageContent() {
 
     const fetchListings = async () => {
       try {
-        const url = user?.id 
-          ? `/api/listings?status=active&currentUserId=${user.id}`
-          : '/api/listings?status=active'
-        const response = await fetch(url)
+        const response = await fetch('/api/listings?status=active', {
+          credentials: 'include'
+        })
         if (response.ok) {
           const listings = await response.json()
           
@@ -163,7 +164,9 @@ export default function SearchPageContent() {
       if (!user?.id) return
 
       try {
-        const response = await fetch(`/api/buyer-profile?userId=${user.id}`)
+        const response = await fetch(`/api/buyer-profile`, {
+          credentials: 'include'
+        })
         if (response.ok) {
           const data = await response.json()
           const profile = data.profile
@@ -370,6 +373,7 @@ export default function SearchPageContent() {
           await fetch('/api/buyer-profile', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({
               userId: user.id,
               preferredRegions: filters.locations,

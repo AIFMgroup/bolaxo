@@ -2,23 +2,34 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { sendNewNDARequestEmail } from '@/lib/email'
 import { createNotification } from '@/lib/notifications'
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 // GET /api/nda-requests?listingId=&buyerId=&sellerId=&status=
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const listingId = searchParams.get('listingId') || undefined
-    const buyerId = searchParams.get('buyerId') || undefined
-    const sellerId = searchParams.get('sellerId') || undefined
     const status = searchParams.get('status') || undefined
-    const userId = searchParams.get('userId') || undefined
-    const role = searchParams.get('role') || undefined
+    const viewerId = getAuthenticatedUserId(request)
+
+    if (!viewerId) {
+      return NextResponse.json({ requests: [] }, { status: 401 })
+    }
+
+    const viewer = await prisma.user.findUnique({
+      where: { id: viewerId },
+      select: { id: true, role: true }
+    })
+
+    const isPrivileged = viewer?.role === 'admin' || viewer?.role === 'broker'
 
     const where: any = {}
     if (listingId) where.listingId = listingId
-    if (buyerId) where.buyerId = buyerId
-    if (sellerId) where.sellerId = sellerId
     if (status) where.status = status
+    // Only allow the viewer to list their own NDA requests unless privileged.
+    if (!isPrivileged) {
+      where.OR = [{ buyerId: viewerId }, { sellerId: viewerId }]
+    }
 
     try {
       const requests = await prisma.nDARequest.findMany({
@@ -96,17 +107,38 @@ export async function GET(request: NextRequest) {
 // POST /api/nda-requests -> create NDA request
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { listingId, buyerId, sellerId, message, buyerProfile } = body
+    const viewerId = getAuthenticatedUserId(request)
+    if (!viewerId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+    }
 
-    if (!listingId || !buyerId || !sellerId) {
+    const body = await request.json()
+    const { listingId, message, buyerProfile } = body
+
+    if (!listingId) {
       return NextResponse.json(
-        { error: 'Missing required fields: listingId, buyerId, sellerId' },
+        { error: 'Missing required fields: listingId' },
         { status: 400 }
       )
     }
 
     try {
+      // Derive seller from listing owner (source of truth).
+      const listing = await prisma.listing.findUnique({
+        where: { id: listingId },
+        select: { id: true, userId: true, anonymousTitle: true, companyName: true }
+      })
+      if (!listing) {
+        return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
+      }
+
+      const buyerId = viewerId
+      const sellerId = listing.userId
+
+      if (buyerId === sellerId) {
+        return NextResponse.json({ error: 'Du kan inte begära NDA på ditt eget objekt' }, { status: 400 })
+      }
+
       // Check for existing NDA request (pending or approved)
       const existing = await prisma.nDARequest.findFirst({
         where: {
@@ -227,6 +259,11 @@ export async function POST(request: NextRequest) {
 // PATCH /api/nda-requests -> update status (legacy - use /api/nda-requests/[id] instead)
 export async function PATCH(request: NextRequest) {
   try {
+    const viewerId = getAuthenticatedUserId(request)
+    if (!viewerId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+    }
+
     const body = await request.json()
     const { id, status } = body
 
@@ -253,6 +290,17 @@ export async function PATCH(request: NextRequest) {
           { error: 'NDA request not found' },
           { status: 404 }
         )
+      }
+
+      const viewer = await prisma.user.findUnique({
+        where: { id: viewerId },
+        select: { role: true }
+      })
+      const privileged = viewer?.role === 'admin' || viewer?.role === 'broker'
+      const isSeller = currentRequest.sellerId === viewerId
+      const isBuyer = currentRequest.buyerId === viewerId
+      if (!privileged && !isSeller && !isBuyer) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
       }
 
       const data: any = { status }

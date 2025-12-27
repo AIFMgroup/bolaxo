@@ -23,7 +23,9 @@ export default function MyDealsPage() {
         setDeals(DEMO_DEALS)
       } else {
         // Fetch from API
-        const response = await fetch('/api/nda-requests?role=buyer')
+        const response = await fetch('/api/nda-requests?role=buyer', {
+          credentials: 'include'
+        })
         if (response.ok) {
           const data = await response.json()
           setDeals(data.requests?.filter((r: any) => r.status === 'approved') || [])

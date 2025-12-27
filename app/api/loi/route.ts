@@ -62,10 +62,25 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verify sellerId matches listing owner
-    if (listing.userId !== sellerId) {
+    // Derive seller from listing owner (source of truth). If sellerId is provided, it must match.
+    const derivedSellerId = listing.userId
+    if (sellerId && derivedSellerId !== sellerId) {
+      return NextResponse.json({ error: 'Seller ID mismatch' }, { status: 400 })
+    }
+
+    // Require approved/signed NDA before LOI can be submitted.
+    const nda = await prisma.nDARequest.findFirst({
+      where: {
+        listingId,
+        buyerId,
+        sellerId: derivedSellerId,
+        status: { in: ['approved', 'signed'] }
+      },
+      select: { id: true }
+    })
+    if (!nda) {
       return NextResponse.json(
-        { error: 'Seller ID mismatch' },
+        { error: 'NDA must be approved before submitting LOI' },
         { status: 400 }
       )
     }
@@ -127,7 +142,7 @@ export async function POST(request: NextRequest) {
 
     // Create in-app notification for seller
     await createNotification({
-      userId: sellerId,
+      userId: derivedSellerId,
       type: 'system',
       title: 'Ny LOI mottagen',
       message: `${buyer?.name || 'En köpare'} har skickat en LOI för ${listingTitle}.`,
@@ -159,23 +174,14 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const listingId = searchParams.get('listingId')
-    const buyerId = searchParams.get('buyerId')
-    const sellerId = searchParams.get('sellerId')
     const status = searchParams.get('status')
 
     const where: any = {}
     if (listingId) where.listingId = listingId
-    if (buyerId) where.buyerId = buyerId
     if (status) where.status = status
 
-    // If sellerId is provided, find via listing
-    if (sellerId) {
-      const listings = await prisma.listing.findMany({
-        where: { userId: sellerId },
-        select: { id: true }
-      })
-      where.listingId = { in: listings.map(l => l.id) }
-    }
+    // Access control: only return LOIs where current user is buyer OR seller (listing owner).
+    where.OR = [{ buyerId: userId }, { listing: { userId } }]
 
     const lois = await prisma.lOI.findMany({
       where,

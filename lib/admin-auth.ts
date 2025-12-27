@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SignJWT, jwtVerify } from 'jose'
 
-// Generate a consistent JWT secret - use env var or a default
-const JWT_SECRET = process.env.JWT_SECRET
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is required')
+// IMPORTANT: Do NOT throw at module import time.
+// Next.js may import route handlers during build to collect metadata.
+let cachedSecret: Uint8Array | null = null
+function getJwtSecret(): Uint8Array {
+  if (cachedSecret) return cachedSecret
+  const JWT_SECRET = process.env.JWT_SECRET
+  if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is required')
+  }
+  cachedSecret = new TextEncoder().encode(JWT_SECRET)
+  return cachedSecret
 }
-const secret = new TextEncoder().encode(JWT_SECRET)
 
 export interface AdminJWT {
   userId: string
@@ -27,7 +33,7 @@ export async function verifyAdminToken(request: NextRequest): Promise<AdminJWT |
       return null
     }
 
-    const { payload } = await jwtVerify(token, secret)
+    const { payload } = await jwtVerify(token, getJwtSecret())
 
     return {
       userId: payload.userId as string,
@@ -71,7 +77,7 @@ export async function createAdminToken(
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(secret)
+    .sign(getJwtSecret())
 
   return token
 }

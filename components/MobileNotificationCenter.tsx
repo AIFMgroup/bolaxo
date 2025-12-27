@@ -30,7 +30,9 @@ export default function MobileNotificationCenter() {
     if (!user) return
 
     try {
-      const response = await fetch(`/api/notifications?userId=${user.id}&unreadOnly=false`)
+      const response = await fetch(`/api/notifications?unreadOnly=false`, {
+        credentials: 'include'
+      })
       if (response.ok) {
         const data = await response.json()
         setNotifications(data.notifications || [])
@@ -49,6 +51,7 @@ export default function MobileNotificationCenter() {
       const response = await fetch('/api/notifications', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ userId: user?.id, notificationIds })
       })
 

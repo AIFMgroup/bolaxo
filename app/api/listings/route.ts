@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { sendMatchNotificationEmail } from '@/lib/email'
 import { prisma } from '@/lib/prisma'
 import { createNotification } from '@/lib/notifications'
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 const SENSITIVE_FIELDS = [
   'companyName',
@@ -165,7 +166,8 @@ export async function GET(request: NextRequest) {
     const location = searchParams.get('location')
     const priceMin = searchParams.get('priceMin')
     const priceMax = searchParams.get('priceMax')
-    const currentUserId = searchParams.get('currentUserId') // För att veta vem som frågar
+    // Derive viewer from session/cookie (never trust query param in prod).
+    const currentUserId = getAuthenticatedUserId(request)
     
     const where: any = { status }
     if (userId) where.userId = userId
@@ -191,13 +193,12 @@ export async function GET(request: NextRequest) {
       }
     })
     
-    const viewer =
-      currentUserId
-        ? await prisma.user.findUnique({
-            where: { id: currentUserId },
-            select: { id: true, role: true }
-          })
-        : null
+    const viewer = currentUserId
+      ? await prisma.user.findUnique({
+          where: { id: currentUserId },
+          select: { id: true, role: true }
+        })
+      : null
     const viewerRole = viewer?.role || 'guest'
     const approvedNDAs = await getApprovedNDASet(currentUserId || undefined)
 
@@ -309,11 +310,15 @@ export async function POST(request: NextRequest) {
       status
     } = body
     
-    // Get userId from auth if not provided
-    const finalUserId = userId || body.user?.id
+    // Always derive userId from auth/session to prevent creating listings for other users.
+    const finalUserId = getAuthenticatedUserId(request)
     
     // Validate required fields
-    if (!finalUserId || !companyName || !industry || !revenue) {
+    if (!finalUserId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+    }
+
+    if (!companyName || !industry || !revenue) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }

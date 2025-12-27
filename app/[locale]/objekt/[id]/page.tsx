@@ -30,8 +30,7 @@ export default function ObjectDetailPage() {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const url = `/api/listings/${objectId}${user?.id ? `?userId=${user.id}` : ''}`
-        const response = await fetch(url)
+        const response = await fetch(`/api/listings/${objectId}`, { credentials: 'include' })
         if (response.ok) {
           const data = await response.json()
           setObject(data)
@@ -67,16 +66,17 @@ export default function ObjectDetailPage() {
         
         if (newIsSaved) {
           // Remove from database
-          await fetch(`/api/saved-listings?userId=${user.id}&listingId=${objectId}`, {
-            method: 'DELETE'
+          await fetch(`/api/saved-listings?listingId=${objectId}`, {
+            method: 'DELETE',
+            credentials: 'include'
           })
         } else {
           // Add to database
           await fetch('/api/saved-listings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({
-              userId: user.id,
               listingId: objectId
             })
           })

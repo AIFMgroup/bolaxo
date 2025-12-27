@@ -29,7 +29,7 @@ export default function ComparePageContent() {
       try {
         setLoading(true)
         const promises = compareList.map(id => 
-          fetch(`/api/listings/${id}${user?.id ? `?userId=${user.id}` : ''}`)
+          fetch(`/api/listings/${id}`, { credentials: 'include' })
             .then(res => res.ok ? res.json() : null)
             .catch(() => null)
         )

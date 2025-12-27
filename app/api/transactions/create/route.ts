@@ -92,6 +92,46 @@ export async function POST(request: Request) {
       )
     }
 
+    // Authorization: only a party can create the transaction.
+    if (userId !== buyerId && userId !== sellerId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    }
+
+    // Validate listing belongs to seller (source of truth).
+    const listing = await prisma.listing.findUnique({
+      where: { id: listingId },
+      select: { id: true, userId: true }
+    })
+    if (!listing) {
+      return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
+    }
+    if (listing.userId !== sellerId) {
+      return NextResponse.json({ error: 'sellerId does not match listing owner' }, { status: 400 })
+    }
+
+    // Ensure there's an approved/signed NDA between buyer and seller for this listing.
+    const nda = await prisma.nDARequest.findFirst({
+      where: {
+        listingId,
+        buyerId,
+        sellerId,
+        status: { in: ['approved', 'signed'] }
+      },
+      select: { id: true }
+    })
+    if (!nda) {
+      return NextResponse.json({ error: 'NDA must be approved before creating a transaction' }, { status: 400 })
+    }
+
+    // Avoid duplicates (one active transaction per listing+buyer+seller)
+    const existing = await prisma.transaction.findFirst({
+      where: { listingId, buyerId, sellerId },
+      select: { id: true }
+    })
+    if (existing) {
+      return NextResponse.json({ transactionId: existing.id, existing: true }, { status: 200 })
+    }
+
     // Skapa transaktion med default milestones
     const transaction = await prisma.transaction.create({
       data: {

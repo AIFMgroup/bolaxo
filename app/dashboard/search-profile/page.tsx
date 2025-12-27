@@ -57,7 +57,7 @@ export default function SearchProfilePage() {
       if (!user) return
       setLoading(true)
       try {
-        const res = await getBuyerProfile({ userId: user.id })
+        const res = await getBuyerProfile()
         const profile = res.profile
         if (profile) {
           setIndustries(profile.preferredIndustries || [])

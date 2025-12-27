@@ -28,8 +28,7 @@ export default function DataroomPage() {
       try {
         setLoading(true)
         // Fetch listing from API
-        const url = `/api/listings/${objectId}${user?.id ? `?userId=${user.id}` : ''}`
-        const response = await fetch(url)
+        const response = await fetch(`/api/listings/${objectId}`, { credentials: 'include' })
         if (response.ok) {
           const listing = await response.json()
           setObject(listing)

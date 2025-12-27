@@ -34,7 +34,9 @@ export default function DashboardPage() {
       try {
         // Buyers: check if they have profile
         if (isBuyer(user.role)) {
-          const response = await fetch(`/api/buyer-profile?userId=${user.id}`)
+          const response = await fetch(`/api/buyer-profile`, {
+            credentials: 'include'
+          })
           if (!response.ok) {
             // No profile exists, redirect to registration
             setRedirectPath(`/${locale}/kopare/start`)
@@ -44,7 +46,9 @@ export default function DashboardPage() {
         }
         // Sellers: check if they have listings - but don't redirect, show overview instead
         if (isSeller(user.role)) {
-          const response = await fetch(`/api/listings?userId=${user.id}`)
+          const response = await fetch(`/api/listings`, {
+            credentials: 'include'
+          })
           if (!response.ok || response.status === 204) {
             // No listings exist, redirect to onboarding
             setRedirectPath(`/${locale}/salja/onboarding`)

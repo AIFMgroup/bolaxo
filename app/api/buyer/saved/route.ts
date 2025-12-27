@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { getClientIp, checkRateLimit, RATE_LIMIT_CONFIGS } from '@/app/lib/rate-limiter'
 import { isBuyer } from '@/lib/user-roles'
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 const prisma = new PrismaClient()
 
 // Helper to verify user is a buyer
 async function verifyBuyerAuth(request: NextRequest) {
   try {
-    const userId = request.headers.get('x-user-id')
+    const userId = getAuthenticatedUserId(request)
     if (!userId) {
       return { isValid: false, error: 'Unauthorized - No user ID', userId: null }
     }

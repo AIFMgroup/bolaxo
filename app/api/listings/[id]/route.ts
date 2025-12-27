@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 const SENSITIVE_FIELDS = [
   'companyName',
@@ -160,8 +161,7 @@ export async function GET(
 ) {
   try {
     const params = await context.params
-    const { searchParams } = new URL(request.url)
-    const currentUserId = searchParams.get('userId') // User som frågar
+    const currentUserId = getAuthenticatedUserId(request)
 
     const listing = await prisma.listing.findUnique({
       where: { id: params.id },
@@ -181,13 +181,12 @@ export async function GET(
     let matchScore: number | null = null
     let matchReasons: string[] = []
     
-    const viewer =
-      currentUserId
-        ? await prisma.user.findUnique({
-            where: { id: currentUserId },
-            select: { id: true, role: true }
-          })
-        : null
+    const viewer = currentUserId
+      ? await prisma.user.findUnique({
+          where: { id: currentUserId },
+          select: { id: true, role: true }
+        })
+      : null
     const viewerRole = viewer?.role || 'guest'
 
     if (currentUserId) {
@@ -248,6 +247,28 @@ export async function PUT(
   try {
     const params = await context.params
     const data = await request.json()
+
+    const viewerId = getAuthenticatedUserId(request)
+    if (!viewerId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+    }
+
+    const listing = await prisma.listing.findUnique({
+      where: { id: params.id },
+      select: { id: true, userId: true }
+    })
+    if (!listing) {
+      return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
+    }
+
+    const viewer = await prisma.user.findUnique({
+      where: { id: viewerId },
+      select: { role: true }
+    })
+    const privileged = viewer?.role === 'admin'
+    if (!privileged && listing.userId !== viewerId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    }
 
     const updated = await prisma.listing.update({
       where: { id: params.id },

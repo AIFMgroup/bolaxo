@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 const prisma = new PrismaClient()
 
-// GET /api/saved-listings?userId=
+// GET /api/saved-listings
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('userId')
+    const userId = getAuthenticatedUserId(request)
 
     if (!userId) {
       return NextResponse.json({ saved: [] })
@@ -32,8 +32,9 @@ export async function GET(request: NextRequest) {
 // POST /api/saved-listings -> save listing
 export async function POST(request: NextRequest) {
   try {
+    const userId = getAuthenticatedUserId(request)
     const body = await request.json()
-    const { userId, listingId } = body
+    const { listingId } = body
 
     if (!userId || !listingId) {
       return NextResponse.json({ success: true })
@@ -55,11 +56,11 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE /api/saved-listings?userId=&listingId=
+// DELETE /api/saved-listings?listingId=
 export async function DELETE(request: NextRequest) {
   try {
+    const userId = getAuthenticatedUserId(request)
     const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('userId')
     const listingId = searchParams.get('listingId')
 
     if (!userId || !listingId) {

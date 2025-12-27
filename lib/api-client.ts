@@ -1,5 +1,5 @@
 export async function apiGet<T>(url: string): Promise<T> {
-  const res = await fetch(url, { cache: 'no-store' })
+  const res = await fetch(url, { cache: 'no-store', credentials: 'include' })
   if (!res.ok) throw new Error(await res.text())
   return res.json() as Promise<T>
 }
@@ -7,6 +7,7 @@ export async function apiGet<T>(url: string): Promise<T> {
 export async function apiJSON<T>(url: string, method: 'POST' | 'PUT' | 'PATCH' | 'DELETE', body: any): Promise<T> {
   const res = await fetch(url, {
     method,
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   })
@@ -17,7 +18,6 @@ export async function apiJSON<T>(url: string, method: 'POST' | 'PUT' | 'PATCH' |
 // Messages
 export async function getMessages(params: { userId: string; listingId?: string; peerId?: string }) {
   const q = new URLSearchParams()
-  q.set('userId', params.userId)
   if (params.listingId) q.set('listingId', params.listingId)
   if (params.peerId) q.set('peerId', params.peerId)
   return apiGet<{ messages: any[] }>(`/api/messages?${q.toString()}`)
@@ -51,30 +51,29 @@ export async function updateNDAStatus(payload: { id: string; status: 'pending' |
 }
 
 // Saved Listings
-export async function getSavedListings(userId: string) {
-  const q = new URLSearchParams()
-  q.set('userId', userId)
-  return apiGet<{ saved: { id: string; userId: string; listingId: string; notes?: string }[] }>(`/api/saved-listings?${q.toString()}`)
+export async function getSavedListings() {
+  return apiGet<{ saved: { id: string; userId: string; listingId: string; notes?: string }[] }>(`/api/saved-listings`)
 }
 
-export async function saveListing(payload: { userId: string; listingId: string; notes?: string }) {
+export async function saveListing(payload: { listingId: string; notes?: string }) {
   return apiJSON<{ saved: any }>(`/api/saved-listings`, 'POST', payload)
 }
 
-export async function unsaveListing(userId: string, listingId: string) {
+export async function unsaveListing(listingId: string) {
   const q = new URLSearchParams()
-  q.set('userId', userId)
   q.set('listingId', listingId)
-  const res = await fetch(`/api/saved-listings?${q.toString()}`, { method: 'DELETE' })
+  const res = await fetch(`/api/saved-listings?${q.toString()}`, { 
+    method: 'DELETE',
+    credentials: 'include'
+  })
   if (!res.ok) throw new Error(await res.text())
   return res.json()
 }
 
 // Listings
-export async function getUserListings(params: { status?: string; userId?: string; industry?: string; location?: string; priceMin?: number; priceMax?: number }) {
+export async function getUserListings(params: { status?: string; industry?: string; location?: string; priceMin?: number; priceMax?: number }) {
   const q = new URLSearchParams()
   if (params.status) q.set('status', params.status)
-  if (params.userId) q.set('userId', params.userId)
   if (params.industry) q.set('industry', params.industry)
   if (params.location) q.set('location', params.location)
   if (params.priceMin !== undefined) q.set('priceMin', String(params.priceMin))
@@ -87,11 +86,11 @@ export async function getListingById(id: string) {
 }
 
 // Buyer Profile
-export async function getBuyerProfile(params: { userId?: string; email?: string }) {
+export async function getBuyerProfile(params?: { email?: string }) {
   const q = new URLSearchParams()
-  if (params.userId) q.set('userId', params.userId)
-  if (params.email) q.set('email', params.email)
-  return apiGet<{ profile: any | null; user: { id: string; email: string; name?: string; role: string } }>(`/api/buyer-profile?${q.toString()}`)
+  if (params?.email) q.set('email', params.email)
+  const queryString = q.toString()
+  return apiGet<{ profile: any | null; user: { id: string; email: string; name?: string; role: string } }>(`/api/buyer-profile${queryString ? `?${queryString}` : ''}`)
 }
 
 export async function saveBuyerProfile(payload: any) {

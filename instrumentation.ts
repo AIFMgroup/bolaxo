@@ -1,7 +1,11 @@
 import * as Sentry from '@sentry/nextjs';
+import { assertProdEnv } from '@/lib/env'
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
+    // Fail fast in production if critical secrets/config are missing.
+    // Keep this node-only to avoid surprising edge-runtime env limitations.
+    assertProdEnv()
     await import('./sentry.server.config');
   }
 

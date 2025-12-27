@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { sendNDAApprovalEmail, sendNDARejectionEmail } from '@/lib/email'
 import { createNotification } from '@/lib/notifications'
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 /**
  * GET /api/nda-requests/[id] - Get specific NDA request
@@ -11,6 +12,11 @@ export async function GET(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const viewerId = getAuthenticatedUserId(request)
+    if (!viewerId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+    }
+
     const params = await context.params
     const ndaId = params.id
 
@@ -53,6 +59,16 @@ export async function GET(
       )
     }
 
+    // Only buyer/seller (or privileged roles) can view.
+    const viewer = await prisma.user.findUnique({
+      where: { id: viewerId },
+      select: { role: true }
+    })
+    const privileged = viewer?.role === 'admin' || viewer?.role === 'broker'
+    if (!privileged && ndaRequest.buyerId !== viewerId && ndaRequest.sellerId !== viewerId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    }
+
     return NextResponse.json({ request: ndaRequest })
   } catch (error) {
     console.error('Error fetching NDA request:', error)
@@ -71,6 +87,11 @@ export async function PATCH(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const viewerId = getAuthenticatedUserId(request)
+    if (!viewerId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+    }
+
     const params = await context.params
     const ndaId = params.id
     const body = await request.json()
@@ -98,6 +119,30 @@ export async function PATCH(
         { error: 'NDA request not found' },
         { status: 404 }
       )
+    }
+
+    // Authorization:
+    // - Seller may approve/reject
+    // - Buyer may mark signed
+    // - Privileged roles may do all
+    const viewer = await prisma.user.findUnique({
+      where: { id: viewerId },
+      select: { role: true }
+    })
+    const privileged = viewer?.role === 'admin' || viewer?.role === 'broker'
+    const isSeller = currentRequest.sellerId === viewerId
+    const isBuyer = currentRequest.buyerId === viewerId
+
+    if (!privileged) {
+      if ((status === 'approved' || status === 'rejected') && !isSeller) {
+        return NextResponse.json({ error: 'Only seller can approve/reject NDA' }, { status: 403 })
+      }
+      if (status === 'signed' && !isBuyer) {
+        return NextResponse.json({ error: 'Only buyer can mark NDA as signed' }, { status: 403 })
+      }
+      if (status === 'pending' && !isBuyer && !isSeller) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+      }
     }
 
     // Build update data
@@ -239,8 +284,31 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const viewerId = getAuthenticatedUserId(request)
+    if (!viewerId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+    }
+
     const params = await context.params
     const ndaId = params.id
+
+    const nda = await prisma.nDARequest.findUnique({
+      where: { id: ndaId },
+      select: { buyerId: true, sellerId: true }
+    })
+    if (!nda) {
+      return NextResponse.json({ error: 'NDA request not found' }, { status: 404 })
+    }
+
+    const viewer = await prisma.user.findUnique({
+      where: { id: viewerId },
+      select: { role: true }
+    })
+    const privileged = viewer?.role === 'admin'
+
+    if (!privileged && nda.buyerId !== viewerId && nda.sellerId !== viewerId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    }
 
     await prisma.nDARequest.delete({
       where: { id: ndaId },

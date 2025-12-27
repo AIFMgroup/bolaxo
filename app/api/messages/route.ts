@@ -3,15 +3,13 @@ import { prisma } from '@/lib/prisma'
 import { getClientIp, checkRateLimit, RATE_LIMIT_CONFIGS } from '@/app/lib/rate-limiter'
 import { sendNewMessageEmail } from '@/lib/email'
 import { createNotification } from '@/lib/notifications'
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 // Helper to verify user authentication
 async function verifyUserAuth(request: NextRequest) {
   try {
-    // In production, verify JWT/session token
-    const userId = request.headers.get('x-user-id')
-    if (!userId) {
-      return { isValid: false, error: 'Unauthorized - No user ID', userId: null }
-    }
+    const userId = getAuthenticatedUserId(request)
+    if (!userId) return { isValid: false, error: 'Not authenticated', userId: null }
     return { isValid: true, userId }
   } catch (error) {
     return { isValid: false, error: 'Authentication failed', userId: null }
@@ -19,18 +17,33 @@ async function verifyUserAuth(request: NextRequest) {
 }
 
 // Check if buyer has permission to contact seller
-async function checkContactPermission(buyerId: string, sellerId: string, listingId?: string) {
-  // Check if there's an approved NDA between buyer and seller for this listing
+async function canMessage(userA: string, userB: string, listingId: string): Promise<boolean> {
+  // Approved NDA between the two parties for this listing
   const approvedNDA = await prisma.nDARequest.findFirst({
     where: {
-      buyerId,
-      sellerId,
       listingId,
-      status: { in: ['approved', 'signed'] }
-    }
+      status: { in: ['approved', 'signed'] },
+      OR: [
+        { buyerId: userA, sellerId: userB },
+        { buyerId: userB, sellerId: userA }
+      ]
+    },
+    select: { id: true }
   })
-  
-  return !!approvedNDA
+  if (approvedNDA) return true
+
+  // Or an active transaction between the two parties for this listing
+  const tx = await prisma.transaction.findFirst({
+    where: {
+      listingId,
+      OR: [
+        { buyerId: userA, sellerId: userB },
+        { buyerId: userB, sellerId: userA }
+      ]
+    },
+    select: { id: true }
+  })
+  return !!tx
 }
 
 // GET /api/messages?listingId=&peerId=&page=&limit=
@@ -59,18 +72,7 @@ export async function GET(request: NextRequest) {
     // Verify auth
     const auth = await verifyUserAuth(request)
     if (!auth.isValid || !auth.userId) {
-      return NextResponse.json({
-        messages: [],
-        pagination: {
-          page,
-          limit,
-          total: 0,
-          pages: 0,
-          hasMore: false
-        },
-        unreadCount: 0,
-        error: auth.error,
-      })
+      return NextResponse.json({ error: auth.error }, { status: 401 })
     }
     
     const userId = auth.userId
@@ -185,29 +187,43 @@ export async function POST(request: NextRequest) {
     const { listingId, recipientId, subject, content } = body
     const senderId = auth.userId
 
-    if (!recipientId || !content) {
+    if (!listingId || !recipientId || !content) {
       return NextResponse.json(
-        { error: 'recipientId and content are required' },
+        { error: 'listingId, recipientId and content are required' },
         { status: 400 }
       )
     }
     
+    // Validate listing exists and recipient is relevant to the listing
+    const listing = await prisma.listing.findUnique({
+      where: { id: listingId },
+      select: { id: true, userId: true }
+    })
+    if (!listing) {
+      return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
+    }
+
+    // Basic sanity: seller is listing owner. We still rely on NDA/tx for permission,
+    // but this prevents sending messages on arbitrary listingIds.
+    const isListingOwnerRecipient = recipientId === listing.userId
+    const isListingOwnerSender = senderId === listing.userId
+    if (!isListingOwnerRecipient && !isListingOwnerSender) {
+      // If neither party is the seller, this isn't a valid buyer↔seller conversation.
+      return NextResponse.json({ error: 'Invalid recipient for this listing' }, { status: 400 })
+    }
+
     // Check if sender has permission to contact recipient
-    const hasPermission = await checkContactPermission(senderId, recipientId, listingId)
+    const hasPermission = await canMessage(senderId, recipientId, listingId)
     if (!hasPermission) {
-      // Check reverse permission (maybe recipient is the buyer)
-      const reversePermission = await checkContactPermission(recipientId, senderId, listingId)
-      if (!reversePermission) {
-        return NextResponse.json(
-          { error: 'Du har inte tillstånd att kontakta denna användare. NDA måste godkännas först.' },
-          { status: 403 }
-        )
-      }
+      return NextResponse.json(
+        { error: 'Du har inte tillstånd att kontakta denna användare. NDA måste godkännas först.' },
+        { status: 403 }
+      )
     }
 
     const created = await prisma.message.create({
       data: {
-        listingId: listingId || '',
+        listingId,
         senderId,
         recipientId,
         subject: subject || null,
@@ -280,7 +296,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: created }, { status: 201 })
   } catch (error) {
     console.error('Send message error:', error)
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ error: 'Failed to send message' }, { status: 500 })
   }
 }
 

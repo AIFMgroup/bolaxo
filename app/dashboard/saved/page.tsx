@@ -146,7 +146,7 @@ export default function SavedListingsPage() {
     const load = async () => {
       if (!user) return
       try {
-        const res = await getSavedListings(user.id)
+        const res = await getSavedListings()
         setSaved(res.saved)
       } catch (e) {}
     }

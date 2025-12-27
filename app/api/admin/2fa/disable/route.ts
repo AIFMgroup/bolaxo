@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { verifyAdminToken } from '@/lib/admin-auth'
 import { verifyTOTP } from '@/lib/two-factor-auth'
 import { createAuditLog } from '@/lib/audit-log'
+import bcrypt from 'bcrypt'
 
 // POST /api/admin/2fa/disable
 // Disable 2FA (requires current TOTP code for verification)
@@ -56,7 +57,6 @@ export async function POST(request: NextRequest) {
     
     if (!verified && password && user.passwordHash) {
       // Verify password as fallback
-      const bcrypt = require('bcryptjs')
       verified = await bcrypt.compare(password, user.passwordHash)
     }
 

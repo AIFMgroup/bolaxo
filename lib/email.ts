@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { IS_PROD } from '@/lib/env'
 
 const DEFAULT_FROM_EMAIL = process.env.EMAIL_FROM || 'noreply@bolaxo.com'
 const DEFAULT_FROM_NAME = process.env.EMAIL_FROM_NAME || 'BOLAXO'
@@ -47,9 +48,13 @@ async function logEmailResult({
  */
 export async function sendEmail(options: EmailOptions): Promise<{ success: boolean; messageId?: string; error?: string }> {
   if (!process.env.BREVO_API_KEY) {
-    console.warn('BREVO_API_KEY not configured, email will not be sent')
-    console.log('Email would be sent to:', options.to)
-    console.log('Subject:', options.subject)
+    const msg = 'BREVO_API_KEY not configured'
+    // In production we fail closed (email triggers are part of core flows).
+    if (IS_PROD) {
+      console.error(msg)
+      return { success: false, error: msg }
+    }
+    console.warn(`${msg}, email will not be sent (dev mode)`)
     return { success: false, error: 'Email service not configured' }
   }
 
