@@ -21,11 +21,7 @@ export default function SavedListingsPage() {
       
       try {
         setLoading(true)
-        const response = await fetch('/api/buyer/saved', {
-          headers: {
-            'x-user-id': user.id
-          }
-        })
+        const response = await fetch('/api/buyer/saved', { credentials: 'include' })
 
         if (response.ok) {
           const data = await response.json()

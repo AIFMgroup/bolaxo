@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
 import crypto from 'crypto'
+import { logDataRoomAudit } from '@/lib/dataroom-audit'
 
 // POST /api/dataroom/invite
 // Invite a buyer or advisor to the dataroom
@@ -117,16 +118,13 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Log audit
-    await prisma.dataRoomAudit.create({
-      data: {
-        dataRoomId,
-        actorId: userId,
-        action: 'INVITE_SENT',
-        targetType: 'INVITE',
-        targetId: invite.id,
-        meta: { email: email.toLowerCase(), role, message },
-      },
+    await logDataRoomAudit({
+      dataRoomId,
+      actorId: userId,
+      action: 'invite',
+      targetType: 'invite',
+      targetId: invite.id,
+      meta: { event: 'sent', email: email.toLowerCase(), role, message: message || null },
     })
 
     // TODO: Send invitation email

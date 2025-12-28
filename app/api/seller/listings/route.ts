@@ -1,33 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { getClientIp, checkRateLimit, RATE_LIMIT_CONFIGS } from '@/app/lib/rate-limiter'
 import { isSeller } from '@/lib/user-roles'
-
-const prisma = new PrismaClient()
-
-// Helper to verify user is a seller
-async function verifySellerAuth(request: NextRequest) {
-  try {
-    const userId = request.headers.get('x-user-id')
-    if (!userId) {
-      return { isValid: false, error: 'Unauthorized - No user ID', userId: null }
-    }
-    
-    // Verify user is actually a seller
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, role: true }
-    })
-    
-    if (!user || !isSeller(user.role)) {
-      return { isValid: false, error: 'Unauthorized - Not a seller', userId: null }
-    }
-    
-    return { isValid: true, userId }
-  } catch (error) {
-    return { isValid: false, error: 'Authentication failed', userId: null }
-  }
-}
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 export async function GET(request: NextRequest) {
   try {
@@ -45,9 +20,13 @@ export async function GET(request: NextRequest) {
       )
     }
     
-    // Demo bypass: if x-user-id starts with "demo", return mock listings without DB lookups
-    const demoUserId = request.headers.get('x-user-id')
-    if (demoUserId?.startsWith('demo')) {
+    const userId = getAuthenticatedUserId(request)
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Demo bypass: if demo cookie, return mock listings without DB lookups
+    if (userId.startsWith('demo')) {
       const demoListings = [
         {
           id: 'demo-listing-1',
@@ -85,15 +64,17 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Verify auth
-    const auth = await verifySellerAuth(request)
-    if (!auth.isValid || !auth.userId) {
-      return NextResponse.json({ error: auth.error }, { status: 401 })
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, role: true },
+    })
+    if (!user || !isSeller(user.role)) {
+      return NextResponse.json({ error: 'Unauthorized - Not a seller' }, { status: 401 })
     }
 
     // Get all seller's listings with stats
     const listings = await prisma.listing.findMany({
-      where: { userId: auth.userId },
+      where: { userId },
       select: {
         id: true,
         companyName: true,
@@ -120,7 +101,7 @@ export async function GET(request: NextRequest) {
     // Get NDA requests for all listings
     const ndaRequests = await prisma.nDARequest.findMany({
       where: {
-        sellerId: auth.userId,
+        sellerId: userId,
         status: 'pending'
       },
       select: {

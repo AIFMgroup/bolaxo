@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 
 export type AuditAction = 
   | 'view'
@@ -44,7 +44,7 @@ export async function logDataRoomAudit({
         action,
         targetType: targetType || null,
         targetId: targetId || null,
-        meta: meta || null
+        meta: meta ?? undefined
       }
     })
   } catch (error) {

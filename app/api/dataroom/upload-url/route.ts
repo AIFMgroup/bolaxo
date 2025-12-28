@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import crypto from 'crypto'
+import { logDataRoomAudit } from '@/lib/dataroom-audit'
 
 const s3 = new S3Client({
   region: process.env.AWS_S3_REGION || 'eu-north-1',
@@ -172,6 +173,22 @@ export async function POST(req: NextRequest) {
       }),
       { expiresIn: URL_TTL }
     )
+
+    await logDataRoomAudit({
+      dataRoomId: dataroom.id,
+      actorId: userId,
+      action: 'upload',
+      targetType: 'documentVersion',
+      targetId: version.id,
+      meta: {
+        documentId: doc.id,
+        fileName,
+        mimeType,
+        size,
+        folderId: targetFolderId,
+        status: 'pending_scan',
+      },
+    })
 
     return NextResponse.json({
       uploadUrl: presignedUrl,

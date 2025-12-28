@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
+import { logDataRoomAudit } from '@/lib/dataroom-audit'
 
 // POST /api/dataroom/nda/accept
 // Accept the NDA for a dataroom (required for buyers/advisors to download)
@@ -78,19 +79,16 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Log audit
-    await prisma.dataRoomAudit.create({
-      data: {
-        dataRoomId,
-        actorId: userId,
-        action: 'NDA_ACCEPTED',
-        targetType: 'NDA',
-        targetId: acceptance.id,
-        meta: {
-          ndaVersion: versionValue,
-          email: userEmail,
-          ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip'),
-        },
+    await logDataRoomAudit({
+      dataRoomId,
+      actorId: userId,
+      actorEmail: userEmail,
+      action: 'accept_nda',
+      targetType: 'ndaAcceptance',
+      targetId: acceptance.id,
+      meta: {
+        ndaVersion: versionValue,
+        ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || null,
       },
     })
 

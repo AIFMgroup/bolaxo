@@ -177,9 +177,9 @@ export default function SPAEditorPage() {
       const response = await fetch('/api/messages', {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
+          'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           listingId: spa.listingId,
           recipientId: spa.buyerId,

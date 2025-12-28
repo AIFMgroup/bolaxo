@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAuthenticatedUserId } from '@/lib/request-auth'
+import { logDataRoomAudit } from '@/lib/dataroom-audit'
 
 async function getUserRole(dataRoomId: string, userId?: string | null) {
   if (!userId) return null
@@ -32,7 +33,7 @@ export async function PATCH(
 
     const doc = await prisma.dataRoomDocument.findUnique({
       where: { id: documentId },
-      select: { id: true, dataRoomId: true },
+      select: { id: true, dataRoomId: true, visibility: true, downloadBlocked: true, watermarkRequired: true },
     })
     if (!doc) return NextResponse.json({ error: 'Dokument hittades inte' }, { status: 404 })
 
@@ -55,6 +56,18 @@ export async function PATCH(
     // Grants are only relevant for CUSTOM visibility.
     if ((visibility || updated.visibility) !== 'CUSTOM') {
       await prisma.dataRoomDocumentGrant.deleteMany({ where: { documentId } })
+      await logDataRoomAudit({
+        dataRoomId: doc.dataRoomId,
+        actorId: userId,
+        action: 'policy_change',
+        targetType: 'document',
+        targetId: documentId,
+        meta: {
+          from: { visibility: doc.visibility, downloadBlocked: doc.downloadBlocked, watermarkRequired: doc.watermarkRequired },
+          to: { visibility: updated.visibility, downloadBlocked: updated.downloadBlocked, watermarkRequired: updated.watermarkRequired },
+          grants: { userIds: [], emails: [] },
+        },
+      })
       return NextResponse.json({ success: true, document: updated, grants: [] })
     }
 
@@ -97,6 +110,19 @@ export async function PATCH(
       where: { documentId },
       select: { id: true, userId: true, email: true, createdAt: true },
       orderBy: { createdAt: 'desc' },
+    })
+
+    await logDataRoomAudit({
+      dataRoomId: doc.dataRoomId,
+      actorId: userId,
+      action: 'policy_change',
+      targetType: 'document',
+      targetId: documentId,
+      meta: {
+        from: { visibility: doc.visibility, downloadBlocked: doc.downloadBlocked, watermarkRequired: doc.watermarkRequired },
+        to: { visibility: updated.visibility, downloadBlocked: updated.downloadBlocked, watermarkRequired: updated.watermarkRequired },
+        grants: { userIds: normalizedUserIds, emails: normalizedEmails },
+      },
     })
 
     return NextResponse.json({ success: true, document: updated, grants })

@@ -68,11 +68,7 @@ export default function ListingsPage() {
       
       try {
         setLoading(true)
-        const response = await fetch('/api/seller/listings', {
-          headers: {
-            'x-user-id': user.id
-          }
-        })
+        const response = await fetch('/api/seller/listings', { credentials: 'include' })
 
         if (response.ok) {
           const data = await response.json()
@@ -155,9 +151,9 @@ export default function ListingsPage() {
       const response = await fetch('/api/admin/nda-tracking', {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user?.id || ''
+          'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           ndaId,
           status: action === 'approve' ? 'approved' : 'rejected'

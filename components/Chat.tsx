@@ -63,9 +63,7 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
       if (listingId) params.append('listingId', listingId)
 
       const response = await fetch(`/api/messages?${params}`, {
-        headers: {
-          'x-user-id': currentUserId
-        }
+        credentials: 'include'
       })
 
       if (response.ok) {
@@ -111,9 +109,9 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
       await fetch('/api/messages', {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': currentUserId
+          'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({ ids })
       })
     } catch (error) {
@@ -130,9 +128,9 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
       const response = await fetch('/api/messages', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': currentUserId
+          'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           recipientId: peerId,
           content: newMessage,

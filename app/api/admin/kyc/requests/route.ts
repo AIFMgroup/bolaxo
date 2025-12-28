@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { verifyAdminToken } from '@/lib/admin-auth'
 import { logAdminAction } from '@/lib/audit-log'
+import { createNotification } from '@/lib/notifications'
+import { sendEmail } from '@/lib/email'
 
 // GET /api/admin/kyc/requests?status=SUBMITTED
 export async function GET(request: NextRequest) {
@@ -58,16 +60,71 @@ export async function PATCH(request: NextRequest) {
 
   const nextStatus = decision === 'approve' ? 'APPROVED' : 'REJECTED'
 
-  const updated = await prisma.buyerKycVerification.update({
-    where: { userId },
-    data: {
-      status: nextStatus,
-      reviewedAt: new Date(),
-      reviewedBy: admin.userId,
-      rejectionReason: decision === 'reject' ? (rejectionReason || 'Rejected') : null,
-    },
-    select: { id: true, status: true, reviewedAt: true },
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true, name: true, verified: true },
   })
+  if (!user) return NextResponse.json({ error: 'Användare hittades inte' }, { status: 404 })
+
+  const updated = await prisma.$transaction(async (tx) => {
+    const verification = await tx.buyerKycVerification.update({
+      where: { userId },
+      data: {
+        status: nextStatus,
+        reviewedAt: new Date(),
+        reviewedBy: admin.userId,
+        rejectionReason: decision === 'reject' ? (rejectionReason || 'Rejected') : null,
+      },
+      select: { id: true, status: true, reviewedAt: true, rejectionReason: true },
+    })
+
+    if (decision === 'approve' && !user.verified) {
+      await tx.user.update({
+        where: { id: userId },
+        data: { verified: true },
+        select: { id: true },
+      })
+    }
+
+    return verification
+  })
+
+  // Notify user (in-app + email). Best-effort; should not block admin action.
+  const origin = new URL(request.url).origin
+  const kycUrl = `${origin}/kopare/kyc`
+  const title = decision === 'approve' ? 'Verifiering godkänd' : 'Verifiering nekad'
+  const message =
+    decision === 'approve'
+      ? `Din KYC/verifiering har godkänts. Du kan nu fortsätta processen i datarum och chatt.\n\nÖppna: ${kycUrl}`
+      : `Din KYC/verifiering har nekats.${updated.rejectionReason ? `\n\nAnledning: ${updated.rejectionReason}` : ''}\n\nDu kan ladda upp nya dokument här: ${kycUrl}`
+
+  await createNotification({
+    userId,
+    type: 'system',
+    title,
+    message,
+    listingId: null,
+  })
+
+  try {
+    await sendEmail({
+      to: user.email,
+      subject: `BOLAXO: ${title}`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #111827;">
+          <h2 style="margin: 0 0 12px 0; color: #1F3C58;">${title}</h2>
+          <p style="margin: 0 0 12px 0;">Hej ${user.name || 'där'},</p>
+          <p style="margin: 0 0 12px 0;">${decision === 'approve' ? 'Din KYC/verifiering har godkänts.' : 'Din KYC/verifiering har nekats.'}</p>
+          ${decision === 'reject' && updated.rejectionReason ? `<p style="margin: 0 0 12px 0;"><strong>Anledning:</strong> ${updated.rejectionReason}</p>` : ''}
+          <p style="margin: 0 0 12px 0;">Öppna din verifieringssida här:</p>
+          <p style="margin: 0 0 12px 0;"><a href="${kycUrl}" style="color: #1F3C58;">${kycUrl}</a></p>
+          <p style="margin: 0; color: #6b7280; font-size: 12px;">BOLAXO</p>
+        </div>
+      `,
+    })
+  } catch (e) {
+    console.error('KYC email send failed', e)
+  }
 
   await logAdminAction(
     'admin_user_edited',

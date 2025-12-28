@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAuthenticatedUserId } from '@/lib/request-auth'
+import { logDataRoomAudit } from '@/lib/dataroom-audit'
 
 function sanitizeFolderName(name: string) {
   return name.trim().replace(/\s+/g, ' ').replace(/[\/\\]/g, '-').slice(0, 80)
@@ -65,6 +66,15 @@ export async function POST(request: NextRequest) {
         order: (maxOrder._max.order ?? 0) + 1,
       },
       select: { id: true, name: true, parentId: true, path: true },
+    })
+
+    await logDataRoomAudit({
+      dataRoomId,
+      actorId: userId,
+      action: 'folder_create',
+      targetType: 'folder',
+      targetId: folder.id,
+      meta: { name: folder.name, parentId: folder.parentId, path: folder.path },
     })
 
     return NextResponse.json({ success: true, folder })

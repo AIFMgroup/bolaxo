@@ -35,9 +35,7 @@ export default function DataRoomPage() {
         return
       }
       try {
-        const res = await fetch('/api/seller/listings', {
-          headers: { 'x-user-id': user.id }
-        })
+        const res = await fetch('/api/seller/listings', { credentials: 'include' })
         if (res.ok) {
           const data = await res.json()
           const fetched = data.listings || []

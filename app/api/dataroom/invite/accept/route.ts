@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
+import { logDataRoomAudit } from '@/lib/dataroom-audit'
 
 // POST /api/dataroom/invite/accept
 // Accept an invite and gain access to the dataroom
@@ -106,16 +107,14 @@ export async function POST(request: NextRequest) {
       data: { status: 'ACCEPTED', acceptedAt: new Date() },
     })
 
-    // Log audit
-    await prisma.dataRoomAudit.create({
-      data: {
-        dataRoomId: invite.dataRoomId,
-        actorId: userId,
-        action: 'INVITE_ACCEPTED',
-        targetType: 'INVITE',
-        targetId: invite.id,
-        meta: { role: invite.role },
-      },
+    await logDataRoomAudit({
+      dataRoomId: invite.dataRoomId,
+      actorId: userId,
+      actorEmail: user.email,
+      action: 'invite',
+      targetType: 'invite',
+      targetId: invite.id,
+      meta: { event: 'accepted', role: invite.role },
     })
 
     return NextResponse.json({

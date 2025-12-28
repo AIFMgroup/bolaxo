@@ -44,11 +44,7 @@ function SellerChatContent() {
 
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/chat/conversations', {
-          headers: {
-            'x-user-id': user.id
-          }
-        })
+        const response = await fetch('/api/chat/conversations', { credentials: 'include' })
 
         if (response.ok) {
           const data = await response.json()
@@ -72,11 +68,7 @@ function SellerChatContent() {
   const handleApproveContact = async (request: ContactRequest) => {
     try {
       // Find the NDA request and approve it
-      const ndaRequests = await fetch('/api/nda-requests', {
-        headers: {
-          'x-user-id': user?.id || ''
-        }
-      })
+      const ndaRequests = await fetch('/api/nda-requests', { credentials: 'include' })
       
       const ndaData = await ndaRequests.json()
       const ndaRequest = ndaData.requests?.find(
@@ -88,9 +80,9 @@ function SellerChatContent() {
         await fetch('/api/nda-requests', {
           method: 'PATCH',
           headers: {
-            'Content-Type': 'application/json',
-            'x-user-id': user?.id || ''
+            'Content-Type': 'application/json'
           },
+          credentials: 'include',
           body: JSON.stringify({
             id: ndaRequest.id,
             status: 'approved'
@@ -121,11 +113,7 @@ function SellerChatContent() {
   const handleRejectContact = async (request: ContactRequest) => {
     try {
       // Find the NDA request and reject it
-      const ndaRequests = await fetch('/api/nda-requests', {
-        headers: {
-          'x-user-id': user?.id || ''
-        }
-      })
+      const ndaRequests = await fetch('/api/nda-requests', { credentials: 'include' })
       
       const ndaData = await ndaRequests.json()
       const ndaRequest = ndaData.requests?.find(
@@ -137,9 +125,9 @@ function SellerChatContent() {
         await fetch('/api/nda-requests', {
           method: 'PATCH',
           headers: {
-            'Content-Type': 'application/json',
-            'x-user-id': user?.id || ''
+            'Content-Type': 'application/json'
           },
+          credentials: 'include',
           body: JSON.stringify({
             id: ndaRequest.id,
             status: 'rejected'

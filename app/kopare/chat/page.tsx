@@ -30,11 +30,7 @@ function BuyerChatContent() {
 
     const fetchConversations = async () => {
       try {
-        const response = await fetch('/api/chat/conversations', {
-          headers: {
-            'x-user-id': user.id
-          }
-        })
+        const response = await fetch('/api/chat/conversations', { credentials: 'include' })
 
         if (response.ok) {
           const data = await response.json()
