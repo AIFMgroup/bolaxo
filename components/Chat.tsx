@@ -205,48 +205,48 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
   const messageGroups = groupMessagesByDate(messages)
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] sm:h-[600px] bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-12rem)] sm:h-[600px] bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="bg-primary-navy text-white px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+      <div className="bg-primary-navy text-white px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3 min-w-0">
           {peerAvatar ? (
             <Image
               src={peerAvatar}
               alt={peerName}
-              width={36}
-              height={36}
-              className="rounded-full object-cover w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0"
+              width={40}
+              height={40}
+              className="rounded-full object-cover w-10 h-10 flex-shrink-0 ring-2 ring-white/20"
             />
           ) : (
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/20 flex items-center justify-center font-semibold flex-shrink-0 text-sm sm:text-base">
+            <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center font-semibold flex-shrink-0 text-base">
               {peerName.charAt(0).toUpperCase()}
             </div>
           )}
           <div className="min-w-0 flex-1">
-            <h3 className="font-semibold text-sm sm:text-base truncate">{peerName}</h3>
-            <p className="text-[10px] sm:text-xs text-white/70 truncate">
+            <h3 className="font-semibold text-base truncate">{peerName}</h3>
+            <p className="text-xs text-white/60 truncate">
               {peerRole === 'seller' ? 'Säljare' : 'Köpare'}
               {listingTitle && ` • ${listingTitle}`}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {/* Live indicator */}
-          <div className="flex items-center gap-1.5 px-2 py-1 bg-white/10 rounded-full">
-            <div className={`w-2 h-2 rounded-full ${isFastMode ? 'bg-green-400 animate-pulse' : 'bg-white/50'}`} />
-            <span className="text-xs text-white/70">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/10 rounded-full">
+            <div className={`w-1.5 h-1.5 rounded-full ${isFastMode ? 'bg-emerald-400 animate-pulse' : 'bg-white/40'}`} />
+            <span className="text-[11px] text-white/60 font-medium">
               {isFastMode ? 'Live' : 'Auto'}
             </span>
           </div>
           <button 
             onClick={refresh}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             title="Uppdatera"
           >
-            <RefreshCw className={`w-5 h-5 ${isFastMode ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${isFastMode ? 'animate-spin' : ''}`} />
           </button>
-          <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-            <MoreVertical className="w-5 h-5" />
+          <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <MoreVertical className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -254,81 +254,86 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
       {/* Messages */}
       <div 
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
+        className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50"
       >
         {loading ? (
           <div className="flex items-center justify-center h-full">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-navy"></div>
+            <div className="w-6 h-6 border-2 border-primary-navy/20 border-t-primary-navy rounded-full animate-spin"></div>
           </div>
         ) : messages.length === 0 ? (
-          <div className="text-center text-gray-500 mt-8">
-            <p>Inga meddelanden än</p>
-            <p className="text-sm mt-2">Säg hej och börja konversationen!</p>
+          <div className="text-center text-gray-500 mt-12">
+            <div className="w-12 h-12 mx-auto mb-3 bg-gray-100 rounded-full flex items-center justify-center">
+              <Send className="w-5 h-5 text-gray-400" />
+            </div>
+            <p className="font-medium text-gray-700">Inga meddelanden än</p>
+            <p className="text-sm mt-1 text-gray-500">Säg hej och börja konversationen!</p>
           </div>
         ) : (
           Object.entries(messageGroups).map(([date, groupedMessages]) => (
             <div key={date}>
               {/* Date separator */}
-              <div className="flex items-center gap-4 my-4">
-                <div className="flex-1 h-px bg-gray-300"></div>
-                <span className="text-xs text-gray-500 px-2">{date}</span>
-                <div className="flex-1 h-px bg-gray-300"></div>
+              <div className="flex items-center gap-3 my-4">
+                <div className="flex-1 h-px bg-gray-200"></div>
+                <span className="text-[11px] text-gray-400 font-medium px-2 py-0.5 bg-white rounded-full border border-gray-100">{date}</span>
+                <div className="flex-1 h-px bg-gray-200"></div>
               </div>
               
               {/* Messages for this date */}
-              {groupedMessages.map((message, index) => {
-                const isOwn = message.senderId === currentUserId
-                const showAvatar = index === 0 || 
-                  groupedMessages[index - 1].senderId !== message.senderId
-                
-                return (
-                  <div
-                    key={message.id}
-                    className={`flex gap-2 ${isOwn ? 'justify-end' : 'justify-start'}`}
-                  >
-                    {!isOwn && showAvatar && (
-                      message.sender.avatarUrl ? (
-                        <Image
-                          src={message.sender.avatarUrl}
-                          alt={message.sender.name}
-                          width={32}
-                          height={32}
-                          className="rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium">
-                          {message.sender.name.charAt(0).toUpperCase()}
+              <div className="space-y-2">
+                {groupedMessages.map((message, index) => {
+                  const isOwn = message.senderId === currentUserId
+                  const showAvatar = index === 0 || 
+                    groupedMessages[index - 1].senderId !== message.senderId
+                  
+                  return (
+                    <div
+                      key={message.id}
+                      className={`flex gap-2 ${isOwn ? 'justify-end' : 'justify-start'}`}
+                    >
+                      {!isOwn && showAvatar && (
+                        message.sender.avatarUrl ? (
+                          <Image
+                            src={message.sender.avatarUrl}
+                            alt={message.sender.name}
+                            width={32}
+                            height={32}
+                            className="rounded-full object-cover ring-1 ring-gray-100"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-600">
+                            {message.sender.name.charAt(0).toUpperCase()}
+                          </div>
+                        )
+                      )}
+                      {!isOwn && !showAvatar && <div className="w-8" />}
+                      
+                      <div className={`max-w-[85%] sm:max-w-[70%] ${isOwn ? 'items-end' : 'items-start'}`}>
+                        <div
+                          className={`rounded-lg px-3 py-2 ${
+                            isOwn 
+                              ? 'bg-primary-navy text-white' 
+                              : 'bg-white border border-gray-100 shadow-sm'
+                          }`}
+                        >
+                          <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">{message.content}</p>
                         </div>
-                      )
-                    )}
-                    {!isOwn && !showAvatar && <div className="w-8" />}
-                    
-                    <div className={`max-w-[85%] sm:max-w-[70%] ${isOwn ? 'items-end' : 'items-start'}`}>
-                      <div
-                        className={`rounded-2xl px-3 sm:px-4 py-2 ${
-                          isOwn 
-                            ? 'bg-primary-navy text-white' 
-                            : 'bg-white border border-gray-200'
-                        }`}
-                      >
-                        <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
-                      </div>
-                      <div className="flex items-center gap-1 mt-1 px-2">
-                        <span className="text-xs text-gray-500">
-                          {formatTime(message.createdAt)}
-                        </span>
-                        {isOwn && (
-                          message.read ? (
-                            <CheckCheck className="w-3 h-3 text-primary-blue" />
-                          ) : (
-                            <Check className="w-3 h-3 text-gray-400" />
-                          )
-                        )}
+                        <div className="flex items-center gap-1 mt-0.5 px-1">
+                          <span className="text-[10px] text-gray-400">
+                            {formatTime(message.createdAt)}
+                          </span>
+                          {isOwn && (
+                            message.read ? (
+                              <CheckCheck className="w-3 h-3 text-emerald-500" />
+                            ) : (
+                              <Check className="w-3 h-3 text-gray-300" />
+                            )
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
           ))
         )}
@@ -336,28 +341,28 @@ export default function Chat({ currentUserId, currentUserAvatar, peerId, peerNam
       </div>
 
       {/* Input */}
-      <div className="border-t border-gray-200 p-3 sm:p-4 bg-white pb-[calc(0.75rem+var(--sab))] sm:pb-4">
+      <div className="border-t border-gray-100 p-3 bg-white pb-[calc(0.75rem+var(--sab))] sm:pb-3">
         <form 
           onSubmit={(e) => {
             e.preventDefault()
             sendMessage()
           }}
-          className="flex gap-2"
+          className="flex gap-2 items-center"
         >
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Skriv ett meddelande..."
-            className="flex-1 px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-full focus:outline-none focus:border-primary-navy text-base"
+            className="flex-1 px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-lg focus:outline-none focus:border-primary-navy focus:ring-1 focus:ring-primary-navy/20 text-sm placeholder:text-gray-400 transition-all"
             disabled={sending}
           />
           <button
             type="submit"
             disabled={!newMessage.trim() || sending}
-            className="p-2.5 sm:p-2 bg-primary-navy text-white rounded-full hover:bg-primary-navy/90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="p-2.5 bg-primary-navy text-white rounded-lg hover:bg-primary-navy/90 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-4 h-4" />
           </button>
         </form>
       </div>
