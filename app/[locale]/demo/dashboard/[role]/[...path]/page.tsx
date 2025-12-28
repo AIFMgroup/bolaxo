@@ -81,7 +81,7 @@ const ROUTES: Record<RouteKey, React.ComponentType> = {
 }
 
 export default function DemoDashboardRoleCatchAllPage() {
-  const params = useParams<{ role: string; path?: string[] }>()
+  const params = useParams<{ role: string; path: string[] }>()
   const role = (params?.role || '') as 'buyer' | 'seller'
   const path = (params?.path || []) as string[]
 
