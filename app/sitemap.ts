@@ -26,6 +26,7 @@ const staticPages = [
   { path: '/kopare/sa-fungerar-det', priority: 0.8, changefreq: 'monthly' },
   { path: '/kopare/preferenser', priority: 0.7, changefreq: 'monthly' },
   { path: '/kopare/verifiering', priority: 0.6, changefreq: 'monthly' },
+  { path: '/kopare/kyc', priority: 0.6, changefreq: 'monthly' },
   { path: '/salja', priority: 0.9, changefreq: 'daily' },
   { path: '/salja/start', priority: 0.8, changefreq: 'monthly' },
   { path: '/salja/onboarding', priority: 0.7, changefreq: 'monthly' },

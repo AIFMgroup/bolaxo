@@ -18,24 +18,22 @@ const URL_TTL = 60 * 5 // 5 minutes
 
 const WATERMARK_BASE_URL = process.env.WATERMARK_BASE_URL // optional external service
 const WATERMARK_SECRET = process.env.WATERMARK_SIGNING_SECRET // optional HMAC for watermark service
-const WEBHOOK_URL = process.env.DATAROOM_WEBHOOK_URL // optional event webhook
 
-// Simple in-memory rate limiter per IP per 60s window
-const RATE_LIMIT = 60
-const rateStore = new Map<string, { count: number; reset: number }>()
-
-function rateLimit(ip: string | null | undefined) {
-  const key = ip || 'unknown'
-  const now = Date.now()
-  const windowMs = 60_000
-  const entry = rateStore.get(key)
-  if (!entry || entry.reset < now) {
-    rateStore.set(key, { count: 1, reset: now + windowMs })
-    return false
-  }
-  if (entry.count >= RATE_LIMIT) return true
-  entry.count += 1
-  return false
+function buildWatermarkUrl(key: string, email?: string | null) {
+  if (!WATERMARK_BASE_URL) return null
+  const ts = Date.now().toString()
+  const subject = email || 'viewer'
+  const payload = `${key}|${subject}|${ts}`
+  const sig = WATERMARK_SECRET
+    ? crypto.createHmac('sha256', WATERMARK_SECRET).update(payload).digest('hex')
+    : 'unsigned'
+  const url = new URL(WATERMARK_BASE_URL)
+  url.searchParams.set('bucket', BUCKET)
+  url.searchParams.set('key', key)
+  url.searchParams.set('subject', subject)
+  url.searchParams.set('ts', ts)
+  url.searchParams.set('sig', sig)
+  return url.toString()
 }
 
 async function getUserRole(dataRoomId: string, userId?: string) {
@@ -84,42 +82,10 @@ async function hasCustomGrant(documentId: string, userId?: string, email?: strin
   return !!g
 }
 
-async function notifyEvent(payload: any) {
-  if (!WEBHOOK_URL) return
-  try {
-    await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-  } catch (err) {
-    console.error('dataroom webhook failed', err)
-  }
-}
-
-function buildWatermarkUrl(key: string, email?: string | null) {
-  if (!WATERMARK_BASE_URL) return null
-  const ts = Date.now().toString()
-  const subject = email || 'viewer'
-  const payload = `${key}|${subject}|${ts}`
-  const sig = WATERMARK_SECRET
-    ? crypto.createHmac('sha256', WATERMARK_SECRET).update(payload).digest('hex')
-    : 'unsigned'
-  const url = new URL(WATERMARK_BASE_URL)
-  url.searchParams.set('bucket', BUCKET)
-  url.searchParams.set('key', key)
-  url.searchParams.set('subject', subject)
-  url.searchParams.set('ts', ts)
-  url.searchParams.set('sig', sig)
-  return url.toString()
-}
-
+// GET /api/dataroom/view-url?documentId=...&versionId=...
+// Returns an *inline* URL suitable for in-app preview. Does NOT require downloadEnabled.
 export async function GET(req: NextRequest) {
   try {
-    if (rateLimit(req.headers.get('x-forwarded-for'))) {
-      return NextResponse.json({ error: 'Rate limit' }, { status: 429 })
-    }
-
     const { searchParams } = new URL(req.url)
     const versionId = searchParams.get('versionId')
     const documentId = searchParams.get('documentId')
@@ -133,15 +99,6 @@ export async function GET(req: NextRequest) {
     const userEmail = cookieStore.get('bolaxo_user_email')?.value
     if (!userId && !userEmail) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
-    }
-
-    // Demo mode: return mock download URL
-    if (userId?.startsWith('demo') || versionId?.startsWith('demo') || documentId?.startsWith('demo')) {
-      return NextResponse.json({
-        url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-        fileName: 'demo-document.pdf',
-        demo: true,
-      })
     }
 
     // Fetch version
@@ -180,12 +137,14 @@ export async function GET(req: NextRequest) {
               select: { id: true },
             },
           },
-        }).then(doc => doc?.currentVersionId
-          ? prisma.dataRoomDocumentVersion.findUnique({
-              where: { id: doc.currentVersionId },
-              include: { document: { include: { dataRoom: { include: { listing: true } }, grants: true } } },
-            })
-          : null)
+        }).then((doc) =>
+          doc?.currentVersionId
+            ? prisma.dataRoomDocumentVersion.findUnique({
+                where: { id: doc.currentVersionId },
+                include: { document: { include: { dataRoom: { include: { listing: true } }, grants: true } } },
+              })
+            : null
+        )
 
     if (!version?.document) {
       return NextResponse.json({ error: 'Dokument hittades inte' }, { status: 404 })
@@ -196,41 +155,25 @@ export async function GET(req: NextRequest) {
     const listingId = (version.document.dataRoom as any).listing.id
 
     const role = (await getUserRole(dataRoomId, userId)) || (listingOwnerId === userId ? 'OWNER' : null)
-    if (!role) {
-      return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 })
-    }
+    if (!role) return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 })
 
-    // Require NDA for non-owners/editors? At minimum require for non-owner.
-    if (role !== 'OWNER') {
-      const ndaOk = await hasNda(dataRoomId, userId, userEmail || undefined)
-      if (!ndaOk) {
-        return NextResponse.json({ error: 'NDA krävs innan nedladdning' }, { status: 403 })
-      }
-    }
-
-    // Per-document visibility + per-document download policy
-    const docVisibility = (version.document as any).visibility as string | undefined
-    const docDownloadBlocked = !!(version.document as any).downloadBlocked
-    const globalDownloadEnabled = !!(version.document.dataRoom as any).downloadEnabled
-
+    // NDA required for non-owners/editors
     if (role !== 'OWNER' && role !== 'EDITOR') {
-      if (docVisibility === 'OWNER_ONLY') {
-        return NextResponse.json({ error: 'Dokumentet är endast för ägaren' }, { status: 403 })
-      }
-      if (docVisibility === 'TRANSACTION_ONLY') {
+      const ndaOk = await hasNda(dataRoomId, userId, userEmail || undefined)
+      if (!ndaOk) return NextResponse.json({ error: 'NDA krävs innan visning' }, { status: 403 })
+    }
+
+    // Per-document visibility
+    const vis = version.document.visibility
+    if (role !== 'OWNER' && role !== 'EDITOR') {
+      if (vis === 'OWNER_ONLY') return NextResponse.json({ error: 'Dokumentet är endast för ägaren' }, { status: 403 })
+      if (vis === 'TRANSACTION_ONLY') {
         const ok = await hasTransaction(listingId, userId || undefined)
         if (!ok) return NextResponse.json({ error: 'Transaktion krävs för detta dokument' }, { status: 403 })
       }
-      if (docVisibility === 'CUSTOM') {
-        const ok = (version.document as any).grants?.length ? true : await hasCustomGrant((version as any).documentId, userId || undefined, userEmail || undefined)
+      if (vis === 'CUSTOM') {
+        const ok = (version.document.grants?.length ?? 0) > 0 || (await hasCustomGrant(version.documentId, userId || undefined, userEmail || undefined))
         if (!ok) return NextResponse.json({ error: 'Ingen behörighet (CUSTOM)' }, { status: 403 })
-      }
-
-      if (!globalDownloadEnabled) {
-        return NextResponse.json({ error: 'Nedladdning är avstängd för datarummet' }, { status: 403 })
-      }
-      if (docDownloadBlocked) {
-        return NextResponse.json({ error: 'Nedladdning är blockerad för detta dokument' }, { status: 403 })
       }
     }
 
@@ -242,50 +185,43 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Filen skannas. Försök igen om en stund.' }, { status: 403 })
     }
 
+    // Inline view
     const presignedUrl = await getSignedUrl(
       s3,
       new GetObjectCommand({
         Bucket: BUCKET,
         Key: version.storageKey,
+        ResponseContentDisposition: `inline; filename="${version.fileName}"`,
+        ResponseContentType: version.mimeType,
       }),
       { expiresIn: URL_TTL }
     )
 
-    const requiresWatermark = !!(version.document.dataRoom as any).watermarkDownloads || !!(version.document as any).watermarkRequired
-    const watermarkedUrl = requiresWatermark ? buildWatermarkUrl(version.storageKey, userEmail || userId) : null
+    const useWatermark = !!buildWatermarkUrl(version.storageKey, userEmail || userId) && ((version.document.dataRoom as any).watermarkDownloads || version.document.watermarkRequired)
+    const viewUrl = useWatermark ? buildWatermarkUrl(version.storageKey, userEmail || userId) : presignedUrl
 
-    // Audit
     await prisma.dataRoomAudit.create({
       data: {
         dataRoomId,
         actorId: userId || undefined,
         actorEmail: userEmail || undefined,
-        action: 'download',
+        action: 'view',
         targetType: 'documentVersion',
         targetId: version.id,
-        meta: { watermarked: !!watermarkedUrl },
+        meta: { watermarked: useWatermark, inline: true },
       },
     })
 
-    // Fire webhook (non-blocking)
-    notifyEvent({
-      type: 'dataroom.download',
-      dataRoomId,
-      documentVersionId: version.id,
-      actorId: userId,
-      actorEmail: userEmail,
-      watermarked: !!watermarkedUrl,
-      at: new Date().toISOString(),
-    })
-
     return NextResponse.json({
-      downloadUrl: watermarkedUrl || presignedUrl,
+      viewUrl,
       expiresIn: URL_TTL,
       fileName: version.fileName,
+      mimeType: version.mimeType,
     })
   } catch (error) {
-    console.error('dataroom download-url error', error)
-    return NextResponse.json({ error: 'Kunde inte skapa download-URL' }, { status: 500 })
+    console.error('dataroom view-url error', error)
+    return NextResponse.json({ error: 'Kunde inte skapa view-URL' }, { status: 500 })
   }
 }
+
 

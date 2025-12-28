@@ -24,6 +24,12 @@ export async function GET(
       where: { id: buyerId },
       include: {
         buyerProfile: true,
+        buyerKycVerification: {
+          select: {
+            status: true,
+            reviewedAt: true,
+          }
+        },
         buyerTransactions: {
           where: {
             stage: 'COMPLETED'
@@ -68,6 +74,12 @@ export async function GET(
       trustFactors.push({ factor: 'BankID verifierad', points: 30 })
     }
 
+    // Manuell KYC verifiering (ID/bolagsdokument)
+    if (user.buyerKycVerification?.status === 'APPROVED') {
+      trustScore += 20
+      trustFactors.push({ factor: 'Verifierad köpare (KYC)', points: 20 })
+    }
+
     // Genomförda affärer
     const completedDeals = user.buyerTransactions.length
     trustScore += Math.min(completedDeals * 15, 45) // Max 45 poäng för affärer
@@ -101,6 +113,8 @@ export async function GET(
       // Email visas inte publikt av säkerhetsskäl
       verified: user.verified || false,
       bankIdVerified: user.bankIdVerified || false,
+      buyerKycStatus: user.buyerKycVerification?.status || 'UNVERIFIED',
+      buyerKycReviewedAt: user.buyerKycVerification?.reviewedAt || null,
       trustScore: trustScore,
       trustFactors: trustFactors,
       

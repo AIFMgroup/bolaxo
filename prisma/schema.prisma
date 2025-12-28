@@ -18,6 +18,9 @@ model User {
   verified        Boolean   @default(false)
   bankIdVerified  Boolean   @default(false)
   
+  // Buyer KYC (manual verification)
+  buyerKycVerification BuyerKycVerification?
+  
   // Profile data
   phone           String?
   companyName     String?
@@ -782,6 +785,21 @@ enum DataRoomRole {
   VIEWER
 }
 
+enum BuyerKycStatus {
+  UNVERIFIED
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum DataRoomDocumentVisibility {
+  ALL
+  OWNER_ONLY
+  NDA_ONLY
+  TRANSACTION_ONLY
+  CUSTOM
+}
+
 model DataRoom {
   id              String   @id @default(cuid())
   listingId       String   @unique
@@ -842,10 +860,16 @@ model DataRoomDocument {
   requirementId    String?                 // maps to readiness requirement when applicable
   status           String   @default("draft") // draft, pending_scan, ready, blocked
 
+  // Dataroom v2: per-document access controls
+  visibility       DataRoomDocumentVisibility @default(NDA_ONLY)
+  downloadBlocked  Boolean  @default(false) // blocks /download-url, but still allow in-app viewing (best effort)
+  watermarkRequired Boolean @default(false)
+
   currentVersionId String? @unique
   currentVersion   DataRoomDocumentVersion? @relation("CurrentDocVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
 
   versions         DataRoomDocumentVersion[]
+  grants           DataRoomDocumentGrant[]
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -853,6 +877,23 @@ model DataRoomDocument {
   @@index([dataRoomId])
   @@index([folderId])
   @@index([requirementId])
+}
+
+model DataRoomDocumentGrant {
+  id          String           @id @default(cuid())
+  documentId  String
+  document    DataRoomDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  userId      String?
+  email       String?
+
+  createdAt   DateTime @default(now())
+
+  @@index([documentId])
+  @@index([userId])
+  @@index([email])
+  @@unique([documentId, userId])
+  @@unique([documentId, email])
 }
 
 model DataRoomDocumentVersion {
@@ -1595,4 +1636,46 @@ model SanitycheckDocument {
   @@index([userId])
   @@index([fieldKey])
   @@index([userId, fieldKey])
+}
+
+// ===== BUYER KYC (MANUAL VERIFICATION) =====
+// Buyer uploads ID/company documents, then admin manually approves/rejects.
+model BuyerKycVerification {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status          BuyerKycStatus @default(UNVERIFIED)
+  submittedAt     DateTime?
+  reviewedAt      DateTime?
+  reviewedBy      String?       // Admin userId
+  rejectionReason String?
+
+  documents       BuyerKycDocument[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([submittedAt])
+  @@index([reviewedAt])
+}
+
+model BuyerKycDocument {
+  id              String             @id @default(cuid())
+  verificationId  String
+  verification    BuyerKycVerification @relation(fields: [verificationId], references: [id], onDelete: Cascade)
+
+  kind            String             // id, company_registration, other
+  fileName        String
+  fileSize        Int
+  mimeType        String
+
+  s3Key           String
+  s3Bucket        String
+
+  createdAt       DateTime @default(now())
+
+  @@index([verificationId])
+  @@index([kind])
 }

@@ -184,6 +184,7 @@ npm start
 2. **Info Page** (`/kopare`) - How it works for buyers
 3. **Create Account** (`/kopare/start`) - Set preferences (region, industry, size)
 4. **Verification** (`/kopare/verifiering`) - BankID verification (optional)
+5. **Buyer KYC** (`/kopare/kyc`) - Manual buyer verification (upload documents + admin review)
 5. **Search & Filter** (`/sok`) - Browse objects with filters
 6. **Object Detail** (`/objekt/[id]`) - View details (before/after NDA)
 7. **NDA Signing** (`/nda/[id]`) - Digital signing flow

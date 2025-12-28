@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 
 interface Folder {
   id: string
@@ -34,6 +34,11 @@ interface Document {
   title: string
   category: string | null
   requirementId: string | null
+  visibility?: 'ALL' | 'OWNER_ONLY' | 'NDA_ONLY' | 'TRANSACTION_ONLY' | 'CUSTOM'
+  downloadBlocked?: boolean
+  watermarkRequired?: boolean
+  canDownload?: boolean
+  grants?: Array<{ id: string; userId?: string | null; email?: string | null; createdAt?: string }>
   folder: { id: string; name: string } | null
   currentVersion: {
     id: string
@@ -78,7 +83,7 @@ interface Props {
   listingName?: string
 }
 
-type Tab = 'documents' | 'sharing'
+type Tab = 'documents' | 'sharing' | 'qa'
 
 // LocalStorage key for demo documents
 const DEMO_DATAROOM_DOCS_KEY = 'bolaxo_demo_dataroom_docs'
@@ -156,6 +161,23 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
   const [analysisData, setAnalysisData] = useState<DocumentAnalysis | null>(null)
   const [loadingAnalysis, setLoadingAnalysis] = useState(false)
 
+  // Per-document policy editor (OWNER/EDITOR)
+  const [policyVisibility, setPolicyVisibility] = useState<Document['visibility']>('NDA_ONLY')
+  const [policyDownloadBlocked, setPolicyDownloadBlocked] = useState(false)
+  const [policyWatermarkRequired, setPolicyWatermarkRequired] = useState(false)
+  const [policyCustomEmails, setPolicyCustomEmails] = useState('')
+  const [savingPolicy, setSavingPolicy] = useState(false)
+
+  // Q&A (per object)
+  const [qaLoading, setQaLoading] = useState(false)
+  const [qaRole, setQaRole] = useState<'buyer' | 'seller' | null>(null)
+  const [questions, setQuestions] = useState<any[]>([])
+  const [newQuestionTitle, setNewQuestionTitle] = useState('')
+  const [newQuestionCategory, setNewQuestionCategory] = useState('other')
+  const [newQuestionPriority, setNewQuestionPriority] = useState('medium')
+  const [newQuestionDescription, setNewQuestionDescription] = useState('')
+  const [answerDrafts, setAnswerDrafts] = useState<Record<string, string>>({})
+
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Check if demo mode
@@ -214,6 +236,26 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
     }
   }, [listingId])
 
+  useEffect(() => {
+    if (!showVersions || !selectedDoc) return
+    setPolicyVisibility(selectedDoc.visibility || 'NDA_ONLY')
+    setPolicyDownloadBlocked(!!selectedDoc.downloadBlocked)
+    setPolicyWatermarkRequired(!!selectedDoc.watermarkRequired)
+    const emails = (selectedDoc.grants || [])
+      .map((g) => (g.email || '').trim())
+      .filter(Boolean)
+      .join(', ')
+    setPolicyCustomEmails(emails)
+  }, [showVersions, selectedDoc])
+
+  useEffect(() => {
+    if (activeTab !== 'qa') return
+    ;(async () => {
+      await loadQa()
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab])
+
   const loadDocuments = async (dataRoomId: string) => {
     const res = await fetch(`/api/dataroom/${dataRoomId}/documents`)
     if (res.ok) {
@@ -245,6 +287,132 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
       const data = await res.json()
       setInvites(data.invites || [])
     }
+  }
+
+  const createFolder = async (parentId: string | null) => {
+    if (!dataRoom) return
+    if (!permissions?.canUpload) return
+    const name = window.prompt('Namn på ny mapp?')
+    if (!name) return
+
+    try {
+      const res = await fetch('/api/dataroom/folders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          dataRoomId: dataRoom.id,
+          name,
+          parentId,
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        alert(data.error || 'Kunde inte skapa mapp')
+        return
+      }
+      await loadDocuments(dataRoom.id)
+    } catch (err) {
+      console.error('Create folder error:', err)
+      alert('Kunde inte skapa mapp')
+    }
+  }
+
+  const saveDocPolicy = async () => {
+    if (!dataRoom || !selectedDoc) return
+    if (!(permissions?.role === 'OWNER' || permissions?.role === 'EDITOR')) return
+
+    setSavingPolicy(true)
+    try {
+      const grantEmails =
+        policyVisibility === 'CUSTOM'
+          ? policyCustomEmails
+              .split(',')
+              .map((e) => e.trim().toLowerCase())
+              .filter(Boolean)
+          : []
+
+      const res = await fetch(`/api/dataroom/documents/${selectedDoc.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          visibility: policyVisibility,
+          downloadBlocked: policyDownloadBlocked,
+          watermarkRequired: policyWatermarkRequired,
+          grantEmails,
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        alert(data.error || 'Kunde inte spara inställningar')
+        return
+      }
+      await loadDocuments(dataRoom.id)
+    } finally {
+      setSavingPolicy(false)
+    }
+  }
+
+  const loadQa = async () => {
+    setQaLoading(true)
+    try {
+      const res = await fetch(`/api/questions?listingId=${encodeURIComponent(listingId)}`, {
+        credentials: 'include',
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setQaRole(null)
+        setQuestions([])
+        return
+      }
+      setQaRole(data.role || null)
+      setQuestions(Array.isArray(data.questions) ? data.questions : [])
+    } finally {
+      setQaLoading(false)
+    }
+  }
+
+  const submitQuestion = async () => {
+    if (!newQuestionTitle || !newQuestionDescription) return
+    const res = await fetch('/api/questions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        listingId,
+        title: newQuestionTitle,
+        description: newQuestionDescription,
+        category: newQuestionCategory,
+        priority: newQuestionPriority,
+      }),
+    })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      alert(data.error || 'Kunde inte skapa fråga')
+      return
+    }
+    setNewQuestionTitle('')
+    setNewQuestionDescription('')
+    setNewQuestionCategory('other')
+    setNewQuestionPriority('medium')
+    await loadQa()
+  }
+
+  const submitAnswer = async (questionId: string) => {
+    const content = (answerDrafts[questionId] || '').trim()
+    if (!content) return
+    const res = await fetch(`/api/questions/${questionId}/answers`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ content }),
+    })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      alert(data.error || 'Kunde inte svara')
+      return
+    }
+    setAnswerDrafts((prev) => ({ ...prev, [questionId]: '' }))
+    await loadQa()
   }
 
   const handleUpload = async (files: FileList) => {
@@ -414,6 +582,11 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
     const vid = versionId || doc.currentVersion?.id
     if (!vid) return
 
+    if (doc.canDownload === false) {
+      alert('Nedladdning är blockerad för detta dokument')
+      return
+    }
+
     setDownloading(doc.id)
     try {
       // First, check localStorage for demo files
@@ -437,8 +610,8 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
       )
       const data = await res.json()
 
-      if (res.ok && data.url) {
-        window.open(data.url, '_blank')
+      if (res.ok && data.downloadUrl) {
+        window.open(data.downloadUrl, '_blank')
       } else {
         // Demo fallback: create a sample text file
         const blob = new Blob([`Demo dokument: ${doc.title}\n\nDetta är en demo-fil.`], { type: 'text/plain' })
@@ -456,6 +629,25 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
       alert('Kunde inte ladda ner fil')
     } finally {
       setDownloading(null)
+    }
+  }
+
+  const handleView = async (doc: Document, versionId?: string) => {
+    if (!dataRoom) return
+    const vid = versionId || doc.currentVersion?.id
+    if (!vid) return
+
+    try {
+      const res = await fetch(`/api/dataroom/view-url?documentId=${doc.id}&versionId=${vid}`)
+      const data = await res.json()
+      if (res.ok && data.viewUrl) {
+        window.open(data.viewUrl, '_blank')
+      } else {
+        alert(data.error || 'Kunde inte visa dokument')
+      }
+    } catch (err) {
+      console.error('View error:', err)
+      alert('Kunde inte visa dokument')
     }
   }
 
@@ -547,6 +739,30 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
   const pendingInvites = invites.filter((i) => i.status === 'PENDING')
 
+  const folderDepthById = useMemo(() => {
+    const byId = new Map<string, Folder>()
+    folders.forEach((f) => byId.set(f.id, f))
+    const cache = new Map<string, number>()
+    const depth = (id: string, seen = new Set<string>()): number => {
+      if (cache.has(id)) return cache.get(id)!
+      const f = byId.get(id)
+      if (!f || !f.parentId) {
+        cache.set(id, 0)
+        return 0
+      }
+      if (seen.has(id)) {
+        cache.set(id, 0)
+        return 0
+      }
+      seen.add(id)
+      const d = 1 + depth(f.parentId, seen)
+      cache.set(id, d)
+      return d
+    }
+    folders.forEach((f) => depth(f.id))
+    return cache
+  }, [folders])
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
@@ -607,6 +823,16 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
               <span className="ml-2 w-2 h-2 inline-block rounded-full bg-amber-500" />
             )}
           </button>
+          <button
+            onClick={() => setActiveTab('qa')}
+            className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
+              activeTab === 'qa'
+                ? 'bg-white text-gray-900 shadow-sm animate-pulse-shadow'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Q&amp;A
+          </button>
         </div>
 
         {activeTab === 'documents' && permissions?.canUpload && (
@@ -625,9 +851,20 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-4">
             <div className="bg-white rounded-3xl border border-gray-100 p-5 animate-pulse-shadow">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
-                Mappar
-              </h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  Mappar
+                </h3>
+                {permissions?.canUpload && (
+                  <button
+                    onClick={() => createFolder(selectedFolder)}
+                    className="text-xs font-medium text-navy hover:text-navy/80"
+                    title="Skapa mapp"
+                  >
+                    + Ny
+                  </button>
+                )}
+              </div>
               <div className="space-y-1">
                 <button
                   onClick={() => setSelectedFolder(null)}
@@ -652,7 +889,12 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                         : 'hover:bg-gray-50 text-gray-700'
                     }`}
                   >
-                    <span className="truncate">{folder.name}</span>
+                    <span
+                      className="truncate"
+                      style={{ paddingLeft: `${(folderDepthById.get(folder.id) || 0) * 12}px` }}
+                    >
+                      {folder.name}
+                    </span>
                     <span className={`text-xs font-medium ${selectedFolder === folder.id ? 'text-white/60' : 'text-gray-400'}`}>
                       {folder.documentCount}
                     </span>
@@ -805,11 +1047,17 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                             </button>
                           )}
                           <button
+                            onClick={() => handleView(doc)}
+                            className="px-3 py-2 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                          >
+                            Visa
+                          </button>
+                          <button
                             onClick={() => handleDownload(doc)}
-                            disabled={downloading === doc.id}
+                            disabled={downloading === doc.id || doc.canDownload === false}
                             className="px-4 py-2 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all disabled:opacity-50"
                           >
-                            {downloading === doc.id ? 'Laddar...' : 'Ladda ner'}
+                            {downloading === doc.id ? 'Laddar...' : doc.canDownload === false ? 'Blockerad' : 'Ladda ner'}
                           </button>
                         </div>
                       </div>
@@ -931,6 +1179,144 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
         </div>
       )}
 
+      {/* Q&A Tab */}
+      {activeTab === 'qa' && (
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="bg-white rounded-3xl border border-gray-100 p-6 animate-pulse-shadow">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-1">Q&amp;A</h3>
+                <p className="text-sm text-gray-500">Frågor &amp; svar kopplade till objektet</p>
+              </div>
+              <a
+                href={`/api/questions/export-pdf?listingId=${encodeURIComponent(listingId)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-2 text-sm font-medium text-navy hover:bg-navy/5 rounded-xl transition-colors"
+              >
+                Exportera PDF
+              </a>
+            </div>
+
+            {qaLoading ? (
+              <div className="py-10 text-center text-sm text-gray-500">Laddar…</div>
+            ) : qaRole === null ? (
+              <div className="mt-4 text-sm text-gray-600">
+                Du har inte åtkomst till Q&amp;A ännu (kräver NDA eller transaktion).
+              </div>
+            ) : (
+              <div className="mt-6 space-y-6">
+                {qaRole === 'buyer' && (
+                  <div className="p-4 bg-gray-50 rounded-2xl space-y-3">
+                    <p className="text-sm font-semibold text-gray-900">Ställ en fråga</p>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <input
+                        value={newQuestionTitle}
+                        onChange={(e) => setNewQuestionTitle(e.target.value)}
+                        placeholder="Titel"
+                        className="px-4 py-2 border border-gray-200 rounded-xl text-sm bg-white"
+                      />
+                      <div className="flex gap-2">
+                        <select
+                          value={newQuestionCategory}
+                          onChange={(e) => setNewQuestionCategory(e.target.value)}
+                          className="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white"
+                        >
+                          <option value="financial">Financial</option>
+                          <option value="legal">Legal</option>
+                          <option value="commercial">Commercial</option>
+                          <option value="it">IT</option>
+                          <option value="hr">HR</option>
+                          <option value="other">Other</option>
+                        </select>
+                        <select
+                          value={newQuestionPriority}
+                          onChange={(e) => setNewQuestionPriority(e.target.value)}
+                          className="px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white"
+                        >
+                          <option value="low">Low</option>
+                          <option value="medium">Medium</option>
+                          <option value="high">High</option>
+                          <option value="critical">Critical</option>
+                        </select>
+                      </div>
+                    </div>
+                    <textarea
+                      value={newQuestionDescription}
+                      onChange={(e) => setNewQuestionDescription(e.target.value)}
+                      placeholder="Beskriv frågan"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm bg-white min-h-[120px]"
+                    />
+                    <div className="flex justify-end">
+                      <button
+                        onClick={submitQuestion}
+                        className="px-5 py-2.5 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all disabled:opacity-50"
+                        disabled={!newQuestionTitle || !newQuestionDescription}
+                      >
+                        Skicka fråga
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-3">
+                  {questions.length === 0 ? (
+                    <div className="text-sm text-gray-600">Inga frågor ännu.</div>
+                  ) : (
+                    questions.map((q) => (
+                      <div key={q.id} className="border border-gray-100 rounded-2xl p-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="min-w-0">
+                            <p className="font-semibold text-gray-900">{q.title}</p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {q.category} • {q.priority} • {q.status}
+                            </p>
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            {new Date(q.createdAt).toLocaleDateString('sv-SE')}
+                          </div>
+                        </div>
+
+                        <p className="text-sm text-gray-700 mt-3 whitespace-pre-wrap">{q.description}</p>
+
+                        <div className="mt-4 space-y-2">
+                          {(q.answers || []).map((a: any) => (
+                            <div key={a.id} className="bg-gray-50 rounded-xl p-3">
+                              <p className="text-xs text-gray-500 mb-1">Svar</p>
+                              <p className="text-sm text-gray-800 whitespace-pre-wrap">{a.content}</p>
+                            </div>
+                          ))}
+
+                          {qaRole === 'seller' && (
+                            <div className="pt-2">
+                              <textarea
+                                value={answerDrafts[q.id] || ''}
+                                onChange={(e) => setAnswerDrafts((prev) => ({ ...prev, [q.id]: e.target.value }))}
+                                placeholder="Skriv svar…"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm bg-white min-h-[90px]"
+                              />
+                              <div className="flex justify-end mt-2">
+                                <button
+                                  onClick={() => submitAnswer(q.id)}
+                                  disabled={!(answerDrafts[q.id] || '').trim()}
+                                  className="px-4 py-2 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all disabled:opacity-50"
+                                >
+                                  Skicka svar
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Upload Modal */}
       {showUpload && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -1003,6 +1389,67 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
               </button>
             </div>
 
+            {(permissions?.role === 'OWNER' || permissions?.role === 'EDITOR') && (
+              <div className="mb-4 p-4 bg-gray-50 rounded-2xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-gray-900">Åtkomst per dokument</p>
+                  <button
+                    onClick={saveDocPolicy}
+                    disabled={savingPolicy}
+                    className="px-3 py-1.5 text-xs font-medium rounded-lg bg-navy text-white disabled:opacity-50"
+                  >
+                    {savingPolicy ? 'Sparar…' : 'Spara'}
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3">
+                  <label className="text-xs font-medium text-gray-600">
+                    Synlighet
+                    <select
+                      value={policyVisibility || 'NDA_ONLY'}
+                      onChange={(e) => setPolicyVisibility(e.target.value as any)}
+                      className="mt-1 w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
+                    >
+                      <option value="ALL">ALL (efter åtkomst)</option>
+                      <option value="NDA_ONLY">NDA_ONLY</option>
+                      <option value="TRANSACTION_ONLY">TRANSACTION_ONLY</option>
+                      <option value="CUSTOM">CUSTOM (allowlist)</option>
+                      <option value="OWNER_ONLY">OWNER_ONLY</option>
+                    </select>
+                  </label>
+
+                  {policyVisibility === 'CUSTOM' && (
+                    <label className="text-xs font-medium text-gray-600">
+                      Allowlist e-post (komma-separerat)
+                      <input
+                        value={policyCustomEmails}
+                        onChange={(e) => setPolicyCustomEmails(e.target.value)}
+                        placeholder="a@bolag.se, b@bolag.se"
+                        className="mt-1 w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
+                      />
+                    </label>
+                  )}
+
+                  <label className="flex items-center gap-2 text-sm text-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={policyDownloadBlocked}
+                      onChange={(e) => setPolicyDownloadBlocked(e.target.checked)}
+                    />
+                    Blockera nedladdning (för viewers)
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={policyWatermarkRequired}
+                      onChange={(e) => setPolicyWatermarkRequired(e.target.checked)}
+                    />
+                    Tvinga watermark
+                  </label>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-2 max-h-80 overflow-y-auto">
               {selectedDoc.versions?.map((v) => (
                 <div
@@ -1028,12 +1475,21 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleDownload(selectedDoc, v.id)}
-                    className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-lg transition-colors"
-                  >
-                    Ladda ner
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleView(selectedDoc, v.id)}
+                      className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-lg transition-colors"
+                    >
+                      Visa
+                    </button>
+                    <button
+                      onClick={() => handleDownload(selectedDoc, v.id)}
+                      disabled={selectedDoc.canDownload === false}
+                      className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {selectedDoc.canDownload === false ? 'Blockerad' : 'Ladda ner'}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

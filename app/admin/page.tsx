@@ -31,6 +31,7 @@ import PermissionsMatrix from '@/components/admin/PermissionsMatrix'
 import DataExportImport from '@/components/admin/DataExportImport'
 import SellerVerification from '@/components/admin/SellerVerification'
 import BuyerOnboarding from '@/components/admin/BuyerOnboarding'
+import BuyerKycVerification from '@/components/admin/BuyerKycVerification'
 import CustomAlerts from '@/components/admin/CustomAlerts'
 import AdvancedReporting from '@/components/admin/AdvancedReporting'
 
@@ -57,7 +58,7 @@ interface DashboardStats {
   }>
 }
 
-type TabType = 'overview' | 'users' | 'listings' | 'transactions' | 'payments' | 'financial' | 'moderation' | 'audit' | 'analytics' | 'sellers' | 'buyers' | 'fraud' | 'ndas' | 'emails' | 'integrations' | 'messages' | 'support' | 'reports' | 'admins' | 'permissions' | 'data' | 'sellerVerification' | 'buyerOnboarding' | 'customAlerts' | 'advancedReporting' | 'emailTest'
+type TabType = 'overview' | 'users' | 'listings' | 'transactions' | 'payments' | 'financial' | 'moderation' | 'audit' | 'analytics' | 'sellers' | 'buyers' | 'fraud' | 'ndas' | 'emails' | 'integrations' | 'messages' | 'support' | 'reports' | 'admins' | 'permissions' | 'data' | 'sellerVerification' | 'buyerOnboarding' | 'buyerKyc' | 'customAlerts' | 'advancedReporting' | 'emailTest'
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -187,6 +188,7 @@ export default function AdminDashboard() {
         { id: 'sellers' as TabType, label: 'Säljare', icon: <Building2 className="w-4 h-4" /> },
         { id: 'buyers' as TabType, label: 'Köpare', icon: <Users2 className="w-4 h-4" /> },
         { id: 'sellerVerification' as TabType, label: 'Verifiering', icon: <Shield className="w-4 h-4" /> },
+        { id: 'buyerKyc' as TabType, label: 'KYC (köpare)', icon: <Shield className="w-4 h-4" /> },
         { id: 'buyerOnboarding' as TabType, label: 'Onboarding', icon: <Sparkles className="w-4 h-4" /> },
       ]
     },
@@ -664,6 +666,7 @@ export default function AdminDashboard() {
           {activeTab === 'data' && <DataExportImport />}
           {activeTab === 'sellerVerification' && <SellerVerification />}
           {activeTab === 'buyerOnboarding' && <BuyerOnboarding />}
+          {activeTab === 'buyerKyc' && <BuyerKycVerification />}
           {activeTab === 'customAlerts' && <CustomAlerts />}
           {activeTab === 'advancedReporting' && <AdvancedReporting />}
         </div>

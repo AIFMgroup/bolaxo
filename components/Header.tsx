@@ -118,17 +118,14 @@ export default function Header() {
     }
     return `/${locale}${path}`
   }
-  
-  // Hide header on admin pages
-  if (isAdminPage) {
-    return null
-  }
 
   useEffect(() => {
+    if (isAdminPage) return
     setMounted(true)
-  }, [])
+  }, [isAdminPage])
 
   useEffect(() => {
+    if (isAdminPage) return
     if (!mounted) return
     const handleScroll = () => {
       setScrolled(window.scrollY > 10)
@@ -136,10 +133,11 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll)
     handleScroll() // Check initial scroll position
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [mounted])
+  }, [mounted, isAdminPage])
 
   // Prevent body scroll when menu is open
   useEffect(() => {
+    if (isAdminPage) return
     if (isMenuOpen) {
       // Save current scroll position
       const scrollY = window.scrollY
@@ -157,7 +155,7 @@ export default function Header() {
         window.scrollTo(0, scrollY)
       }
     }
-  }, [isMenuOpen])
+  }, [isMenuOpen, isAdminPage])
 
   const handleMouseEnter = (label: string) => {
     if (dropdownTimeoutRef.current) {
@@ -170,6 +168,11 @@ export default function Header() {
     dropdownTimeoutRef.current = setTimeout(() => {
       setOpenDropdown(null)
     }, 150)
+  }
+
+  // Hide header on admin pages (after hooks to satisfy rules-of-hooks)
+  if (isAdminPage) {
+    return null
   }
 
   return (

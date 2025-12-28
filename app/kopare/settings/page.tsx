@@ -213,12 +213,20 @@ export default function BuyerSettingsPage() {
 
           {/* Actions */}
           <div className="flex items-center justify-between pt-6 border-t">
-            <Link
-              href="/kopare/chat"
-              className="text-primary-navy hover:text-primary-blue font-medium"
-            >
-              Gå till meddelanden
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/kopare/chat"
+                className="text-primary-navy hover:text-primary-blue font-medium"
+              >
+                Gå till meddelanden
+              </Link>
+              <Link
+                href="/kopare/kyc"
+                className="text-primary-navy hover:text-primary-blue font-medium"
+              >
+                Verifiera köpare (KYC)
+              </Link>
+            </div>
             
             <button
               type="submit"

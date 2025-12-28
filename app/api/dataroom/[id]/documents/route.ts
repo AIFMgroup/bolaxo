@@ -12,6 +12,7 @@ export async function GET(
     const { id: dataRoomId } = await params
     const cookieStore = await cookies()
     const userId = cookieStore.get('bolaxo_user_id')?.value
+    const userEmail = cookieStore.get('bolaxo_user_email')?.value
 
     if (!userId) {
       return NextResponse.json({ error: 'Ej autentiserad' }, { status: 401 })
@@ -82,6 +83,23 @@ export async function GET(
       }
     }
 
+    const grantsInclude: any =
+      isOwner || isEditor
+        ? {
+            select: { id: true, userId: true, email: true, createdAt: true },
+            orderBy: { createdAt: 'desc' },
+            take: 200,
+          }
+        : {
+            where: {
+              OR: [
+                userId ? { userId } : undefined,
+                userEmail ? { email: userEmail } : undefined,
+              ].filter(Boolean) as any,
+            },
+            select: { id: true },
+          }
+
     // Get dataroom with folders and documents
     const dataRoom = await prisma.dataRoom.findUnique({
       where: { id: dataRoomId },
@@ -91,6 +109,7 @@ export async function GET(
             id: true,
             companyName: true,
             anonymousTitle: true,
+            userId: true,
           },
         },
         folders: {
@@ -98,6 +117,7 @@ export async function GET(
         },
         documents: {
           include: {
+            grants: grantsInclude,
             currentVersion: {
               select: {
                 id: true,
@@ -144,12 +164,47 @@ export async function GET(
     })
 
     // Transform documents for response
-    const documents = dataRoom.documents.map((doc) => ({
+    const isViewer = !(isOwner || isEditor)
+    const listingId = dataRoom.listing?.id
+
+    const hasTransaction = async () => {
+      if (!listingId) return false
+      const tx = await prisma.transaction.findFirst({
+        where: { listingId, OR: [{ buyerId: userId }, { sellerId: userId }] },
+        select: { id: true },
+      })
+      return !!tx
+    }
+    const txOk = isViewer ? await hasTransaction() : true
+
+    const documents = dataRoom.documents
+      .filter((doc) => {
+        if (!isViewer) return true
+        const vis = (doc as any).visibility as string | undefined
+        if (vis === 'OWNER_ONLY') return false
+        if (vis === 'TRANSACTION_ONLY') return txOk
+        if (vis === 'CUSTOM') return (doc as any).grants?.length > 0
+        // ALL / NDA_ONLY are fine (NDA already checked above for non-owners)
+        return true
+      })
+      .map((doc) => {
+        const canDownload =
+          !isViewer ||
+          (!!dataRoom.downloadEnabled && !(doc as any).downloadBlocked)
+
+        return {
       id: doc.id,
       name: doc.title,
       title: doc.title,
       category: null,
       requirementId: doc.requirementId,
+      visibility: (doc as any).visibility,
+      downloadBlocked: !!(doc as any).downloadBlocked,
+      watermarkRequired: !!(doc as any).watermarkRequired,
+      canDownload,
+      grants: isViewer
+        ? undefined
+        : (doc as any).grants?.map((g: any) => ({ id: g.id, userId: g.userId, email: g.email, createdAt: g.createdAt })),
       folder: doc.folder
         ? { id: doc.folder.id, name: doc.folder.name }
         : null,
@@ -188,7 +243,8 @@ export async function GET(
       uploadedBy: 'Okänd',
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
-    }))
+    }
+      })
 
     // Build folder structure
     const folders = dataRoom.folders.map((folder) => ({
@@ -207,6 +263,8 @@ export async function GET(
           dataRoom.listing?.companyName ||
           'Okänt företag',
         ndaRequired: true,
+        downloadEnabled: dataRoom.downloadEnabled,
+        watermarkDownloads: dataRoom.watermarkDownloads,
       },
       folders,
       documents,
@@ -215,7 +273,7 @@ export async function GET(
         canUpload: isOwner || isEditor,
         canDelete: isOwner || isEditor,
         canInvite: isOwner,
-        canDownload: true, // All with access can download (after NDA)
+        canDownload: true, // per-doc download capability is returned on each doc
       },
     })
   } catch (error) {
