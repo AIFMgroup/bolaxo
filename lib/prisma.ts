@@ -13,3 +13,6 @@ export const prisma =
   })
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+// Backwards-compatible default export (some older code paths may still do `import prisma from ...`)
+export default prisma
