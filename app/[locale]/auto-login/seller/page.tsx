@@ -7,7 +7,7 @@ export default function AutoLoginSellerPage() {
   const locale = useLocale()
 
   useEffect(() => {
-    // Auto-login as seller
+    // Auto-login as seller (demo)
     const sellerUser = {
       id: 'seller-auto-001',
       email: 'demo-seller@bolaxo.com',
@@ -23,8 +23,8 @@ export default function AutoLoginSellerPage() {
     const token = `dev-token-${sellerUser.id}-${Date.now()}`
     localStorage.setItem('dev-auth-token', token)
 
-    // Use window.location for hard redirect to force auth context to re-read localStorage
-    window.location.href = `/${locale}/dashboard`
+    // Redirect into demo dashboard area (avoids requiring real session cookies)
+    window.location.href = `/${locale}/demo/dashboard/seller`
   }, [locale])
 
   return (

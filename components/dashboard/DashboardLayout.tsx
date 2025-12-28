@@ -35,6 +35,35 @@ export default function DashboardLayout({ children, demoRole }: DashboardLayoutP
   // Role-specific menu items
   const getMenuItems = (): MenuItem[] => {
     const userRole = demoRole || user?.role || ''
+
+    // Demo dashboards should never navigate into protected /dashboard/* routes.
+    // Keep navigation inside /demo/dashboard/* plus a few public links.
+    if (demoRole) {
+      const demoBase = `/${locale}/demo/dashboard/${demoRole}`
+      const common: MenuItem[] = [
+        { label: t('menu.overview'), href: demoBase, icon: LayoutDashboard },
+      ]
+
+      if (isBuyer(demoRole)) {
+        return [
+          ...common,
+          // Keep demo navigation on public/demo routes only
+          { label: t('menu.searchProfile'), href: `/${locale}/sok`, icon: Search },
+        ]
+      }
+
+      if (isSeller(demoRole)) {
+        return [
+          ...common,
+          { label: t('menu.myListings'), href: `/${locale}/salja/start`, icon: Building },
+          { label: t('menu.dataRoom'), href: `/${locale}/salja/sme-kit/dataroom`, icon: FolderOpen },
+          { label: t('menu.settings'), href: `/${locale}/salja/settings`, icon: Settings },
+        ]
+      }
+
+      return common
+    }
+
     if (isSeller(userRole)) {
       return [
         { label: t('menu.overview'), href: `/${locale}/dashboard`, icon: LayoutDashboard },
@@ -207,7 +236,7 @@ export default function DashboardLayout({ children, demoRole }: DashboardLayoutP
             
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Quick actions based on role */}
-              {isSeller(user?.role || '') && (
+              {isSeller(demoRole || user?.role || '') && (
                 <Link 
                   href={`/${locale}/salja/start`} 
                   className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-navy to-navy/90 text-white font-medium rounded-full hover:shadow-lg transition-all text-sm"
@@ -216,7 +245,7 @@ export default function DashboardLayout({ children, demoRole }: DashboardLayoutP
                   <span className="hidden sm:inline">{t('quickActions.newListing')}</span>
                 </Link>
               )}
-              {isBuyer(user?.role || '') && (
+              {isBuyer(demoRole || user?.role || '') && (
                 <Link 
                   href={`/${locale}/sok`} 
                   className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-navy to-navy/90 text-white font-medium rounded-full hover:shadow-lg transition-all text-sm"

@@ -17,9 +17,6 @@ export default function DemoBuyerDashboardPage() {
 
     localStorage.setItem('dev-auth-user', JSON.stringify(demoUser))
     localStorage.setItem('dev-auth-token', `dev-token-${demoUser.id}-${Date.now()}`)
-
-    document.cookie = `bolaxo_user_id=${demoUser.id}; path=/; max-age=86400`
-    document.cookie = `bolaxo_user_role=${demoUser.role}; path=/; max-age=86400`
   }, [])
 
   return (
@@ -27,7 +24,7 @@ export default function DemoBuyerDashboardPage() {
       <div className="bg-yellow-50 border-b border-yellow-200 px-6 py-2 text-sm text-yellow-800 text-center mb-6 rounded-lg">
         Detta är en <strong>demo-version</strong>. Ingen data sparas.
       </div>
-      <BuyerDashboard userId="demo-user" />
+      <BuyerDashboard userId="demo-buyer" />
     </DashboardLayout>
   )
 }
