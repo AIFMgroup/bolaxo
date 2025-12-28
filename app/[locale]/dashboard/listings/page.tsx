@@ -93,8 +93,7 @@ export default function ListingsPage() {
     try {
       const response = await fetch(`/api/listings/${listingId}/status?action=${action}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id })
+        credentials: 'include'
       })
 
       if (response.ok) {

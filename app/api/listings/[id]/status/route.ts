@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 export async function PATCH(
   request: NextRequest,
@@ -13,19 +12,34 @@ export async function PATCH(
   try {
     const { searchParams } = new URL(request.url)
     const action = searchParams.get('action')
-    const body = await request.json()
-    const { userId } = body
+    if (!action) {
+      return NextResponse.json({ error: 'action krävs' }, { status: 400 })
+    }
 
-    if (!action || !userId) {
-      return NextResponse.json({ error: 'action och userId krävs' }, { status: 400 })
+    const actorId = await getAuthenticatedUserId(request)
+    if (!actorId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     // Verify ownership
     const listing = await prisma.listing.findUnique({
-      where: { id }
+      where: { id },
+      select: { id: true, userId: true }
     })
 
-    if (!listing || listing.userId !== userId) {
+    if (!listing) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+
+    // Allow admins too
+    const actor = await prisma.user.findUnique({
+      where: { id: actorId },
+      select: { role: true }
+    })
+
+    const isAdmin = actor?.role === 'admin'
+    const isOwner = listing.userId === actorId
+    if (!isOwner && !isAdmin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
