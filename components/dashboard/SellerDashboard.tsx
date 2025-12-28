@@ -111,9 +111,15 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
     const newStatus = company.status === 'active' ? 'paused' : 'active'
     
     try {
+      if (DEMO_MODE) {
+        setCompany({ ...company, status: newStatus })
+        return
+      }
+
       const response = await fetch(`/api/listings/${company.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ status: newStatus })
       })
       
@@ -374,7 +380,7 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
           </Link>
           
           <Link 
-            href={`/${locale}/kopare/qa/${company.id}`} 
+            href={`/${locale}/salja/sme-kit/dataroom`} 
             className="bg-gradient-to-br from-mint/20 to-mint/5 border border-mint/30 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all group"
           >
             <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm group-hover:shadow-md transition-shadow">
@@ -514,7 +520,7 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
                 </div>
               ))}
               <Link 
-                href={`/${locale}/kopare/qa/${company.id}`}
+                href={`/${locale}/salja/sme-kit/dataroom`}
                 className="block text-center text-sm text-sky hover:text-navy font-medium py-2 transition-colors"
               >
                 Gå till Q&A Center →

@@ -90,6 +90,7 @@ const DEMO_NDA_REQUESTS = [
 export default function BuyerDashboard({ userId }: BuyerDashboardProps) {
   const t = useTranslations('buyerDashboard')
   const locale = useLocale()
+  const isDemoUser = userId?.startsWith('demo-')
   const [savedListings, setSavedListings] = useState<any[]>([])
   const [ndaRequests, setNdaRequests] = useState<any[]>([])
   const [matchedListings, setMatchedListings] = useState<any[]>([])
@@ -200,7 +201,7 @@ export default function BuyerDashboard({ userId }: BuyerDashboardProps) {
       <BuyerStatistics />
 
       {/* Quick Tools */}
-      <div>
+      <div id="verktyg">
         <h2 className="text-xl font-bold text-navy mb-5 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-coral" />
           Verktyg & Funktioner
@@ -219,7 +220,7 @@ export default function BuyerDashboard({ userId }: BuyerDashboardProps) {
           </Link>
           
           <Link 
-            href={`/${locale}/dashboard/search-profile`}
+            href={isDemoUser ? `/${locale}/investerarprofil` : `/${locale}/dashboard/search-profile`}
             className="bg-gradient-to-br from-mint/20 to-mint/5 border border-mint/30 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all group"
           >
             <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm group-hover:shadow-md transition-shadow">
@@ -231,7 +232,7 @@ export default function BuyerDashboard({ userId }: BuyerDashboardProps) {
           </Link>
           
           <Link 
-            href={`/${locale}/dashboard/compare`}
+            href={isDemoUser ? `/${locale}/jamfor` : `/${locale}/dashboard/compare`}
             className="bg-gradient-to-br from-rose/20 to-rose/5 border border-rose/30 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all group"
           >
             <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm group-hover:shadow-md transition-shadow">
@@ -243,7 +244,7 @@ export default function BuyerDashboard({ userId }: BuyerDashboardProps) {
           </Link>
           
           <Link 
-            href={`/${locale}/dashboard/saved`}
+            href={isDemoUser ? `/${locale}/sok` : `/${locale}/dashboard/saved`}
             className="bg-gradient-to-br from-coral/20 to-coral/5 border border-coral/30 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all group"
           >
             <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm group-hover:shadow-md transition-shadow">

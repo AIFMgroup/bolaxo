@@ -107,6 +107,7 @@ export default function Header() {
   const pathname = usePathname()
   const locale = useLocale()
   const isAdminPage = pathname?.startsWith('/admin')
+  const isDemo = pathname?.includes('/demo/')
   
   // Build navigation with translations
   const navigation = useMemo(() => getNavigation(t), [t])
@@ -118,6 +119,11 @@ export default function Header() {
     }
     return `/${locale}${path}`
   }
+
+  const demoDashboardHref =
+    user?.role === 'seller'
+      ? `/${locale}/demo/dashboard/seller`
+      : `/${locale}/demo/dashboard/buyer`
 
   useEffect(() => {
     if (isAdminPage) return
@@ -283,7 +289,7 @@ export default function Header() {
                   
                   {/* Dashboard link */}
                   <Link
-                    href={getLocalizedPath('/dashboard')}
+                    href={isDemo ? demoDashboardHref : getLocalizedPath('/dashboard')}
                     className="p-2 rounded-lg text-gray-600 hover:text-primary-navy hover:bg-gray-50 transition-all duration-200"
                     title={t('header.dashboard')}
                   >

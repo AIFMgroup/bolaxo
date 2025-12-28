@@ -18,6 +18,7 @@ export default function MobileBottomNav() {
   const pathname = usePathname()
   const locale = useLocale()
   const { user } = useAuth()
+  const isDemo = pathname?.includes('/demo/')
   
   // Hide on admin pages
   if (pathname?.startsWith('/admin')) {
@@ -56,7 +57,7 @@ export default function MobileBottomNav() {
             requiresAuth: true
           },
           {
-            href: `/${locale}/dashboard`,
+            href: isDemo ? `/${locale}/demo/dashboard/seller` : `/${locale}/dashboard`,
             icon: <User className="w-5 h-5" />,
             label: 'Profil',
             requiresAuth: true
@@ -73,7 +74,7 @@ export default function MobileBottomNav() {
             requiresAuth: true
           },
           {
-            href: `/${locale}/dashboard`,
+            href: isDemo ? `/${locale}/demo/dashboard/buyer` : `/${locale}/dashboard`,
             icon: <User className="w-5 h-5" />,
             label: 'Profil',
             requiresAuth: true
