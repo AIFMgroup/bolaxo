@@ -94,7 +94,13 @@ export async function GET(request: NextRequest) {
           status: 'approved'
         },
         include: {
-          buyer: true,
+          buyer: {
+            include: {
+              buyerKycVerification: {
+                select: { status: true }
+              }
+            }
+          },
           listing: true
         }
       })
@@ -125,6 +131,7 @@ export async function GET(request: NextRequest) {
             peerId: nda.buyer.id,
             peerName: nda.buyer.name || nda.buyer.email,
             peerRole: nda.buyer.role,
+            peerKycVerified: nda.buyer.buyerKycVerification?.status === 'APPROVED',
             listingId: nda.listing.id,
             listingTitle: nda.listing.companyName || nda.listing.anonymousTitle,
             lastMessage: lastMessage?.content,
@@ -142,7 +149,13 @@ export async function GET(request: NextRequest) {
           status: { in: ['pending', 'signed'] }
         },
         include: {
-          buyer: true,
+          buyer: {
+            include: {
+              buyerKycVerification: {
+                select: { status: true }
+              }
+            }
+          },
           listing: true
         }
       })
@@ -151,6 +164,7 @@ export async function GET(request: NextRequest) {
         buyerId: nda.buyer.id,
         buyerName: nda.buyer.name || nda.buyer.email,
         buyerEmail: nda.buyer.email,
+        buyerKycVerified: nda.buyer.buyerKycVerification?.status === 'APPROVED',
         listingId: nda.listing.id,
         listingTitle: nda.listing.companyName || nda.listing.anonymousTitle,
         ndaStatus: nda.status,

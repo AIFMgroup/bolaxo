@@ -6,11 +6,13 @@ import Link from 'next/link'
 import { ArrowLeft, MessageSquare, User, Building, Shield, CheckCircle, XCircle, Clock } from 'lucide-react'
 import Chat from '@/components/Chat'
 import { useAuth } from '@/contexts/AuthContext'
+import VerifiedBuyerBadge, { VerifiedBuyerIcon } from '@/components/VerifiedBuyerBadge'
 
 interface ContactRequest {
   buyerId: string
   buyerName: string
   buyerEmail: string
+  buyerKycVerified?: boolean
   listingId: string
   listingTitle: string
   ndaStatus: 'pending' | 'approved' | 'signed' | 'rejected'
@@ -22,6 +24,7 @@ interface Conversation {
   peerId: string
   peerName: string
   peerRole: string
+  peerKycVerified?: boolean
   listingId: string
   listingTitle: string
   lastMessage?: string
@@ -215,6 +218,7 @@ function SellerChatContent() {
                             <div className="flex items-center gap-2 mb-1">
                               <User className="w-4 h-4 text-gray-400" />
                               <h3 className="font-medium text-primary-navy">{conv.peerName}</h3>
+                              <VerifiedBuyerIcon verified={conv.peerKycVerified} size="sm" />
                               {conv.unread > 0 && (
                                 <span className="bg-primary-blue text-white text-xs px-2 py-0.5 rounded-full">
                                   {conv.unread}
@@ -244,7 +248,10 @@ function SellerChatContent() {
                     contactRequests.map((request) => (
                       <div key={request.buyerId} className="p-4 hover:bg-gray-50">
                         <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-primary-navy">{request.buyerName}</h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-medium text-primary-navy">{request.buyerName}</h3>
+                            <VerifiedBuyerBadge verified={request.buyerKycVerified} size="sm" />
+                          </div>
                           <span className="text-xs text-gray-500">
                             {new Date(request.requestDate).toLocaleDateString('sv-SE')}
                           </span>

@@ -83,7 +83,20 @@ interface Props {
   listingName?: string
 }
 
-type Tab = 'documents' | 'sharing' | 'qa'
+type Tab = 'documents' | 'sharing' | 'qa' | 'audit'
+
+interface AuditLog {
+  id: string
+  action: string
+  actionLabel: string
+  actorId: string | null
+  actorName: string
+  actorEmail: string | null
+  targetType: string | null
+  targetId: string | null
+  meta: any
+  createdAt: string
+}
 
 // LocalStorage key for demo documents
 const DEMO_DATAROOM_DOCS_KEY = 'bolaxo_demo_dataroom_docs'
@@ -178,6 +191,11 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
   const [newQuestionDescription, setNewQuestionDescription] = useState('')
   const [answerDrafts, setAnswerDrafts] = useState<Record<string, string>>({})
 
+  // Audit log
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([])
+  const [auditLoading, setAuditLoading] = useState(false)
+  const [auditFilter, setAuditFilter] = useState<string>('all')
+
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Check if demo mode
@@ -255,6 +273,14 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab])
+
+  useEffect(() => {
+    if (activeTab !== 'audit' || !dataRoom) return
+    ;(async () => {
+      await loadAuditLogs()
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, dataRoom?.id])
 
   const loadDocuments = async (dataRoomId: string) => {
     const res = await fetch(`/api/dataroom/${dataRoomId}/documents`)
@@ -368,6 +394,26 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
       setQuestions(Array.isArray(data.questions) ? data.questions : [])
     } finally {
       setQaLoading(false)
+    }
+  }
+
+  const loadAuditLogs = async () => {
+    if (!dataRoom) return
+    setAuditLoading(true)
+    try {
+      const url = new URL('/api/dataroom/audit', window.location.origin)
+      url.searchParams.set('dataRoomId', dataRoom.id)
+      if (auditFilter !== 'all') url.searchParams.set('action', auditFilter)
+      
+      const res = await fetch(url.toString(), { credentials: 'include' })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok) {
+        setAuditLogs(Array.isArray(data.logs) ? data.logs : [])
+      } else {
+        setAuditLogs([])
+      }
+    } finally {
+      setAuditLoading(false)
     }
   }
 
@@ -833,6 +879,18 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
           >
             Q&amp;A
           </button>
+          {permissions?.role === 'OWNER' && (
+            <button
+              onClick={() => setActiveTab('audit')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                activeTab === 'audit'
+                  ? 'bg-primary-navy text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              Logg
+            </button>
+          )}
         </div>
 
         {activeTab === 'documents' && permissions?.canUpload && (
@@ -1300,6 +1358,85 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
         </div>
       )}
 
+      {/* Audit Log Tab */}
+      {activeTab === 'audit' && permissions?.role === 'OWNER' && (
+        <div className="max-w-3xl mx-auto space-y-4">
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <div>
+                <h3 className="font-semibold text-gray-900 text-sm">Aktivitetslogg</h3>
+                <p className="text-xs text-gray-500">Spåra alla händelser i datarummet</p>
+              </div>
+              <select
+                value={auditFilter}
+                onChange={(e) => {
+                  setAuditFilter(e.target.value)
+                  // Reload with new filter
+                  setTimeout(loadAuditLogs, 0)
+                }}
+                className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm bg-white"
+              >
+                <option value="all">Alla händelser</option>
+                <option value="view">Visningar</option>
+                <option value="download">Nedladdningar</option>
+                <option value="upload">Uppladdningar</option>
+                <option value="invite">Inbjudningar</option>
+                <option value="policy_change">Policyändringar</option>
+              </select>
+            </div>
+
+            {auditLoading ? (
+              <div className="py-8 text-center text-sm text-gray-500">Laddar logg…</div>
+            ) : auditLogs.length === 0 ? (
+              <div className="py-8 text-center">
+                <p className="text-sm text-gray-500">Inga logghändelser ännu</p>
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-[500px] overflow-y-auto">
+                {auditLogs.map((log) => (
+                  <div key={log.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                      log.action === 'download' ? 'bg-blue-100 text-blue-700' :
+                      log.action === 'view' ? 'bg-gray-100 text-gray-600' :
+                      log.action === 'upload' ? 'bg-emerald-100 text-emerald-700' :
+                      log.action === 'delete' ? 'bg-red-100 text-red-700' :
+                      log.action === 'invite' ? 'bg-purple-100 text-purple-700' :
+                      log.action === 'policy_change' ? 'bg-amber-100 text-amber-700' :
+                      'bg-gray-100 text-gray-600'
+                    }`}>
+                      {log.action === 'download' ? '↓' :
+                       log.action === 'view' ? '👁' :
+                       log.action === 'upload' ? '↑' :
+                       log.action === 'delete' ? '✕' :
+                       log.action === 'invite' ? '✉' :
+                       log.action === 'policy_change' ? '⚙' :
+                       '•'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-gray-900">{log.actionLabel}</p>
+                        {log.meta?.fileName && (
+                          <span className="text-xs text-gray-500 truncate max-w-[200px]">
+                            {log.meta.fileName}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-0.5 text-xs text-gray-500">
+                        <span>{log.actorName}</span>
+                        <span>•</span>
+                        <span>{new Date(log.createdAt).toLocaleString('sv-SE', { 
+                          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                        })}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Upload Modal */}
       {showUpload && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -1373,64 +1510,95 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
             </div>
 
             {(permissions?.role === 'OWNER' || permissions?.role === 'EDITOR') && (
-              <div className="mb-4 p-4 bg-gray-50 rounded-lg space-y-3">
+              <div className="mb-4 p-4 bg-gray-50 rounded-lg space-y-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-gray-900">Åtkomstinställningar</p>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Åtkomstinställningar</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Styr vem som kan se och ladda ner detta dokument</p>
+                  </div>
                   <button
                     onClick={saveDocPolicy}
-                    disabled={savingPolicy}
+                    disabled={savingPolicy || (policyVisibility === 'CUSTOM' && !policyCustomEmails.trim())}
                     className="px-3 py-1.5 text-xs font-medium rounded-lg bg-primary-navy text-white disabled:opacity-50"
                   >
                     {savingPolicy ? 'Sparar…' : 'Spara'}
                   </button>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="block text-xs font-medium text-gray-600">
-                    Synlighet
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Vem kan se dokumentet?
+                    </label>
                     <select
                       value={policyVisibility || 'NDA_ONLY'}
                       onChange={(e) => setPolicyVisibility(e.target.value as any)}
-                      className="mt-1 w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
                     >
-                      <option value="ALL">Alla med åtkomst</option>
-                      <option value="NDA_ONLY">Endast efter NDA</option>
-                      <option value="TRANSACTION_ONLY">Endast vid transaktion</option>
-                      <option value="CUSTOM">Anpassad (allowlist)</option>
-                      <option value="OWNER_ONLY">Endast ägaren</option>
+                      <option value="NDA_ONLY">🔒 Endast köpare med signerad NDA</option>
+                      <option value="TRANSACTION_ONLY">💼 Endast köpare i aktiv transaktion</option>
+                      <option value="ALL">👥 Alla som har åtkomst till datarummet</option>
+                      <option value="CUSTOM">✉️ Endast specifika e-postadresser</option>
+                      <option value="OWNER_ONLY">🔐 Endast jag (ägaren)</option>
                     </select>
-                  </label>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {policyVisibility === 'NDA_ONLY' && 'Dokumentet visas bara för köpare som har godkänt och signerat NDA.'}
+                      {policyVisibility === 'TRANSACTION_ONLY' && 'Dokumentet visas endast för köpare som har inlett en transaktion.'}
+                      {policyVisibility === 'ALL' && 'Alla inbjudna till datarummet kan se dokumentet.'}
+                      {policyVisibility === 'CUSTOM' && 'Ange specifika e-postadresser som ska ha åtkomst.'}
+                      {policyVisibility === 'OWNER_ONLY' && 'Endast du kan se dokumentet. Ingen annan har åtkomst.'}
+                    </p>
+                  </div>
 
                   {policyVisibility === 'CUSTOM' && (
-                    <label className="block text-xs font-medium text-gray-600">
-                      Tillåtna e-postadresser
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                        Tillåtna e-postadresser
+                      </label>
                       <input
                         value={policyCustomEmails}
                         onChange={(e) => setPolicyCustomEmails(e.target.value)}
-                        placeholder="a@bolag.se, b@bolag.se"
-                        className="mt-1 w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
+                        placeholder="anna@bolag.se, erik@bolag.se"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
                       />
-                    </label>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Separera med komma. Endast dessa personer kan se dokumentet.
+                      </p>
+                      {policyVisibility === 'CUSTOM' && !policyCustomEmails.trim() && (
+                        <p className="text-xs text-amber-600 mt-1">
+                          ⚠️ Du måste ange minst en e-postadress för att kunna spara.
+                        </p>
+                      )}
+                    </div>
                   )}
 
-                  <label className="flex items-center gap-2 text-xs text-gray-700">
-                    <input
-                      type="checkbox"
-                      checked={policyDownloadBlocked}
-                      onChange={(e) => setPolicyDownloadBlocked(e.target.checked)}
-                      className="rounded"
-                    />
-                    Blockera nedladdning
-                  </label>
-                  <label className="flex items-center gap-2 text-xs text-gray-700">
-                    <input
-                      type="checkbox"
-                      checked={policyWatermarkRequired}
-                      onChange={(e) => setPolicyWatermarkRequired(e.target.checked)}
-                      className="rounded"
-                    />
-                    Kräv vattenstämpel
-                  </label>
+                  <div className="pt-2 border-t border-gray-200 space-y-2">
+                    <p className="text-xs font-medium text-gray-700">Extra skydd</p>
+                    <label className="flex items-start gap-2 text-xs text-gray-700">
+                      <input
+                        type="checkbox"
+                        checked={policyDownloadBlocked}
+                        onChange={(e) => setPolicyDownloadBlocked(e.target.checked)}
+                        className="rounded mt-0.5"
+                      />
+                      <span>
+                        <span className="font-medium">Blockera nedladdning</span>
+                        <span className="block text-gray-500">Användare kan se dokumentet men inte ladda ner det.</span>
+                      </span>
+                    </label>
+                    <label className="flex items-start gap-2 text-xs text-gray-700">
+                      <input
+                        type="checkbox"
+                        checked={policyWatermarkRequired}
+                        onChange={(e) => setPolicyWatermarkRequired(e.target.checked)}
+                        className="rounded mt-0.5"
+                      />
+                      <span>
+                        <span className="font-medium">Lägg till vattenstämpel</span>
+                        <span className="block text-gray-500">Dokumentet märks med mottagarens e-post vid visning/nedladdning.</span>
+                      </span>
+                    </label>
+                  </div>
                 </div>
               </div>
             )}

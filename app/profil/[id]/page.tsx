@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
 import { 
   Shield, 
   CheckCircle, 
@@ -11,19 +10,20 @@ import {
   Building2, 
   TrendingUp, 
   Calendar,
-  Star,
   DollarSign,
   Briefcase,
   Clock,
   Award,
   ArrowLeft
 } from 'lucide-react'
+import VerifiedBuyerBadge from '@/components/VerifiedBuyerBadge'
 
 interface BuyerProfile {
   id: string
   name: string
   verified: boolean
   bankIdVerified?: boolean
+  buyerKycStatus?: 'UNVERIFIED' | 'SUBMITTED' | 'APPROVED' | 'REJECTED'
   trustScore: number
   trustFactors: Array<{ factor: string; points: number }>
   buyerType: string | null
@@ -144,17 +144,27 @@ export default function BuyerProfilePage() {
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-bold text-primary-navy">{profile.name}</h1>
+                
+                {/* KYC Verified Badge (prominent) */}
+                <VerifiedBuyerBadge 
+                  verified={profile.buyerKycStatus === 'APPROVED'} 
+                  size="lg" 
+                />
+                
+                {/* Email verified badge */}
                 {profile.verified && (
-                  <div className="flex items-center gap-1 text-green-600">
-                    <Shield className="w-5 h-5" />
-                    <span className="text-sm font-semibold">Verifierad</span>
-                  </div>
+                  <span className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200">
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    E-post
+                  </span>
                 )}
+                
+                {/* BankID badge */}
                 {profile.bankIdVerified && (
-                  <div className="flex items-center gap-1 text-blue-600">
-                    <Shield className="w-5 h-5" />
-                    <span className="text-sm font-semibold">BankID</span>
-                  </div>
+                  <span className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-200">
+                    <Shield className="w-3.5 h-3.5" />
+                    BankID
+                  </span>
                 )}
               </div>
               
