@@ -19,9 +19,6 @@
     "admin:create": "tsx scripts/create-admin.ts",
     "backup:database": "tsx scripts/backup-database.ts"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.19",
     "@aws-sdk/client-bedrock-runtime": "^3.948.0",
