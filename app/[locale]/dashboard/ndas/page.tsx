@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import DashboardLayout from '@/components/dashboard/DashboardLayout'
 import { Shield, CheckCircle, XCircle, Clock, MessageSquare, User, Calendar, FileText, AlertCircle } from 'lucide-react'
 import { listNDARequests, updateNDAStatus } from '@/lib/api-client'
@@ -8,6 +9,8 @@ import { useAuth } from '@/contexts/AuthContext'
 
 export default function NDAsPage() {
   const { user } = useAuth()
+  const pathname = usePathname()
+  const isDemo = Boolean(pathname?.includes('/demo/'))
   const [filter, setFilter] = useState('all')
   const [requests, setRequests] = useState<any[]>([])
   const [processing, setProcessing] = useState<string | null>(null)
@@ -80,6 +83,10 @@ export default function NDAsPage() {
   useEffect(() => {
     const load = async () => {
       if (!user) return
+      if (isDemo) {
+        setRequests(mockNDAs)
+        return
+      }
       try {
         const res = await listNDARequests({ sellerId: user.id })
         setRequests(res.requests)
@@ -87,14 +94,18 @@ export default function NDAsPage() {
     }
     load()
 
-    // Poll for updates every 10 seconds
+    // Poll for updates every 10 seconds (skip in demo)
     const interval = setInterval(load, 10000)
     return () => clearInterval(interval)
-  }, [user])
+  }, [user, isDemo])
 
   const handleApprove = async (ndaId: string, nda: any) => {
     setProcessing(ndaId)
     try {
+      if (isDemo) {
+        setRequests((prev) => (prev.length ? prev : mockNDAs).map(n => n.id === ndaId ? { ...n, status: 'approved', approvedAt: new Date().toISOString() } : n))
+        return
+      }
       // Uppdatera NDA-status (API:et skapar automatiskt meddelande)
       const response = await fetch(`/api/nda-requests/${ndaId}`, {
         method: 'PATCH',
@@ -117,6 +128,10 @@ export default function NDAsPage() {
   const handleReject = async (ndaId: string) => {
     setProcessing(ndaId)
     try {
+      if (isDemo) {
+        setRequests((prev) => (prev.length ? prev : mockNDAs).map(n => n.id === ndaId ? { ...n, status: 'rejected', rejectedAt: new Date().toISOString() } : n))
+        return
+      }
       const response = await fetch(`/api/nda-requests/${ndaId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

@@ -17,7 +17,6 @@ interface MenuItem {
   href: string
   icon: any
   badge?: number
-  disabled?: boolean
 }
 
 interface DashboardLayoutProps {
@@ -32,56 +31,54 @@ export default function DashboardLayout({ children, demoRole }: DashboardLayoutP
   const locale = useLocale()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Detect demo mode + role from URL if not provided.
+  // Supports routes like /{locale}/demo/dashboard/buyer/... and /{locale}/demo/dashboard/seller/...
+  const detectedDemoRole =
+    pathname?.includes('/demo/dashboard/buyer') ? 'buyer' :
+    pathname?.includes('/demo/dashboard/seller') ? 'seller' :
+    undefined
+  const effectiveDemoRole = demoRole || detectedDemoRole
+  const isDemo = Boolean(effectiveDemoRole)
   
   // Role-specific menu items
   const getMenuItems = (): MenuItem[] => {
-    const userRole = demoRole || user?.role || ''
+    const userRole = effectiveDemoRole || user?.role || ''
 
-    // Demo dashboards should never navigate into protected /dashboard/* routes.
-    // Keep navigation inside /demo/dashboard/* plus a few public links.
-    if (demoRole) {
-      const demoBase = `/${locale}/demo/dashboard/${demoRole}`
-      const common: MenuItem[] = [
-        { label: t('menu.overview'), href: demoBase, icon: LayoutDashboard },
-      ]
+    // Demo dashboards should mirror the real dashboard 1:1 (same menu + pages),
+    // but keep navigation inside /demo/dashboard/*.
+    if (effectiveDemoRole) {
+      const demoBase = `/${locale}/demo/dashboard/${effectiveDemoRole}`
 
-      if (isBuyer(demoRole)) {
+      if (isSeller(effectiveDemoRole)) {
         return [
-          ...common,
-          // Public/demo-safe destinations
-          { label: t('menu.investorProfile'), href: `/${locale}/investerarprofil`, icon: UserCircle },
-          { label: t('menu.searchProfile'), href: `/${locale}/sok`, icon: Search },
-          { label: t('menu.comparisons'), href: `/${locale}/jamfor`, icon: BarChart3 },
-
-          // Show the rest of the buyer menu for familiarity, but keep it disabled in demo
-          { label: t('menu.savedItems'), href: demoBase, icon: Building, disabled: true },
-          { label: t('menu.ndaStatus'), href: demoBase, icon: Shield, disabled: true },
-          { label: t('menu.calendar'), href: demoBase, icon: Calendar, disabled: true },
-          { label: t('menu.myDeals'), href: demoBase, icon: FileText, disabled: true },
-          { label: t('menu.settings'), href: demoBase, icon: Settings, disabled: true },
+          { label: t('menu.overview'), href: `${demoBase}`, icon: LayoutDashboard },
+          { label: t('menu.sellerProfile'), href: `${demoBase}/seller-profile`, icon: UserCircle },
+          { label: t('menu.myListings'), href: `${demoBase}/listings`, icon: Building, badge: 3 },
+          { label: t('menu.dataRoom'), href: `${demoBase}/datarum`, icon: FolderOpen },
+          { label: t('menu.matchedBuyers'), href: `${demoBase}/matches`, icon: Users, badge: 12 },
+          { label: t('menu.ndaRequests'), href: `${demoBase}/ndas`, icon: Shield, badge: 5 },
+          { label: t('menu.analytics'), href: `${demoBase}/analytics`, icon: BarChart3 },
+          { label: t('menu.documents'), href: `${demoBase}/documents`, icon: FolderOpen },
+          { label: t('menu.mySales'), href: `${demoBase}/sales`, icon: TrendingUp },
+          { label: t('menu.calendar'), href: `${demoBase}/calendar`, icon: Calendar },
+          { label: t('menu.settings'), href: `${demoBase}/settings`, icon: Settings },
         ]
       }
 
-      if (isSeller(demoRole)) {
+      if (isBuyer(effectiveDemoRole)) {
         return [
-          ...common,
-          // Public/demo-safe destinations
-          { label: t('menu.sellerProfile'), href: `/${locale}/saljarprofil`, icon: UserCircle },
-          { label: t('menu.myListings'), href: `/${locale}/salja/start`, icon: Building },
-          { label: t('menu.dataRoom'), href: `/${locale}/salja/sme-kit/dataroom`, icon: FolderOpen },
-
-          // Show the rest of the seller menu for familiarity, but keep it disabled in demo
-          { label: t('menu.matchedBuyers'), href: demoBase, icon: Users, disabled: true },
-          { label: t('menu.ndaRequests'), href: demoBase, icon: Shield, disabled: true },
-          { label: t('menu.analytics'), href: demoBase, icon: BarChart3, disabled: true },
-          { label: t('menu.documents'), href: demoBase, icon: FolderOpen, disabled: true },
-          { label: t('menu.mySales'), href: demoBase, icon: TrendingUp, disabled: true },
-          { label: t('menu.calendar'), href: demoBase, icon: Calendar, disabled: true },
-          { label: t('menu.settings'), href: demoBase, icon: Settings, disabled: true },
+          { label: t('menu.overview'), href: `${demoBase}`, icon: LayoutDashboard },
+          { label: t('menu.investorProfile'), href: `${demoBase}/investor-profile`, icon: UserCircle },
+          { label: t('menu.searchProfile'), href: `${demoBase}/search-profile`, icon: Search },
+          { label: t('menu.savedItems'), href: `${demoBase}/saved`, icon: Building, badge: 12 },
+          { label: t('menu.ndaStatus'), href: `${demoBase}/nda-status`, icon: Shield, badge: 4 },
+          { label: t('menu.comparisons'), href: `${demoBase}/compare`, icon: BarChart3 },
+          { label: t('menu.calendar'), href: `${demoBase}/calendar`, icon: Calendar },
+          { label: t('menu.myDeals'), href: `${demoBase}/deals`, icon: FileText, badge: 0 },
+          { label: t('menu.settings'), href: `${demoBase}/settings`, icon: Settings },
         ]
       }
-
-      return common
     }
 
     if (isSeller(userRole)) {
@@ -191,44 +188,27 @@ export default function DashboardLayout({ children, demoRole }: DashboardLayoutP
               const isActive = pathname === item.href
               return (
                 <li key={item.href}>
-                  {item.disabled ? (
-                    <div
-                      className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 opacity-60 cursor-not-allowed text-graphite bg-white`}
-                      title="Kommer snart i demo"
-                    >
-                      <div className="flex items-center gap-3">
-                        <item.icon className="w-5 h-5" />
-                        {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
-                      </div>
-                      {!collapsed && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-sand/60 text-navy">
-                          Demo
-                        </span>
-                      )}
+                  <Link
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 ${
+                      isActive 
+                        ? 'bg-gradient-to-r from-navy to-navy/90 text-white shadow-md' 
+                        : 'text-graphite hover:bg-sand/40 hover:text-navy'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
+                      {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
                     </div>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 ${
-                        isActive 
-                          ? 'bg-gradient-to-r from-navy to-navy/90 text-white shadow-md' 
-                          : 'text-graphite hover:bg-sand/40 hover:text-navy'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
-                        {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
-                      </div>
-                      {!collapsed && item.badge !== undefined && item.badge > 0 && (
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                          isActive ? 'bg-white/20 text-white' : 'bg-rose/50 text-navy'
-                        }`}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </Link>
-                  )}
+                    {!collapsed && item.badge !== undefined && item.badge > 0 && (
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                        isActive ? 'bg-white/20 text-white' : 'bg-rose/50 text-navy'
+                      }`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
                 </li>
               )
             })}

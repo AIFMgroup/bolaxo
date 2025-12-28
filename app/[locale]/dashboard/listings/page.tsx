@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import DashboardLayout from '@/components/dashboard/DashboardLayout'
 import Link from 'next/link'
 import { Building, Eye, Shield, MessageSquare, Edit, Pause, Play, TrendingUp, Bookmark, Trash2, CheckCircle, XCircle, Plus, Sparkles, MoreHorizontal } from 'lucide-react'
@@ -38,6 +39,8 @@ interface NDARequest {
 export default function ListingsPage() {
   const { user } = useAuth()
   const { success, error: showError } = useToast()
+  const pathname = usePathname()
+  const isDemo = Boolean(pathname?.includes('/demo/'))
   const [filter, setFilter] = useState('all')
   const [processing, setProcessing] = useState<string | null>(null)
   const [listings, setListings] = useState<ListingRow[]>([])
@@ -91,6 +94,18 @@ export default function ListingsPage() {
     if (!user) return
     setProcessing(listingId)
     try {
+      if (isDemo) {
+        if (action === 'delete') {
+          setListings(listings.filter(l => l.id !== listingId))
+          success('Annons borttagen (demo)')
+        } else {
+          const newStatus = action === 'pause' ? 'paused' : 'active'
+          setListings(listings.map(l => l.id === listingId ? { ...l, status: newStatus } : l))
+          success(action === 'pause' ? 'Annons pausad (demo)' : 'Annons aktiv igen (demo)')
+        }
+        return
+      }
+
       const response = await fetch(`/api/listings/${listingId}/status?action=${action}`, {
         method: 'PATCH',
         credentials: 'include'
@@ -115,6 +130,12 @@ export default function ListingsPage() {
 
   const handleNDAAction = async (ndaId: string, action: 'approve' | 'reject') => {
     try {
+      if (isDemo) {
+        success(action === 'approve' ? 'NDA godkänd (demo)' : 'NDA avslagen (demo)')
+        setNdaRequests(ndaRequests.filter(n => n.id !== ndaId))
+        return
+      }
+
       const response = await fetch('/api/admin/nda-tracking', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

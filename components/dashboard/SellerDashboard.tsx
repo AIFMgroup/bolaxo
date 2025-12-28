@@ -13,8 +13,6 @@ import { DEMO_DEALS, DEMO_QA_QUESTIONS, DEMO_ENGAGEMENT_DATA } from '@/lib/demo-
 import { useLocale, useTranslations } from 'next-intl'
 import SellerStatistics from './SellerStatistics'
 
-const DEMO_MODE = true // Set to true to show demo data
-
 interface SellerDashboardProps {
   userId: string
 }
@@ -44,6 +42,8 @@ const DEMO_COMPANY = {
 export default function SellerDashboard({ userId }: SellerDashboardProps) {
   const locale = useLocale()
   const t = useTranslations('sellerDashboard')
+  const isDemoUser = userId?.startsWith('demo-')
+  const dashboardBase = isDemoUser ? `/${locale}/demo/dashboard/seller` : `/${locale}/dashboard`
   const [company, setCompany] = useState<typeof DEMO_COMPANY | null>(null)
   const [ndaRequests, setNdaRequests] = useState<any[]>([])
   const [messages, setMessages] = useState<any[]>([])
@@ -55,7 +55,7 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
 
   const fetchSellerData = async () => {
     try {
-      if (DEMO_MODE) {
+      if (isDemoUser) {
         setCompany(DEMO_COMPANY)
         setNdaRequests(DEMO_DEALS.map(deal => ({
           ...deal,
@@ -111,7 +111,7 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
     const newStatus = company.status === 'active' ? 'paused' : 'active'
     
     try {
-      if (DEMO_MODE) {
+      if (isDemoUser) {
         setCompany({ ...company, status: newStatus })
         return
       }
@@ -133,6 +133,10 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
 
   const handleNDAResponse = async (ndaId: string, status: 'approved' | 'rejected') => {
     try {
+      if (isDemoUser) {
+        setNdaRequests((prev) => prev.map(n => n.id === ndaId ? { ...n, status } : n))
+        return
+      }
       const response = await fetch('/api/nda-requests', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -288,7 +292,7 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
             )}
           </button>
           <Link 
-            href={`/${locale}/salja/settings`}
+            href={`${dashboardBase}/settings`}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 rounded-full text-sm font-medium transition-all"
           >
             <Settings className="w-4 h-4" />
@@ -380,7 +384,7 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
           </Link>
           
           <Link 
-            href={`/${locale}/salja/sme-kit/dataroom`} 
+            href={`${dashboardBase}/datarum`} 
             className="bg-gradient-to-br from-mint/20 to-mint/5 border border-mint/30 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all group"
           >
             <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm group-hover:shadow-md transition-shadow">
@@ -468,7 +472,7 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
               ))}
               {pendingNDAs.length > 4 && (
                 <Link 
-                  href={`/${locale}/salja/nda-requests`}
+                  href={`${dashboardBase}/ndas`}
                   className="block text-center text-sm text-sky hover:text-navy font-medium py-2 transition-colors"
                 >
                   Visa alla {pendingNDAs.length} förfrågningar →
@@ -520,7 +524,7 @@ export default function SellerDashboard({ userId }: SellerDashboardProps) {
                 </div>
               ))}
               <Link 
-                href={`/${locale}/salja/sme-kit/dataroom`}
+                href={`${dashboardBase}/datarum`}
                 className="block text-center text-sm text-sky hover:text-navy font-medium py-2 transition-colors"
               >
                 Gå till Q&A Center →

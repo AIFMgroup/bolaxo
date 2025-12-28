@@ -91,6 +91,7 @@ export default function BuyerDashboard({ userId }: BuyerDashboardProps) {
   const t = useTranslations('buyerDashboard')
   const locale = useLocale()
   const isDemoUser = userId?.startsWith('demo-')
+  const dashboardBase = isDemoUser ? `/${locale}/demo/dashboard/buyer` : `/${locale}/dashboard`
   const [savedListings, setSavedListings] = useState<any[]>([])
   const [ndaRequests, setNdaRequests] = useState<any[]>([])
   const [matchedListings, setMatchedListings] = useState<any[]>([])
@@ -220,7 +221,7 @@ export default function BuyerDashboard({ userId }: BuyerDashboardProps) {
           </Link>
           
           <Link 
-            href={isDemoUser ? `/${locale}/investerarprofil` : `/${locale}/dashboard/search-profile`}
+            href={`${dashboardBase}/search-profile`}
             className="bg-gradient-to-br from-mint/20 to-mint/5 border border-mint/30 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all group"
           >
             <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm group-hover:shadow-md transition-shadow">
@@ -232,7 +233,7 @@ export default function BuyerDashboard({ userId }: BuyerDashboardProps) {
           </Link>
           
           <Link 
-            href={isDemoUser ? `/${locale}/jamfor` : `/${locale}/dashboard/compare`}
+            href={`${dashboardBase}/compare`}
             className="bg-gradient-to-br from-rose/20 to-rose/5 border border-rose/30 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all group"
           >
             <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm group-hover:shadow-md transition-shadow">
@@ -244,7 +245,7 @@ export default function BuyerDashboard({ userId }: BuyerDashboardProps) {
           </Link>
           
           <Link 
-            href={isDemoUser ? `/${locale}/sok` : `/${locale}/dashboard/saved`}
+            href={`${dashboardBase}/saved`}
             className="bg-gradient-to-br from-coral/20 to-coral/5 border border-coral/30 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all group"
           >
             <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm group-hover:shadow-md transition-shadow">

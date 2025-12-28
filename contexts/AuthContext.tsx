@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
 
 interface User {
   id: string
@@ -32,35 +33,77 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const pathname = usePathname()
 
   const fetchUser = async () => {
     try {
+      // Demo dashboards: derive a demo user from the URL (no real session needed).
+      // This keeps demo isolated and avoids relying on cookies/localStorage hacks in production.
+      if (typeof window !== 'undefined' && pathname?.includes('/demo/')) {
+        const isDemoBuyer = pathname.includes('/demo/dashboard/buyer')
+        const isDemoSeller = pathname.includes('/demo/dashboard/seller')
+        if (isDemoBuyer || isDemoSeller) {
+          const demoUser = {
+            id: isDemoSeller ? 'demo-seller' : 'demo-buyer',
+            email: isDemoSeller ? 'demo-seller@bolaxo.com' : 'demo-buyer@bolaxo.com',
+            name: isDemoSeller ? 'Demo Säljare' : 'Demo Köpare',
+            role: isDemoSeller ? 'seller' : 'buyer',
+            loginTime: new Date().toISOString(),
+          }
+
+          setUser({
+            id: demoUser.id,
+            email: demoUser.email,
+            name: demoUser.name,
+            role: demoUser.role,
+            verified: true,
+            bankIdVerified: true,
+            phone: null,
+            companyName: null,
+            orgNumber: null,
+            region: null,
+            referralCode: null,
+            referredBy: null,
+            createdAt: demoUser.loginTime,
+            lastLoginAt: demoUser.loginTime,
+          })
+          setLoading(false)
+          return
+        }
+      }
+
       // Check for dev login first (localStorage)
       if (typeof window !== 'undefined') {
-        const devUserStr = localStorage.getItem('dev-auth-user')
-        if (devUserStr) {
-          try {
-            const devUser = JSON.parse(devUserStr)
-            setUser({
-              id: devUser.id,
-              email: devUser.email,
-              name: devUser.name,
-              role: devUser.role,
-              verified: true,
-              bankIdVerified: true,
-              phone: null,
-              companyName: null,
-              orgNumber: null,
-              region: null,
-              referralCode: null,
-              referredBy: null,
-              createdAt: devUser.loginTime,
-              lastLoginAt: devUser.loginTime
-            })
-            setLoading(false)
-            return
-          } catch (e) {
-            console.log('Dev user parse error:', e)
+        // Only allow dev-auth outside production OR on dev-login routes.
+        // Prevents localStorage spoofing from granting "auth" on real pages in production.
+        const allowDevAuth = process.env.NODE_ENV !== 'production' || pathname?.includes('/dev-login')
+
+        if (allowDevAuth) {
+          const devUserStr = localStorage.getItem('dev-auth-user')
+          if (devUserStr) {
+            try {
+              const devUser = JSON.parse(devUserStr)
+              setUser({
+                id: devUser.id,
+                email: devUser.email,
+                name: devUser.name,
+                role: devUser.role,
+                verified: true,
+                bankIdVerified: true,
+                phone: null,
+                companyName: null,
+                orgNumber: null,
+                region: null,
+                referralCode: null,
+                referredBy: null,
+                createdAt: devUser.loginTime,
+                lastLoginAt: devUser.loginTime
+              })
+              setLoading(false)
+              return
+            } catch (e) {
+              console.log('Dev user parse error:', e)
+            }
           }
         }
       }
@@ -102,7 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     window.addEventListener('focus', handleFocus)
     return () => window.removeEventListener('focus', handleFocus)
-  }, [])
+  }, [pathname])
   
   // Also refresh after a short delay to catch cookies set during redirect
   useEffect(() => {
