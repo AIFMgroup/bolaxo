@@ -765,24 +765,24 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-navy border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-gray-500">Laddar datarum...</p>
+      <div className="flex flex-col items-center justify-center py-16">
+        <div className="w-8 h-8 border-2 border-primary-navy border-t-transparent rounded-full animate-spin mb-3" />
+        <p className="text-gray-500 text-sm">Laddar datarum...</p>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <div className="w-16 h-16 rounded-3xl bg-rose-50 flex items-center justify-center mb-4 animate-pulse-shadow">
-          <span className="text-2xl text-rose-500">!</span>
+      <div className="flex flex-col items-center justify-center py-16">
+        <div className="w-12 h-12 rounded-lg bg-red-50 flex items-center justify-center mb-3">
+          <span className="text-lg text-red-500">!</span>
         </div>
-        <p className="text-gray-900 font-medium mb-2">Något gick fel</p>
-        <p className="text-gray-500 text-sm mb-6">{error}</p>
+        <p className="text-gray-900 font-medium text-sm mb-1">Något gick fel</p>
+        <p className="text-gray-500 text-xs mb-4">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="px-5 py-2.5 text-sm text-navy hover:bg-navy/5 rounded-xl transition-colors"
+          className="px-4 py-2 text-sm text-primary-navy hover:bg-gray-100 rounded-lg transition-colors"
         >
           Försök igen
         </button>
@@ -791,44 +791,44 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Tabs */}
-      <div className="flex items-center justify-between">
-        <div className="flex gap-1 p-1.5 bg-gray-50 rounded-2xl">
+      <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+        <div className="flex gap-1">
           <button
             onClick={() => setActiveTab('documents')}
-            className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               activeTab === 'documents'
-                ? 'bg-white text-gray-900 shadow-sm animate-pulse-shadow'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-primary-navy text-white'
+                : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
             Dokument
-            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-              activeTab === 'documents' ? 'bg-gray-100 text-gray-600' : 'bg-gray-200 text-gray-500'
+            <span className={`ml-1.5 px-1.5 py-0.5 rounded text-xs ${
+              activeTab === 'documents' ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-500'
             }`}>
               {documents.length}
             </span>
           </button>
           <button
             onClick={() => setActiveTab('sharing')}
-            className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               activeTab === 'sharing'
-                ? 'bg-white text-gray-900 shadow-sm animate-pulse-shadow'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-primary-navy text-white'
+                : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
             Delning
             {pendingInvites.length > 0 && (
-              <span className="ml-2 w-2 h-2 inline-block rounded-full bg-amber-500" />
+              <span className="ml-1.5 w-2 h-2 inline-block rounded-full bg-amber-500" />
             )}
           </button>
           <button
             onClick={() => setActiveTab('qa')}
-            className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               activeTab === 'qa'
-                ? 'bg-white text-gray-900 shadow-sm animate-pulse-shadow'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-primary-navy text-white'
+                : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
             Q&amp;A
@@ -838,7 +838,7 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
         {activeTab === 'documents' && permissions?.canUpload && (
           <button
             onClick={() => setShowUpload(true)}
-            className="px-6 py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all hover:shadow-lg hover:shadow-navy/20 animate-pulse-shadow-navy"
+            className="px-4 py-2 bg-primary-navy text-white rounded-lg text-sm font-medium hover:bg-primary-navy/90 transition-colors"
           >
             Ladda upp
           </button>
@@ -847,35 +847,35 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
       {/* Documents Tab */}
       {activeTab === 'documents' && (
-        <div className="grid lg:grid-cols-5 gap-6">
+        <div className="grid lg:grid-cols-5 gap-5">
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-4">
-            <div className="bg-white rounded-3xl border border-gray-100 p-5 animate-pulse-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                   Mappar
                 </h3>
                 {permissions?.canUpload && (
                   <button
                     onClick={() => createFolder(selectedFolder)}
-                    className="text-xs font-medium text-navy hover:text-navy/80"
+                    className="text-xs font-medium text-primary-navy hover:underline"
                     title="Skapa mapp"
                   >
                     + Ny
                   </button>
                 )}
               </div>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 <button
                   onClick={() => setSelectedFolder(null)}
-                  className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all flex items-center justify-between ${
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center justify-between ${
                     !selectedFolder
-                      ? 'bg-navy text-white'
+                      ? 'bg-primary-navy text-white'
                       : 'hover:bg-gray-50 text-gray-700'
                   }`}
                 >
-                  <span>Alla</span>
-                  <span className={`text-xs font-medium ${!selectedFolder ? 'text-white/60' : 'text-gray-400'}`}>
+                  <span>Alla filer</span>
+                  <span className={`text-xs ${!selectedFolder ? 'text-white/70' : 'text-gray-400'}`}>
                     {documents.length}
                   </span>
                 </button>
@@ -883,19 +883,19 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                   <button
                     key={folder.id}
                     onClick={() => setSelectedFolder(folder.id)}
-                    className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all flex items-center justify-between ${
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center justify-between ${
                       selectedFolder === folder.id
-                        ? 'bg-navy text-white'
+                        ? 'bg-primary-navy text-white'
                         : 'hover:bg-gray-50 text-gray-700'
                     }`}
                   >
                     <span
                       className="truncate"
-                      style={{ paddingLeft: `${(folderDepthById.get(folder.id) || 0) * 12}px` }}
+                      style={{ paddingLeft: `${(folderDepthById.get(folder.id) || 0) * 10}px` }}
                     >
                       {folder.name}
                     </span>
-                    <span className={`text-xs font-medium ${selectedFolder === folder.id ? 'text-white/60' : 'text-gray-400'}`}>
+                    <span className={`text-xs ${selectedFolder === folder.id ? 'text-white/70' : 'text-gray-400'}`}>
                       {folder.documentCount}
                     </span>
                   </button>
@@ -903,18 +903,18 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
               </div>
             </div>
 
-            <div className="bg-white rounded-3xl border border-gray-100 p-5 animate-pulse-shadow">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
-                Status
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                Översikt
               </h3>
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
                   <span className="text-gray-600">Filer</span>
-                  <span className="font-semibold text-gray-900">{documents.length}</span>
+                  <span className="font-medium text-gray-900">{documents.length}</span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between">
                   <span className="text-gray-600">Delade med</span>
-                  <span className="font-semibold text-gray-900">{invites.filter(i => i.status === 'ACCEPTED').length}</span>
+                  <span className="font-medium text-gray-900">{invites.filter(i => i.status === 'ACCEPTED').length}</span>
                 </div>
               </div>
             </div>
@@ -929,7 +929,7 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                 placeholder="Sök dokument..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-5 py-3 bg-white border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/30 transition-all"
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-navy/20 focus:border-primary-navy/40 transition-all"
               />
             </div>
 
@@ -938,50 +938,50 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`bg-white rounded-3xl border-2 transition-all ${
+              className={`bg-white rounded-lg border transition-all ${
                 isDragging
-                  ? 'border-navy border-dashed bg-navy/5'
-                  : 'border-gray-100'
+                  ? 'border-primary-navy border-dashed bg-primary-navy/5'
+                  : 'border-gray-200'
               }`}
             >
               {isDragging ? (
-                <div className="p-20 text-center">
-                  <p className="text-navy font-medium text-lg">Släpp filer här</p>
+                <div className="p-16 text-center">
+                  <p className="text-primary-navy font-medium">Släpp filer här</p>
                 </div>
               ) : filteredDocs.length === 0 ? (
-                <div className="p-20 text-center">
-                  <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-4">
-                    <span className="text-3xl text-gray-300">+</span>
+                <div className="p-12 text-center">
+                  <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <span className="text-2xl text-gray-300">+</span>
                   </div>
-                  <p className="text-gray-900 font-medium mb-1">
+                  <p className="text-gray-900 font-medium text-sm mb-1">
                     {searchQuery ? 'Inga dokument matchade sökningen' : 'Inga dokument ännu'}
                   </p>
-                  <p className="text-gray-400 text-sm mb-6">Dra och släpp filer hit</p>
+                  <p className="text-gray-500 text-xs mb-4">Dra och släpp filer hit</p>
                   {permissions?.canUpload && !searchQuery && (
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-6 py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all"
+                      className="px-4 py-2 bg-primary-navy text-white rounded-lg text-sm font-medium hover:bg-primary-navy/90 transition-colors"
                     >
                       Välj filer
                     </button>
                   )}
                 </div>
               ) : (
-                <div className="divide-y divide-gray-50">
+                <div className="divide-y divide-gray-100">
                   {filteredDocs.map((doc) => (
                     <div
                       key={doc.id}
-                      className="p-5 hover:bg-gray-50/50 transition-colors group"
+                      className="p-4 hover:bg-gray-50 transition-colors group"
                     >
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xs font-bold ${getFileTypeColor(doc.currentVersion?.mimeType)}`}>
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${getFileTypeColor(doc.currentVersion?.mimeType)}`}>
                           {getFileTypeLabel(doc.currentVersion?.mimeType)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3">
-                            <h3 className="font-medium text-gray-900 truncate">{doc.title}</h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-medium text-gray-900 text-sm truncate">{doc.title}</h3>
                             {doc.versions && doc.versions.length > 1 && (
-                              <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">
+                              <span className="px-1.5 py-0.5 bg-gray-100 text-gray-500 text-xs rounded">
                                 v{doc.currentVersion?.version}
                               </span>
                             )}
@@ -989,11 +989,11 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                             {doc.currentVersion?.analysis && (
                               <button
                                 onClick={() => loadAnalysis(doc)}
-                                className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full transition-all ${
+                                className={`flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded transition-colors ${
                                   doc.currentVersion.analysis.status === 'analyzing' || doc.currentVersion.analysis.status === 'pending'
-                                    ? 'bg-blue-50 text-blue-600 animate-pulse'
+                                    ? 'bg-blue-50 text-blue-600'
                                     : doc.currentVersion.analysis.status === 'failed'
-                                    ? 'bg-rose-50 text-rose-600 hover:bg-rose-100'
+                                    ? 'bg-red-50 text-red-600 hover:bg-red-100'
                                     : doc.currentVersion.analysis.score !== undefined && doc.currentVersion.analysis.score >= 80
                                     ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
                                     : doc.currentVersion.analysis.score !== undefined && doc.currentVersion.analysis.score >= 60
@@ -1002,62 +1002,53 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                                 }`}
                               >
                                 {doc.currentVersion.analysis.status === 'analyzing' || doc.currentVersion.analysis.status === 'pending' ? (
-                                  <>
-                                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-                                    Analyserar...
-                                  </>
+                                  'Analyserar...'
                                 ) : doc.currentVersion.analysis.status === 'failed' ? (
-                                  <>
-                                    <span>⚠️</span>
-                                    Misslyckad
-                                  </>
+                                  'Misslyckad'
                                 ) : (
-                                  <>
-                                    <span>✓</span>
-                                    {doc.currentVersion.analysis.score !== undefined 
-                                      ? `${doc.currentVersion.analysis.score}/100` 
-                                      : 'Analyserad'}
-                                  </>
+                                  doc.currentVersion.analysis.score !== undefined 
+                                    ? `${doc.currentVersion.analysis.score}/100` 
+                                    : 'OK'
                                 )}
                               </button>
                             )}
                           </div>
-                          <div className="flex items-center gap-3 mt-1">
-                            <span className="text-sm text-gray-400">{doc.currentVersion?.fileName}</span>
-                            <span className="text-xs text-gray-300">•</span>
-                            <span className="text-sm text-gray-400">{formatFileSize(doc.currentVersion?.size || 0)}</span>
+                          <div className="flex items-center gap-2 mt-0.5 text-xs text-gray-500">
+                            <span className="truncate">{doc.currentVersion?.fileName}</span>
+                            <span>•</span>
+                            <span>{formatFileSize(doc.currentVersion?.size || 0)}</span>
                           </div>
                         </div>
-                        <button
-                          onClick={() => loadAnalysis(doc)}
-                          className="px-4 py-2 text-xs font-medium rounded-xl transition-all bg-violet-50 text-violet-700 hover:bg-violet-100"
-                        >
-                          DD-coach
-                        </button>
-                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <button
+                            onClick={() => loadAnalysis(doc)}
+                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-violet-50 text-violet-700 hover:bg-violet-100 transition-colors"
+                          >
+                            DD-coach
+                          </button>
                           {doc.versions && doc.versions.length > 1 && (
                             <button
                               onClick={() => {
                                 setSelectedDoc(doc)
                                 setShowVersions(true)
                               }}
-                              className="px-3 py-2 text-xs font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                              className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors hidden sm:block"
                             >
                               Versioner
                             </button>
                           )}
                           <button
                             onClick={() => handleView(doc)}
-                            className="px-3 py-2 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                           >
                             Visa
                           </button>
                           <button
                             onClick={() => handleDownload(doc)}
                             disabled={downloading === doc.id || doc.canDownload === false}
-                            className="px-4 py-2 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all disabled:opacity-50"
+                            className="px-3 py-1.5 bg-primary-navy text-white rounded-lg text-xs font-medium hover:bg-primary-navy/90 transition-colors disabled:opacity-50"
                           >
-                            {downloading === doc.id ? 'Laddar...' : doc.canDownload === false ? 'Blockerad' : 'Ladda ner'}
+                            {downloading === doc.id ? '...' : doc.canDownload === false ? 'Blockerad' : 'Ladda ner'}
                           </button>
                         </div>
                       </div>
@@ -1072,101 +1063,82 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
       {/* Sharing Tab */}
       {activeTab === 'sharing' && (
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-xl mx-auto space-y-5">
           {/* Invite form */}
           {permissions?.canInvite && (
-            <div className="bg-white rounded-3xl border border-gray-100 p-6 animate-pulse-shadow">
-              <h3 className="font-semibold text-gray-900 mb-1">Bjud in</h3>
-              <p className="text-sm text-gray-500 mb-5">Dela datarum med köpare eller rådgivare</p>
+            <div className="bg-white rounded-lg border border-gray-200 p-5">
+              <h3 className="font-semibold text-gray-900 text-sm mb-1">Bjud in till datarummet</h3>
+              <p className="text-xs text-gray-500 mb-4">Dela med köpare eller rådgivare</p>
 
-              <div className="flex gap-3">
-                <div className="flex-1">
-                  <input
-                    type="email"
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
-                    placeholder="namn@företag.se"
-                    className="w-full px-5 py-3 bg-gray-50 border-0 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy/20 transition-all"
-                  />
-                </div>
-                <div className="flex gap-1 p-1 bg-gray-50 rounded-xl">
-                  <button
-                    onClick={() => setInviteRole('VIEWER')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      inviteRole === 'VIEWER'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    Läsare
-                  </button>
-                  <button
-                    onClick={() => setInviteRole('EDITOR')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      inviteRole === 'EDITOR'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    Redigerare
-                  </button>
-                </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="email"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  placeholder="namn@företag.se"
+                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-navy/20 focus:border-primary-navy/40"
+                />
+                <select
+                  value={inviteRole}
+                  onChange={(e) => setInviteRole(e.target.value as 'VIEWER' | 'EDITOR')}
+                  className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
+                >
+                  <option value="VIEWER">Läsare</option>
+                  <option value="EDITOR">Redigerare</option>
+                </select>
                 <button
                   onClick={handleInvite}
                   disabled={inviting || !inviteEmail}
-                  className="px-6 py-3 bg-navy text-white rounded-xl font-medium hover:bg-navy/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-primary-navy text-white rounded-lg text-sm font-medium hover:bg-primary-navy/90 transition-colors disabled:opacity-50"
                 >
                   {inviting ? 'Skickar...' : 'Bjud in'}
                 </button>
               </div>
 
-              <p className="text-xs text-gray-400 mt-4">
-                Inbjudna måste godkänna NDA innan åtkomst
+              <p className="text-xs text-gray-400 mt-3">
+                Inbjudna måste godkänna NDA innan de får åtkomst
               </p>
             </div>
           )}
 
           {/* Invites list */}
-          <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden animate-pulse-shadow">
-            <div className="px-6 py-5 border-b border-gray-50">
-              <h3 className="font-semibold text-gray-900">Inbjudna ({invites.length})</h3>
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+              <h3 className="font-medium text-gray-900 text-sm">Inbjudna ({invites.length})</h3>
             </div>
 
             {invites.length === 0 ? (
-              <div className="p-16 text-center">
-                <div className="w-16 h-16 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl text-gray-300">0</span>
-                </div>
+              <div className="p-10 text-center">
                 <p className="text-gray-500 text-sm">Inga inbjudningar ännu</p>
               </div>
             ) : (
-              <div className="divide-y divide-gray-50">
+              <div className="divide-y divide-gray-100">
                 {invites.map((inv) => (
-                  <div key={inv.id} className="px-6 py-5 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-sm font-medium text-gray-600">
+                  <div key={inv.id} className="px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-medium text-gray-600">
                         {inv.email[0].toUpperCase()}
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">{inv.email}</p>
-                        <p className="text-sm text-gray-400">
+                        <p className="font-medium text-gray-900 text-sm">{inv.email}</p>
+                        <p className="text-xs text-gray-500">
                           {inv.role === 'VIEWER' ? 'Läsare' : 'Redigerare'}
                         </p>
                       </div>
                     </div>
                     <div>
                       {inv.status === 'PENDING' && (
-                        <span className="px-3 py-1.5 bg-amber-50 text-amber-600 text-xs font-medium rounded-full">
+                        <span className="px-2 py-1 bg-amber-50 text-amber-600 text-xs font-medium rounded">
                           Väntande
                         </span>
                       )}
                       {inv.status === 'ACCEPTED' && (
-                        <span className="px-3 py-1.5 bg-emerald-50 text-emerald-600 text-xs font-medium rounded-full">
+                        <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-xs font-medium rounded">
                           Accepterad
                         </span>
                       )}
                       {inv.status === 'EXPIRED' && (
-                        <span className="px-3 py-1.5 bg-gray-100 text-gray-500 text-xs font-medium rounded-full">
+                        <span className="px-2 py-1 bg-gray-100 text-gray-500 text-xs font-medium rounded">
                           Utgången
                         </span>
                       )}
@@ -1181,76 +1153,79 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
       {/* Q&A Tab */}
       {activeTab === 'qa' && (
-        <div className="max-w-3xl mx-auto space-y-6">
-          <div className="bg-white rounded-3xl border border-gray-100 p-6 animate-pulse-shadow">
-            <div className="flex items-center justify-between gap-4">
+        <div className="max-w-2xl mx-auto space-y-5">
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <div className="flex items-center justify-between gap-4 mb-4">
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1">Q&amp;A</h3>
-                <p className="text-sm text-gray-500">Frågor &amp; svar kopplade till objektet</p>
+                <h3 className="font-semibold text-gray-900 text-sm">Frågor &amp; Svar</h3>
+                <p className="text-xs text-gray-500">Strukturerade frågor för due diligence</p>
               </div>
               <a
                 href={`/api/questions/export-pdf?listingId=${encodeURIComponent(listingId)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="px-4 py-2 text-sm font-medium text-navy hover:bg-navy/5 rounded-xl transition-colors"
+                className="px-3 py-1.5 text-xs font-medium text-primary-navy hover:bg-gray-100 rounded-lg transition-colors"
               >
                 Exportera PDF
               </a>
             </div>
 
             {qaLoading ? (
-              <div className="py-10 text-center text-sm text-gray-500">Laddar…</div>
+              <div className="py-8 text-center text-sm text-gray-500">Laddar…</div>
             ) : qaRole === null ? (
-              <div className="mt-4 text-sm text-gray-600">
-                Du har inte åtkomst till Q&amp;A ännu (kräver NDA eller transaktion).
+              <div className="py-6 text-center">
+                <p className="text-sm text-gray-600">
+                  Du har inte åtkomst till Q&amp;A ännu.
+                </p>
+                <p className="text-xs text-gray-500 mt-1">Kräver godkänd NDA eller transaktion.</p>
               </div>
             ) : (
-              <div className="mt-6 space-y-6">
+              <div className="space-y-5">
                 {qaRole === 'buyer' && (
-                  <div className="p-4 bg-gray-50 rounded-2xl space-y-3">
-                    <p className="text-sm font-semibold text-gray-900">Ställ en fråga</p>
-                    <div className="grid sm:grid-cols-2 gap-3">
+                  <div className="p-4 bg-gray-50 rounded-lg space-y-3">
+                    <p className="text-sm font-medium text-gray-900">Ställ en fråga</p>
+                    <div className="grid sm:grid-cols-2 gap-2">
                       <input
                         value={newQuestionTitle}
                         onChange={(e) => setNewQuestionTitle(e.target.value)}
-                        placeholder="Titel"
-                        className="px-4 py-2 border border-gray-200 rounded-xl text-sm bg-white"
+                        placeholder="Titel på frågan"
+                        className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
                       />
                       <div className="flex gap-2">
                         <select
                           value={newQuestionCategory}
                           onChange={(e) => setNewQuestionCategory(e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white"
+                          className="flex-1 px-2 py-2 border border-gray-200 rounded-lg text-sm bg-white"
                         >
-                          <option value="financial">Financial</option>
-                          <option value="legal">Legal</option>
-                          <option value="commercial">Commercial</option>
-                          <option value="it">IT</option>
-                          <option value="hr">HR</option>
-                          <option value="other">Other</option>
+                          <option value="financial">Finansiellt</option>
+                          <option value="legal">Juridiskt</option>
+                          <option value="commercial">Kommersiellt</option>
+                          <option value="it">IT/Teknik</option>
+                          <option value="hr">Personal</option>
+                          <option value="other">Övrigt</option>
                         </select>
                         <select
                           value={newQuestionPriority}
                           onChange={(e) => setNewQuestionPriority(e.target.value)}
-                          className="px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white"
+                          className="px-2 py-2 border border-gray-200 rounded-lg text-sm bg-white"
                         >
-                          <option value="low">Low</option>
+                          <option value="low">Låg</option>
                           <option value="medium">Medium</option>
-                          <option value="high">High</option>
-                          <option value="critical">Critical</option>
+                          <option value="high">Hög</option>
+                          <option value="critical">Kritisk</option>
                         </select>
                       </div>
                     </div>
                     <textarea
                       value={newQuestionDescription}
                       onChange={(e) => setNewQuestionDescription(e.target.value)}
-                      placeholder="Beskriv frågan"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm bg-white min-h-[120px]"
+                      placeholder="Beskriv din fråga i detalj..."
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white min-h-[100px]"
                     />
                     <div className="flex justify-end">
                       <button
                         onClick={submitQuestion}
-                        className="px-5 py-2.5 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all disabled:opacity-50"
+                        className="px-4 py-2 bg-primary-navy text-white rounded-lg text-sm font-medium hover:bg-primary-navy/90 transition-colors disabled:opacity-50"
                         disabled={!newQuestionTitle || !newQuestionDescription}
                       >
                         Skicka fråga
@@ -1261,52 +1236,60 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
                 <div className="space-y-3">
                   {questions.length === 0 ? (
-                    <div className="text-sm text-gray-600">Inga frågor ännu.</div>
+                    <p className="text-sm text-gray-500 text-center py-4">Inga frågor ännu.</p>
                   ) : (
                     questions.map((q) => (
-                      <div key={q.id} className="border border-gray-100 rounded-2xl p-4">
-                        <div className="flex items-start justify-between gap-4">
+                      <div key={q.id} className="border border-gray-200 rounded-lg p-4">
+                        <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <p className="font-semibold text-gray-900">{q.title}</p>
-                            <p className="text-xs text-gray-500 mt-1">
-                              {q.category} • {q.priority} • {q.status}
-                            </p>
+                            <p className="font-medium text-gray-900 text-sm">{q.title}</p>
+                            <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+                              <span className="px-1.5 py-0.5 bg-gray-100 rounded">{q.category}</span>
+                              <span className={`px-1.5 py-0.5 rounded ${
+                                q.priority === 'critical' ? 'bg-red-50 text-red-600' :
+                                q.priority === 'high' ? 'bg-amber-50 text-amber-600' :
+                                'bg-gray-100 text-gray-600'
+                              }`}>{q.priority}</span>
+                              <span>{q.status}</span>
+                            </div>
                           </div>
-                          <div className="text-xs text-gray-400">
+                          <span className="text-xs text-gray-400 flex-shrink-0">
                             {new Date(q.createdAt).toLocaleDateString('sv-SE')}
-                          </div>
+                          </span>
                         </div>
 
                         <p className="text-sm text-gray-700 mt-3 whitespace-pre-wrap">{q.description}</p>
 
-                        <div className="mt-4 space-y-2">
-                          {(q.answers || []).map((a: any) => (
-                            <div key={a.id} className="bg-gray-50 rounded-xl p-3">
-                              <p className="text-xs text-gray-500 mb-1">Svar</p>
-                              <p className="text-sm text-gray-800 whitespace-pre-wrap">{a.content}</p>
-                            </div>
-                          ))}
-
-                          {qaRole === 'seller' && (
-                            <div className="pt-2">
-                              <textarea
-                                value={answerDrafts[q.id] || ''}
-                                onChange={(e) => setAnswerDrafts((prev) => ({ ...prev, [q.id]: e.target.value }))}
-                                placeholder="Skriv svar…"
-                                className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm bg-white min-h-[90px]"
-                              />
-                              <div className="flex justify-end mt-2">
-                                <button
-                                  onClick={() => submitAnswer(q.id)}
-                                  disabled={!(answerDrafts[q.id] || '').trim()}
-                                  className="px-4 py-2 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-all disabled:opacity-50"
-                                >
-                                  Skicka svar
-                                </button>
+                        {(q.answers || []).length > 0 && (
+                          <div className="mt-3 space-y-2">
+                            {(q.answers || []).map((a: any) => (
+                              <div key={a.id} className="bg-emerald-50 border border-emerald-100 rounded-lg p-3">
+                                <p className="text-xs text-emerald-700 font-medium mb-1">Svar från säljaren</p>
+                                <p className="text-sm text-gray-800 whitespace-pre-wrap">{a.content}</p>
                               </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {qaRole === 'seller' && (
+                          <div className="mt-3 pt-3 border-t border-gray-100">
+                            <textarea
+                              value={answerDrafts[q.id] || ''}
+                              onChange={(e) => setAnswerDrafts((prev) => ({ ...prev, [q.id]: e.target.value }))}
+                              placeholder="Skriv ditt svar..."
+                              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white min-h-[80px]"
+                            />
+                            <div className="flex justify-end mt-2">
+                              <button
+                                onClick={() => submitAnswer(q.id)}
+                                disabled={!(answerDrafts[q.id] || '').trim()}
+                                className="px-4 py-2 bg-primary-navy text-white rounded-lg text-sm font-medium hover:bg-primary-navy/90 transition-colors disabled:opacity-50"
+                              >
+                                Skicka svar
+                              </button>
                             </div>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
                     ))
                   )}
@@ -1319,13 +1302,13 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
       {/* Upload Modal */}
       {showUpload && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl animate-pulse-shadow">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900">Ladda upp</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">Ladda upp dokument</h2>
               <button
                 onClick={() => setShowUpload(false)}
-                className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-xl transition-colors text-gray-400"
+                className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-lg transition-colors text-gray-400"
               >
                 ×
               </button>
@@ -1336,30 +1319,30 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`border-2 border-dashed rounded-3xl p-12 text-center cursor-pointer transition-all ${
+              className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all ${
                 isDragging
-                  ? 'border-navy bg-navy/5'
+                  ? 'border-primary-navy bg-primary-navy/5'
                   : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <div className="w-16 h-16 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl text-gray-400">+</span>
+              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <span className="text-xl text-gray-400">+</span>
               </div>
-              <p className="text-gray-700 font-medium mb-1">
-                Dra och släpp filer
+              <p className="text-gray-700 font-medium text-sm mb-1">
+                Dra och släpp filer här
               </p>
-              <p className="text-sm text-gray-400">eller klicka för att välja</p>
+              <p className="text-xs text-gray-400">eller klicka för att välja</p>
             </div>
 
             {uploading && (
-              <div className="mt-6">
-                <div className="flex items-center justify-between text-sm mb-2">
+              <div className="mt-4">
+                <div className="flex items-center justify-between text-xs mb-1.5">
                   <span className="text-gray-600">Laddar upp...</span>
-                  <span className="text-navy font-semibold">{uploadProgress}%</span>
+                  <span className="text-primary-navy font-semibold">{uploadProgress}%</span>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-navy transition-all duration-300 rounded-full"
+                    className="h-full bg-primary-navy transition-all duration-300 rounded-full"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
@@ -1371,56 +1354,56 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
       {/* Versions Modal */}
       {showVersions && selectedDoc && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl animate-pulse-shadow">
-            <div className="flex items-center justify-between mb-6">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-5 shadow-xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Versioner</h2>
-                <p className="text-sm text-gray-500 mt-1">{selectedDoc.title}</p>
+                <h2 className="text-lg font-semibold text-gray-900">Dokumentversioner</h2>
+                <p className="text-sm text-gray-500 truncate">{selectedDoc.title}</p>
               </div>
               <button
                 onClick={() => {
                   setShowVersions(false)
                   setSelectedDoc(null)
                 }}
-                className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-xl transition-colors text-gray-400"
+                className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-lg transition-colors text-gray-400"
               >
                 ×
               </button>
             </div>
 
             {(permissions?.role === 'OWNER' || permissions?.role === 'EDITOR') && (
-              <div className="mb-4 p-4 bg-gray-50 rounded-2xl space-y-3">
+              <div className="mb-4 p-4 bg-gray-50 rounded-lg space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-gray-900">Åtkomst per dokument</p>
+                  <p className="text-sm font-medium text-gray-900">Åtkomstinställningar</p>
                   <button
                     onClick={saveDocPolicy}
                     disabled={savingPolicy}
-                    className="px-3 py-1.5 text-xs font-medium rounded-lg bg-navy text-white disabled:opacity-50"
+                    className="px-3 py-1.5 text-xs font-medium rounded-lg bg-primary-navy text-white disabled:opacity-50"
                   >
                     {savingPolicy ? 'Sparar…' : 'Spara'}
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3">
-                  <label className="text-xs font-medium text-gray-600">
+                <div className="space-y-2">
+                  <label className="block text-xs font-medium text-gray-600">
                     Synlighet
                     <select
                       value={policyVisibility || 'NDA_ONLY'}
                       onChange={(e) => setPolicyVisibility(e.target.value as any)}
                       className="mt-1 w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
                     >
-                      <option value="ALL">ALL (efter åtkomst)</option>
-                      <option value="NDA_ONLY">NDA_ONLY</option>
-                      <option value="TRANSACTION_ONLY">TRANSACTION_ONLY</option>
-                      <option value="CUSTOM">CUSTOM (allowlist)</option>
-                      <option value="OWNER_ONLY">OWNER_ONLY</option>
+                      <option value="ALL">Alla med åtkomst</option>
+                      <option value="NDA_ONLY">Endast efter NDA</option>
+                      <option value="TRANSACTION_ONLY">Endast vid transaktion</option>
+                      <option value="CUSTOM">Anpassad (allowlist)</option>
+                      <option value="OWNER_ONLY">Endast ägaren</option>
                     </select>
                   </label>
 
                   {policyVisibility === 'CUSTOM' && (
-                    <label className="text-xs font-medium text-gray-600">
-                      Allowlist e-post (komma-separerat)
+                    <label className="block text-xs font-medium text-gray-600">
+                      Tillåtna e-postadresser
                       <input
                         value={policyCustomEmails}
                         onChange={(e) => setPolicyCustomEmails(e.target.value)}
@@ -1430,62 +1413,64 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                     </label>
                   )}
 
-                  <label className="flex items-center gap-2 text-sm text-gray-700">
+                  <label className="flex items-center gap-2 text-xs text-gray-700">
                     <input
                       type="checkbox"
                       checked={policyDownloadBlocked}
                       onChange={(e) => setPolicyDownloadBlocked(e.target.checked)}
+                      className="rounded"
                     />
-                    Blockera nedladdning (för viewers)
+                    Blockera nedladdning
                   </label>
-                  <label className="flex items-center gap-2 text-sm text-gray-700">
+                  <label className="flex items-center gap-2 text-xs text-gray-700">
                     <input
                       type="checkbox"
                       checked={policyWatermarkRequired}
                       onChange={(e) => setPolicyWatermarkRequired(e.target.checked)}
+                      className="rounded"
                     />
-                    Tvinga watermark
+                    Kräv vattenstämpel
                   </label>
                 </div>
               </div>
             )}
 
-            <div className="space-y-2 max-h-80 overflow-y-auto">
+            <div className="space-y-2 max-h-60 overflow-y-auto">
               {selectedDoc.versions?.map((v) => (
                 <div
                   key={v.id}
-                  className={`flex items-center justify-between p-4 rounded-2xl transition-colors ${
+                  className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
                     v.id === selectedDoc.currentVersion?.id
-                      ? 'bg-navy/5 border border-navy/20'
+                      ? 'bg-primary-navy/5 border border-primary-navy/20'
                       : 'bg-gray-50 hover:bg-gray-100'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold ${
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
                       v.id === selectedDoc.currentVersion?.id
-                        ? 'bg-navy text-white'
+                        ? 'bg-primary-navy text-white'
                         : 'bg-gray-200 text-gray-600'
                     }`}>
-                      {v.version}
+                      v{v.version}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{v.fileName}</p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-sm font-medium text-gray-900 truncate">{v.fileName}</p>
+                      <p className="text-xs text-gray-500">
                         {formatFileSize(v.size)} • {new Date(v.createdAt).toLocaleDateString('sv-SE')}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleView(selectedDoc, v.id)}
-                      className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-lg transition-colors"
+                      className="px-2 py-1 text-xs font-medium text-gray-600 hover:bg-white rounded transition-colors"
                     >
                       Visa
                     </button>
                     <button
                       onClick={() => handleDownload(selectedDoc, v.id)}
                       disabled={selectedDoc.canDownload === false}
-                      className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-lg transition-colors disabled:opacity-50"
+                      className="px-2 py-1 text-xs font-medium text-gray-600 hover:bg-white rounded transition-colors disabled:opacity-50"
                     >
                       {selectedDoc.canDownload === false ? 'Blockerad' : 'Ladda ner'}
                     </button>
@@ -1499,49 +1484,49 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
       {/* DD-Coach Analysis Modal */}
       {showAnalysis && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl animate-pulse-shadow">
-            <div className="flex items-center justify-between mb-6">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-lg w-full p-5 shadow-xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">DD-coach</h2>
-                <p className="text-sm text-gray-500 mt-1">{showAnalysis.title}</p>
+                <h2 className="text-lg font-semibold text-gray-900">DD-coach</h2>
+                <p className="text-sm text-gray-500 truncate">{showAnalysis.title}</p>
               </div>
               <button
                 onClick={() => {
                   setShowAnalysis(null)
                   setAnalysisData(null)
                 }}
-                className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-xl transition-colors text-gray-400"
+                className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-lg transition-colors text-gray-400"
               >
                 ×
               </button>
             </div>
 
             {loadingAnalysis ? (
-              <div className="py-16 text-center">
-                <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                <p className="text-gray-500">Analyserar dokument...</p>
+              <div className="py-12 text-center">
+                <div className="w-8 h-8 border-2 border-primary-navy border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm text-gray-500">Analyserar dokument...</p>
               </div>
             ) : analysisData ? (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* Score */}
                 {analysisData.score !== undefined && (
-                  <div className="flex items-center gap-5">
-                    <div className={`w-20 h-20 rounded-3xl flex items-center justify-center text-2xl font-bold ${
-                      analysisData.score >= 80 ? 'bg-emerald-50 text-emerald-600' :
-                      analysisData.score >= 60 ? 'bg-amber-50 text-amber-600' :
-                      'bg-rose-50 text-rose-600'
+                  <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-xl font-bold ${
+                      analysisData.score >= 80 ? 'bg-emerald-100 text-emerald-600' :
+                      analysisData.score >= 60 ? 'bg-amber-100 text-amber-600' :
+                      'bg-red-100 text-red-600'
                     }`}>
                       {analysisData.score}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900 mb-2">Kvalitetspoäng</p>
-                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <p className="text-sm font-medium text-gray-900 mb-1.5">Kvalitetspoäng</p>
+                      <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                         <div 
                           className={`h-full rounded-full transition-all ${
                             analysisData.score >= 80 ? 'bg-emerald-500' :
                             analysisData.score >= 60 ? 'bg-amber-500' :
-                            'bg-rose-500'
+                            'bg-red-500'
                           }`}
                           style={{ width: `${analysisData.score}%` }}
                         />
@@ -1552,51 +1537,44 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
 
                 {/* Summary */}
                 {analysisData.summary && (
-                  <div className="p-5 bg-gray-50 rounded-2xl">
+                  <div className="p-4 bg-gray-50 rounded-lg">
                     <p className="text-sm text-gray-700 leading-relaxed">{analysisData.summary}</p>
                   </div>
                 )}
 
                 {/* Findings */}
                 {analysisData.findings && analysisData.findings.length > 0 && (
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     <h4 className="text-sm font-medium text-gray-900">Observationer</h4>
                     {analysisData.findings.map((finding, idx) => (
                       <div
                         key={idx}
-                        className={`flex items-start gap-4 p-4 rounded-2xl ${
-                          finding.type === 'success' ? 'bg-emerald-50' :
-                          finding.type === 'warning' ? 'bg-amber-50' :
-                          finding.type === 'error' ? 'bg-rose-50' :
-                          'bg-blue-50'
+                        className={`flex items-start gap-3 p-3 rounded-lg text-sm ${
+                          finding.type === 'success' ? 'bg-emerald-50 text-emerald-800' :
+                          finding.type === 'warning' ? 'bg-amber-50 text-amber-800' :
+                          finding.type === 'error' ? 'bg-red-50 text-red-800' :
+                          'bg-blue-50 text-blue-800'
                         }`}
                       >
-                        <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
+                        <div className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${
                           finding.type === 'success' ? 'bg-emerald-500' :
                           finding.type === 'warning' ? 'bg-amber-500' :
-                          finding.type === 'error' ? 'bg-rose-500' :
+                          finding.type === 'error' ? 'bg-red-500' :
                           'bg-blue-500'
                         }`} />
-                        <p className={`text-sm leading-relaxed ${
-                          finding.type === 'success' ? 'text-emerald-800' :
-                          finding.type === 'warning' ? 'text-amber-800' :
-                          finding.type === 'error' ? 'text-rose-800' :
-                          'text-blue-800'
-                        }`}>
-                          {finding.message}
-                        </p>
+                        <p>{finding.message}</p>
                       </div>
                     ))}
                   </div>
                 )}
 
                 {/* Actions */}
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-2 pt-2">
                   <button
                     onClick={rerunAnalysis}
-                    className="flex-1 px-5 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
+                    className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
                   >
-                    Kör om analys
+                    Kör om
                   </button>
                   <button
                     onClick={async () => {
@@ -1618,27 +1596,27 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
                         console.error('PDF export error:', err)
                       }
                     }}
-                    className="flex-1 px-5 py-3 bg-violet-600 text-white rounded-xl text-sm font-medium hover:bg-violet-700 transition-colors"
+                    className="flex-1 px-4 py-2 bg-violet-600 text-white rounded-lg text-sm font-medium hover:bg-violet-700 transition-colors"
                   >
-                    📄 Ladda ner PDF
+                    Ladda ner PDF
                   </button>
                   <button
                     onClick={() => {
                       setShowAnalysis(null)
                       setAnalysisData(null)
                     }}
-                    className="px-5 py-3 bg-navy text-white rounded-xl text-sm font-medium hover:bg-navy/90 transition-colors"
+                    className="px-4 py-2 bg-primary-navy text-white rounded-lg text-sm font-medium hover:bg-primary-navy/90 transition-colors"
                   >
                     Stäng
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="py-16 text-center">
-                <p className="text-gray-500 mb-6">Ingen analys tillgänglig</p>
+              <div className="py-10 text-center">
+                <p className="text-sm text-gray-500 mb-4">Ingen analys tillgänglig</p>
                 <button
                   onClick={rerunAnalysis}
-                  className="px-6 py-3 bg-violet-600 text-white rounded-xl text-sm font-medium hover:bg-violet-700 transition-colors"
+                  className="px-4 py-2 bg-violet-600 text-white rounded-lg text-sm font-medium hover:bg-violet-700 transition-colors"
                 >
                   Starta analys
                 </button>
@@ -1657,31 +1635,6 @@ export default function DataRoomManager({ listingId, listingName }: Props) {
         className="hidden"
         onChange={(e) => e.target.files && handleUpload(e.target.files)}
       />
-
-      <style jsx global>{`
-        @keyframes pulse-shadow {
-          0%, 100% {
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.03);
-          }
-          50% {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-          }
-        }
-        @keyframes pulse-shadow-navy {
-          0%, 100% {
-            box-shadow: 0 0 0 0 rgba(30, 58, 95, 0.15);
-          }
-          50% {
-            box-shadow: 0 8px 30px rgba(30, 58, 95, 0.25);
-          }
-        }
-        .animate-pulse-shadow {
-          animation: pulse-shadow 3s ease-in-out infinite;
-        }
-        .animate-pulse-shadow-navy {
-          animation: pulse-shadow-navy 2s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   )
 }

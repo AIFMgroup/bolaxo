@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Loader2, Upload, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Loader2, Upload, CheckCircle, XCircle, Clock, FileText } from 'lucide-react'
 
 type KycStatus = 'UNVERIFIED' | 'SUBMITTED' | 'APPROVED' | 'REJECTED'
 
@@ -18,13 +18,41 @@ export default function BuyerKycPage() {
   const statusMeta = useMemo(() => {
     switch (status) {
       case 'APPROVED':
-        return { label: 'Verifierad', icon: <CheckCircle className="w-5 h-5 text-green-600" /> }
+        return { 
+          label: 'Verifierad köpare', 
+          description: 'Du är nu verifierad och kan visa en badge på din profil.',
+          icon: <CheckCircle className="w-5 h-5" />,
+          color: 'text-emerald-600',
+          bg: 'bg-emerald-50',
+          border: 'border-emerald-200'
+        }
       case 'REJECTED':
-        return { label: 'Nekad', icon: <XCircle className="w-5 h-5 text-red-600" /> }
+        return { 
+          label: 'Nekad', 
+          description: 'Din ansökan kunde inte godkännas. Se orsak nedan.',
+          icon: <XCircle className="w-5 h-5" />,
+          color: 'text-red-600',
+          bg: 'bg-red-50',
+          border: 'border-red-200'
+        }
       case 'SUBMITTED':
-        return { label: 'Inskickad (väntar på granskning)', icon: <AlertCircle className="w-5 h-5 text-yellow-600" /> }
+        return { 
+          label: 'Väntar på granskning', 
+          description: 'Vi granskar dina dokument. Detta tar vanligtvis 1-2 arbetsdagar.',
+          icon: <Clock className="w-5 h-5" />,
+          color: 'text-amber-600',
+          bg: 'bg-amber-50',
+          border: 'border-amber-200'
+        }
       default:
-        return { label: 'Inte inskickad', icon: <AlertCircle className="w-5 h-5 text-gray-500" /> }
+        return { 
+          label: 'Inte verifierad', 
+          description: 'Ladda upp dokument nedan för att bli verifierad.',
+          icon: <FileText className="w-5 h-5" />,
+          color: 'text-gray-500',
+          bg: 'bg-gray-50',
+          border: 'border-gray-200'
+        }
     }
   }, [status])
 
@@ -109,37 +137,50 @@ export default function BuyerKycPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <div className="flex items-center justify-between">
-          <Link href="/kopare/settings" className="inline-flex items-center gap-2 text-primary-navy hover:text-primary-blue">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <Link href="/kopare/settings" className="inline-flex items-center gap-2 text-primary-navy hover:text-primary-blue mb-4">
             <ArrowLeft className="w-4 h-4" />
-            Tillbaka
+            Tillbaka till inställningar
           </Link>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <h1 className="text-2xl font-bold text-primary-navy">Verifiering av köpare (KYC)</h1>
+          <h1 className="text-3xl font-bold text-primary-navy">Verifiering (KYC)</h1>
           <p className="text-gray-600 mt-2">
-            Ladda upp ID/bolagsdokument. Vi granskar manuellt och markerar dig som “Verifierad köpare”.
+            Verifiera din identitet för att bli en betrodd köpare på plattformen
           </p>
-
-          <div className="mt-4 flex items-center gap-3">
-            {statusMeta.icon}
-            <span className="font-medium text-gray-900">{statusMeta.label}</span>
-          </div>
-          {status === 'REJECTED' && rejectionReason && (
-            <p className="mt-2 text-sm text-red-700">Orsak: {rejectionReason}</p>
-          )}
-          {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-primary-navy">Dokument</h2>
+        {/* Status Card */}
+        <div className={`rounded-lg border ${statusMeta.border} ${statusMeta.bg} p-5 mb-6`}>
+          <div className="flex items-start gap-3">
+            <div className={statusMeta.color}>{statusMeta.icon}</div>
+            <div>
+              <p className={`font-semibold ${statusMeta.color}`}>{statusMeta.label}</p>
+              <p className="text-sm text-gray-600 mt-0.5">{statusMeta.description}</p>
+              {status === 'REJECTED' && rejectionReason && (
+                <p className="text-sm text-red-700 mt-2 font-medium">Orsak: {rejectionReason}</p>
+              )}
+            </div>
+          </div>
+        </div>
 
-          <div className="grid sm:grid-cols-2 gap-3">
-            <label className="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 cursor-pointer">
-              <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                <Upload className="w-4 h-4" /> Ladda upp ID (PDF/JPG/PNG/WebP)
+        {error && (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4 mb-6">
+            <p className="text-sm text-red-700">{error}</p>
+          </div>
+        )}
+
+        {/* Upload Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-primary-navy mb-4">Ladda upp dokument</h2>
+          
+          <div className="grid sm:grid-cols-2 gap-4 mb-6">
+            <label className="group relative border-2 border-dashed border-gray-200 rounded-lg p-5 hover:border-primary-navy hover:bg-gray-50 cursor-pointer transition-all">
+              <div className="text-center">
+                <Upload className="w-8 h-8 text-gray-400 group-hover:text-primary-navy mx-auto mb-2 transition-colors" />
+                <p className="font-medium text-gray-900 text-sm">Giltig ID-handling</p>
+                <p className="text-xs text-gray-500 mt-1">Pass, körkort eller nationellt ID</p>
+                <p className="text-xs text-gray-400 mt-2">PDF, JPG, PNG • Max 15MB</p>
               </div>
               <input
                 type="file"
@@ -151,12 +192,14 @@ export default function BuyerKycPage() {
                   if (f) handleUpload('id', f)
                 }}
               />
-              <p className="text-xs text-gray-500 mt-1">Max 15MB</p>
             </label>
 
-            <label className="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 cursor-pointer">
-              <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                <Upload className="w-4 h-4" /> Ladda upp bolagsdokument (PDF)
+            <label className="group relative border-2 border-dashed border-gray-200 rounded-lg p-5 hover:border-primary-navy hover:bg-gray-50 cursor-pointer transition-all">
+              <div className="text-center">
+                <FileText className="w-8 h-8 text-gray-400 group-hover:text-primary-navy mx-auto mb-2 transition-colors" />
+                <p className="font-medium text-gray-900 text-sm">Bolagsdokument</p>
+                <p className="text-xs text-gray-500 mt-1">Registreringsbevis eller fullmakt</p>
+                <p className="text-xs text-gray-400 mt-2">PDF • Max 15MB</p>
               </div>
               <input
                 type="file"
@@ -168,30 +211,32 @@ export default function BuyerKycPage() {
                   if (f) handleUpload('company_registration', f)
                 }}
               />
-              <p className="text-xs text-gray-500 mt-1">Max 15MB</p>
             </label>
           </div>
 
           {uploading && (
-            <div className="text-sm text-gray-600 flex items-center gap-2">
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
               <Loader2 className="w-4 h-4 animate-spin" />
-              Laddar upp…
+              Laddar upp dokument…
             </div>
           )}
 
-          <div className="pt-2">
-            {docs.length === 0 ? (
-              <p className="text-sm text-gray-600">Inga dokument uppladdade ännu.</p>
-            ) : (
+          {/* Uploaded Documents */}
+          {docs.length > 0 && (
+            <div className="border-t pt-4">
+              <h3 className="text-sm font-medium text-gray-700 mb-3">Uppladdade dokument</h3>
               <ul className="space-y-2">
                 {docs.map((d) => (
-                  <li key={d.id} className="flex items-center justify-between border border-gray-100 rounded-xl p-3">
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">{d.fileName}</p>
-                      <p className="text-xs text-gray-500">{d.kind}</p>
+                  <li key={d.id} className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <FileText className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{d.fileName}</p>
+                        <p className="text-xs text-gray-500">{d.kind === 'id' ? 'ID-handling' : 'Bolagsdokument'}</p>
+                      </div>
                     </div>
                     <a
-                      className="text-sm text-primary-navy hover:text-primary-blue"
+                      className="text-sm font-medium text-primary-navy hover:underline flex-shrink-0"
                       href={`/api/kyc/documents/download-url?documentId=${encodeURIComponent(d.id)}`}
                       target="_blank"
                       rel="noreferrer"
@@ -201,21 +246,39 @@ export default function BuyerKycPage() {
                   </li>
                 ))}
               </ul>
-            )}
-          </div>
+            </div>
+          )}
 
-          <div className="pt-4 border-t flex items-center justify-between gap-3">
-            <p className="text-xs text-gray-500">
-              Tips: skicka in när du är klar. Du kan ladda upp fler dokument senare.
+          {docs.length === 0 && !uploading && (
+            <p className="text-sm text-gray-500 text-center py-4">
+              Inga dokument uppladdade ännu
             </p>
-            <button
-              onClick={handleSubmit}
-              disabled={submitting || uploading || docs.length === 0}
-              className="px-4 py-2 rounded-xl bg-primary-navy text-white text-sm font-medium disabled:opacity-50"
-            >
-              {submitting ? 'Skickar…' : 'Skicka in för granskning'}
-            </button>
-          </div>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <div className="mt-6 flex items-center justify-between">
+          <p className="text-xs text-gray-500 max-w-xs">
+            Du kan ladda upp fler dokument även efter att du skickat in.
+          </p>
+          <button
+            onClick={handleSubmit}
+            disabled={submitting || uploading || docs.length === 0 || status === 'SUBMITTED' || status === 'APPROVED'}
+            className="px-6 py-2.5 bg-primary-navy text-white rounded-lg text-sm font-medium hover:bg-primary-navy/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            {submitting ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Skickar…
+              </span>
+            ) : status === 'APPROVED' ? (
+              'Redan verifierad'
+            ) : status === 'SUBMITTED' ? (
+              'Inväntar granskning'
+            ) : (
+              'Skicka in för granskning'
+            )}
+          </button>
         </div>
       </div>
     </div>
