@@ -17,6 +17,7 @@ interface MenuItem {
   href: string
   icon: any
   badge?: number
+  disabled?: boolean
 }
 
 interface DashboardLayoutProps {
@@ -47,17 +48,36 @@ export default function DashboardLayout({ children, demoRole }: DashboardLayoutP
       if (isBuyer(demoRole)) {
         return [
           ...common,
-          // Keep demo navigation on public/demo routes only
+          // Public/demo-safe destinations
+          { label: t('menu.investorProfile'), href: `/${locale}/investerarprofil`, icon: UserCircle },
           { label: t('menu.searchProfile'), href: `/${locale}/sok`, icon: Search },
+          { label: t('menu.comparisons'), href: `/${locale}/jamfor`, icon: BarChart3 },
+
+          // Show the rest of the buyer menu for familiarity, but keep it disabled in demo
+          { label: t('menu.savedItems'), href: demoBase, icon: Building, disabled: true },
+          { label: t('menu.ndaStatus'), href: demoBase, icon: Shield, disabled: true },
+          { label: t('menu.calendar'), href: demoBase, icon: Calendar, disabled: true },
+          { label: t('menu.myDeals'), href: demoBase, icon: FileText, disabled: true },
+          { label: t('menu.settings'), href: demoBase, icon: Settings, disabled: true },
         ]
       }
 
       if (isSeller(demoRole)) {
         return [
           ...common,
+          // Public/demo-safe destinations
+          { label: t('menu.sellerProfile'), href: `/${locale}/saljarprofil`, icon: UserCircle },
           { label: t('menu.myListings'), href: `/${locale}/salja/start`, icon: Building },
           { label: t('menu.dataRoom'), href: `/${locale}/salja/sme-kit/dataroom`, icon: FolderOpen },
-          { label: t('menu.settings'), href: `/${locale}/salja/settings`, icon: Settings },
+
+          // Show the rest of the seller menu for familiarity, but keep it disabled in demo
+          { label: t('menu.matchedBuyers'), href: demoBase, icon: Users, disabled: true },
+          { label: t('menu.ndaRequests'), href: demoBase, icon: Shield, disabled: true },
+          { label: t('menu.analytics'), href: demoBase, icon: BarChart3, disabled: true },
+          { label: t('menu.documents'), href: demoBase, icon: FolderOpen, disabled: true },
+          { label: t('menu.mySales'), href: demoBase, icon: TrendingUp, disabled: true },
+          { label: t('menu.calendar'), href: demoBase, icon: Calendar, disabled: true },
+          { label: t('menu.settings'), href: demoBase, icon: Settings, disabled: true },
         ]
       }
 
@@ -171,27 +191,44 @@ export default function DashboardLayout({ children, demoRole }: DashboardLayoutP
               const isActive = pathname === item.href
               return (
                 <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 ${
-                      isActive 
-                        ? 'bg-gradient-to-r from-navy to-navy/90 text-white shadow-md' 
-                        : 'text-graphite hover:bg-sand/40 hover:text-navy'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
-                      {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+                  {item.disabled ? (
+                    <div
+                      className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 opacity-60 cursor-not-allowed text-graphite bg-white`}
+                      title="Kommer snart i demo"
+                    >
+                      <div className="flex items-center gap-3">
+                        <item.icon className="w-5 h-5" />
+                        {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+                      </div>
+                      {!collapsed && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-sand/60 text-navy">
+                          Demo
+                        </span>
+                      )}
                     </div>
-                    {!collapsed && item.badge !== undefined && item.badge > 0 && (
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                        isActive ? 'bg-white/20 text-white' : 'bg-rose/50 text-navy'
-                      }`}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </Link>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 ${
+                        isActive 
+                          ? 'bg-gradient-to-r from-navy to-navy/90 text-white shadow-md' 
+                          : 'text-graphite hover:bg-sand/40 hover:text-navy'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
+                        {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+                      </div>
+                      {!collapsed && item.badge !== undefined && item.badge > 0 && (
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                          isActive ? 'bg-white/20 text-white' : 'bg-rose/50 text-navy'
+                        }`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
+                  )}
                 </li>
               )
             })}
