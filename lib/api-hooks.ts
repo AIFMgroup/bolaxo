@@ -51,6 +51,7 @@ export const useAdminUsers = () => {
       const response = await fetch('/api/admin/users', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ userId, ...data })
       })
       if (!response.ok) throw new Error('Failed to update user')
@@ -71,6 +72,7 @@ export const useAdminUsers = () => {
       const response = await fetch('/api/admin/users', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ userId })
       })
       if (!response.ok) throw new Error('Failed to delete user')
@@ -88,7 +90,9 @@ export const useAdminUsers = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch(`/api/admin/users/referral-tree?userId=${userId}`)
+      const response = await fetch(`/api/admin/users/referral-tree?userId=${userId}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch referral tree')
       return await response.json()
     } catch (err) {
@@ -107,6 +111,7 @@ export const useAdminUsers = () => {
       const response = await fetch('/api/admin/users/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ userId })
       })
       if (!response.ok) throw new Error('Failed to reset password')
@@ -127,6 +132,7 @@ export const useAdminUsers = () => {
       const response = await fetch('/api/admin/users/bulk-actions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ userIds, action, data })
       })
       if (!response.ok) throw new Error('Failed to execute bulk action')
@@ -187,7 +193,9 @@ export const useAdminListings = () => {
       if (params.sortBy) queryParams.append('sortBy', params.sortBy)
       if (params.sortOrder) queryParams.append('sortOrder', params.sortOrder)
 
-      const response = await fetch(`/api/admin/listings?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/listings?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch listings')
       return await response.json()
     } catch (err) {
@@ -206,6 +214,7 @@ export const useAdminListings = () => {
       const response = await fetch('/api/admin/listings', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ listingId, ...data })
       })
       if (!response.ok) throw new Error('Failed to update listing')
@@ -226,6 +235,7 @@ export const useAdminListings = () => {
       const response = await fetch('/api/admin/listings', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ listingId })
       })
       if (!response.ok) throw new Error('Failed to delete listing')
@@ -246,6 +256,7 @@ export const useAdminListings = () => {
       const response = await fetch('/api/admin/listings/bulk-actions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ listingIds, action, data })
       })
       if (!response.ok) throw new Error('Failed to execute bulk action')
@@ -288,7 +299,9 @@ export const useAdminTransactions = () => {
       if (params.minPrice) queryParams.append('minPrice', params.minPrice.toString())
       if (params.maxPrice) queryParams.append('maxPrice', params.maxPrice.toString())
 
-      const response = await fetch(`/api/admin/transactions?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/transactions?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch transactions')
       return await response.json()
     } catch (err) {
@@ -307,6 +320,7 @@ export const useAdminTransactions = () => {
       const response = await fetch('/api/admin/transactions', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ transactionId, ...data })
       })
       if (!response.ok) throw new Error('Failed to update transaction')
@@ -351,7 +365,9 @@ export const useAdminPayments = () => {
       if (params.minAmount) queryParams.append('minAmount', params.minAmount.toString())
       if (params.maxAmount) queryParams.append('maxAmount', params.maxAmount.toString())
 
-      const response = await fetch(`/api/admin/payments?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/payments?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch payments')
       return await response.json()
     } catch (err) {
@@ -370,6 +386,7 @@ export const useAdminPayments = () => {
       const response = await fetch('/api/admin/payments', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ paymentId, ...data })
       })
       if (!response.ok) throw new Error('Failed to update payment')
@@ -390,6 +407,7 @@ export const useAdminPayments = () => {
       const response = await fetch('/api/admin/payments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ paymentIds, status })
       })
       if (!response.ok) throw new Error('Failed to update payments')
@@ -427,7 +445,9 @@ export const useFinancialDashboard = () => {
       if (params?.period) queryParams.append('period', params.period)
       if (params?.months) queryParams.append('months', params.months.toString())
 
-      const response = await fetch(`/api/admin/financial-dashboard?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/financial-dashboard?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch financial data')
       return await response.json()
     } catch (err) {
@@ -467,7 +487,9 @@ export const useContentModeration = () => {
       if (params?.severity) queryParams.append('severity', params.severity)
       if (params?.status) queryParams.append('status', params.status)
 
-      const response = await fetch(`/api/admin/moderation/queue?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/moderation/queue?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch moderation queue')
       return await response.json()
     } catch (err) {
@@ -486,6 +508,7 @@ export const useContentModeration = () => {
       const response = await fetch('/api/admin/moderation/queue', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ itemType, itemId, action })
       })
       if (!response.ok) throw new Error('Failed to moderate item')
@@ -506,6 +529,7 @@ export const useContentModeration = () => {
       const response = await fetch('/api/admin/moderation/queue', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ items, action })
       })
       if (!response.ok) throw new Error('Failed to moderate items')
@@ -555,7 +579,9 @@ export const useAuditTrail = () => {
       if (params?.dateFrom) queryParams.append('dateFrom', params.dateFrom)
       if (params?.dateTo) queryParams.append('dateTo', params.dateTo)
 
-      const response = await fetch(`/api/admin/audit-trail?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/audit-trail?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch audit trail')
       return await response.json()
     } catch (err) {
@@ -574,6 +600,7 @@ export const useAuditTrail = () => {
       const response = await fetch('/api/admin/audit-trail', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(action)
       })
       if (!response.ok) throw new Error('Failed to log action')
@@ -610,7 +637,9 @@ export const useAdvancedAnalytics = () => {
       if (params?.metric) queryParams.append('metric', params.metric)
       if (params?.dateRange) queryParams.append('dateRange', params.dateRange)
 
-      const response = await fetch(`/api/admin/analytics/advanced?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/analytics/advanced?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch advanced analytics')
       return await response.json()
     } catch (err) {
@@ -697,7 +726,9 @@ export const useBuyerAnalytics = () => {
       if (params?.sortBy) queryParams.append('sortBy', params.sortBy)
       if (params?.sortOrder) queryParams.append('sortOrder', params.sortOrder)
 
-      const response = await fetch(`/api/admin/buyers/analytics?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/buyers/analytics?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch buyer profiles')
       return await response.json()
     } catch (err) {
@@ -735,7 +766,9 @@ export const useFraudDetection = () => {
       if (params?.riskLevel) queryParams.append('riskLevel', params.riskLevel)
       if (params?.type) queryParams.append('type', params.type)
 
-      const response = await fetch(`/api/admin/fraud-detection?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/fraud-detection?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch fraud alerts')
       return await response.json()
     } catch (err) {
@@ -754,6 +787,7 @@ export const useFraudDetection = () => {
       const response = await fetch('/api/admin/fraud-detection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ userId, action, notes })
       })
       if (!response.ok) throw new Error('Failed to take action')
@@ -798,7 +832,9 @@ export const useNdaTracking = () => {
       if (params?.sortBy) queryParams.append('sortBy', params.sortBy)
       if (params?.sortOrder) queryParams.append('sortOrder', params.sortOrder)
 
-      const response = await fetch(`/api/admin/nda-tracking?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/nda-tracking?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch NDAs')
       return await response.json()
     } catch (err) {
@@ -817,6 +853,7 @@ export const useNdaTracking = () => {
       const response = await fetch('/api/admin/nda-tracking', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ ndaId, status, notes })
       })
       if (!response.ok) throw new Error('Failed to update NDA')
@@ -837,6 +874,7 @@ export const useNdaTracking = () => {
       const response = await fetch('/api/admin/nda-tracking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ ndaId, action })
       })
       if (!response.ok) throw new Error('Failed to perform action')
@@ -884,7 +922,9 @@ export const useEmailTracking = () => {
       if (params?.sortBy) queryParams.append('sortBy', params.sortBy)
       if (params?.sortOrder) queryParams.append('sortOrder', params.sortOrder)
 
-      const response = await fetch(`/api/admin/email-tracking?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/email-tracking?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch emails')
       return await response.json()
     } catch (err) {
@@ -903,6 +943,7 @@ export const useEmailTracking = () => {
       const response = await fetch('/api/admin/email-tracking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ emailId, action })
       })
       if (!response.ok) throw new Error('Failed to perform action')
@@ -951,7 +992,9 @@ export const useIntegrationLogs = () => {
       if (params?.sortBy) queryParams.append('sortBy', params.sortBy)
       if (params?.sortOrder) queryParams.append('sortOrder', params.sortOrder)
 
-      const response = await fetch(`/api/admin/integration-logs?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/integration-logs?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch logs')
       return await response.json()
     } catch (err) {
@@ -968,7 +1011,8 @@ export const useIntegrationLogs = () => {
     setError(null)
     try {
       const response = await fetch(`/api/admin/integration-logs?olderThanDays=${olderThanDays}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include'
       })
       if (!response.ok) throw new Error('Failed to clear logs')
       return await response.json()
@@ -1014,7 +1058,9 @@ export const useMessageModeration = () => {
       if (params?.sortBy) queryParams.append('sortBy', params.sortBy)
       if (params?.sortOrder) queryParams.append('sortOrder', params.sortOrder)
 
-      const response = await fetch(`/api/admin/message-moderation?${queryParams.toString()}`)
+      const response = await fetch(`/api/admin/message-moderation?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
       if (!response.ok) throw new Error('Failed to fetch messages')
       return await response.json()
     } catch (err) {
@@ -1033,6 +1079,7 @@ export const useMessageModeration = () => {
       const response = await fetch('/api/admin/message-moderation', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ messageId, action, reason })
       })
       if (!response.ok) throw new Error('Failed to moderate message')
@@ -1053,6 +1100,7 @@ export const useMessageModeration = () => {
       const response = await fetch('/api/admin/message-moderation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ action: 'block_user', userId, reason })
       })
       if (!response.ok) throw new Error('Failed to block user')
@@ -1140,6 +1188,7 @@ export const useReports = () => {
       const response = await fetch(`/api/admin/reports`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ reportType, format })
       })
       if (!response.ok) throw new Error('Failed to generate')
@@ -1190,6 +1239,7 @@ export const useAdminManagement = () => {
       const response = await fetch(`/api/admin/admins`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ adminId, ...updates })
       })
       if (!response.ok) throw new Error('Failed to update')

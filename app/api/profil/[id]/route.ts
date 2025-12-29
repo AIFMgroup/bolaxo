@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 // GET - Hämta publik köparprofil
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  props: { params: Promise<{ id: string }> }
 ) {
   try {
-    const params = await context.params
+    const params = await props.params
     const buyerId = params.id
 
     if (!buyerId) {

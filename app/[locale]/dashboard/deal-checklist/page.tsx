@@ -135,7 +135,7 @@ function DealChecklistContent() {
                 Follow the complete M&A journey from discovery to closing
               </p>
             </div>
-            <Link href="/dashboard/deal-pipeline">
+            <Link href="../deal-pipeline">
               <button className="flex items-center gap-2 px-4 py-2 bg-primary-navy text-white rounded-lg hover:bg-opacity-90">
                 <ArrowRight className="w-4 h-4" />
                 Back to Pipeline

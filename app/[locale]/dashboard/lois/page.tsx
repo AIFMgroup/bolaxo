@@ -168,7 +168,7 @@ function LOIListingsContent() {
                 ? 'Du har inga indikativa bud från köpare ännu.'
                 : `Du har inga LOIs med status "${filterStatus}".`}
             </p>
-            <Link href="/dashboard/listings" className="text-primary-blue hover:underline">
+            <Link href="../listings" className="text-primary-blue hover:underline">
               Gå till dina objekt →
             </Link>
           </div>

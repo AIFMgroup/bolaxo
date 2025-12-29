@@ -351,7 +351,7 @@ export default function ListingsPage() {
                     <Link href={`/salja/redigera/${listing.id}`} className="p-2 hover:bg-sand/30 rounded-lg transition-colors" title="Redigera">
                       <Edit className="w-5 h-5 text-graphite" />
                     </Link>
-                    <Link href="/dashboard/analytics" className="p-2 hover:bg-sand/30 rounded-lg transition-colors" title="Analytics">
+                    <Link href="../analytics" className="p-2 hover:bg-sand/30 rounded-lg transition-colors" title="Analytics">
                       <TrendingUp className="w-5 h-5 text-graphite" />
                     </Link>
                     {listing.status === 'active' ? (

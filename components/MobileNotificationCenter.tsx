@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 import { useNotificationUpdates } from '@/lib/hooks/useRealTimeUpdates'
 import Link from 'next/link'
 import { useLocale } from 'next-intl'
+import { usePathname } from 'next/navigation'
 
 interface Notification {
   id: string
@@ -21,9 +22,12 @@ export default function MobileNotificationCenter() {
   const { user } = useAuth()
   const t = useTranslations('notifications')
   const locale = useLocale()
+  const pathname = usePathname()
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [expanded, setExpanded] = useState(false)
+  const isDemo = Boolean(pathname?.includes('/demo/'))
+  const demoRole = pathname?.includes('/demo/dashboard/seller') ? 'seller' : 'buyer'
 
   // Fetch notifications function
   const fetchNotifications = useCallback(async () => {
@@ -52,7 +56,7 @@ export default function MobileNotificationCenter() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ userId: user?.id, notificationIds })
+        body: JSON.stringify({ notificationIds })
       })
 
       if (response.ok) {
@@ -127,7 +131,7 @@ export default function MobileNotificationCenter() {
               
               {/* View all link */}
               <Link
-                href={`/${locale}/dashboard/messages`}
+                href={isDemo ? `/${locale}/demo/dashboard/${demoRole}/messages` : `/${locale}/dashboard/messages`}
                 className="block text-center text-sm text-primary-navy font-medium py-2 hover:underline"
               >
                 Visa alla notifikationer →

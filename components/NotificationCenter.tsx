@@ -74,7 +74,7 @@ export default function NotificationCenter() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ userId: user?.id, notificationIds })
+        body: JSON.stringify({ notificationIds })
       })
 
       if (response.ok) {

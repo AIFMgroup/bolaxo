@@ -386,7 +386,7 @@ export default function DealPipelinePage() {
         <div className="mt-12 bg-white rounded-lg shadow-sm p-8 border-l-4 border-primary-navy">
           <h2 className="text-2xl font-bold text-primary-navy mb-4">💡 Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Link href="/dashboard/messages">
+            <Link href="../messages">
               <button className="w-full text-left p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
                 <div className="flex items-center gap-3">
                   <MessageSquare className="w-5 h-5 text-primary-navy" />
@@ -416,7 +416,7 @@ export default function DealPipelinePage() {
               </button>
             </Link>
 
-            <Link href="/dashboard">
+            <Link href="..">
               <button className="w-full text-left p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
                 <div className="flex items-center gap-3">
                   <Users className="w-5 h-5 text-purple-600" />

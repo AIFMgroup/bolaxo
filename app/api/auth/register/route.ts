@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import crypto from 'crypto'
 import { checkRateLimit } from '@/lib/ratelimit'
 import { sendMagicLinkEmail } from '@/lib/email'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 /**
  * Register a new user and send magic link email

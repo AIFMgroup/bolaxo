@@ -62,7 +62,7 @@ export default function MyDealsPage() {
             <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 mb-2">Inga aktiva affärer</h2>
             <p className="text-gray-600 mb-4">Du behöver godkända NDAs för att komma igång</p>
-            <Link href="/dashboard/nda-status" className="text-primary-blue hover:underline">
+            <Link href="../nda-status" className="text-primary-blue hover:underline">
               Visa mina NDA-förfrågningar →
             </Link>
           </div>

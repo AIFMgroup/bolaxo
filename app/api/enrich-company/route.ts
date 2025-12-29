@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import * as cheerio from 'cheerio'
-import { PrismaClient } from '@prisma/client'
 import { scrapeRatsit } from '@/lib/scrapers/ratsit'
 import { scrapeProff } from '@/lib/scrapers/proff'
 import { scrapeLinkedIn, estimateEmployeeGrowth } from '@/lib/scrapers/linkedin'
@@ -11,8 +10,7 @@ import { createTimeoutSignal } from '@/lib/scrapers/abort-helper'
 import { callOpenAIResponses, OpenAIResponseError } from '@/lib/openai-response-utils'
 import { fetchWebInsights } from '@/lib/webInsights'
 import { fetchBolagsverketCompanyData } from '@/lib/bolagsverket-api'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export async function POST(request: Request) {
   try {

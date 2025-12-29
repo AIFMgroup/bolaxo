@@ -215,7 +215,7 @@ export default function MatchesPage() {
                         Kontakta
                       </button>
                       <Link
-                        href={`/dashboard/listings/${match.listingId}`}
+                        href={`../listings/${match.listingId}`}
                         className="flex-1 lg:flex-none inline-flex items-center justify-center px-5 py-2.5 bg-sand/30 text-navy text-sm rounded-full font-medium hover:bg-sand/50 transition-colors"
                       >
                         Se annons

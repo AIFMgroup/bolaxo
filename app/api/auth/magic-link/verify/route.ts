@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { cookies } from 'next/headers'
 import { generateReferralCode } from '@/lib/referral'
 import { isSeller, isBuyer } from '@/lib/user-roles'
 import { sendWelcomeEmail } from '@/lib/email'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export async function GET(request: Request) {
   try {

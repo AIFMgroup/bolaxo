@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { cookies } from 'next/headers'
 import { callOpenAIResponses, OpenAIResponseError } from '@/lib/openai-response-utils'
 import { fetchWebInsights } from '@/lib/webInsights'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export async function GET(request: Request) {
   try {

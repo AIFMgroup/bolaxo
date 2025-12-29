@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { getClientIp, checkRateLimit, RATE_LIMIT_CONFIGS } from '@/app/lib/rate-limiter'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 // Helper function to verify admin authentication
 async function verifyAdminAuth(request: NextRequest) {

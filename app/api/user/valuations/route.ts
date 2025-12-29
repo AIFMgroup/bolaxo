@@ -1,21 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
+import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 export async function GET(request: NextRequest) {
   try {
+    const actorId = getAuthenticatedUserId(request)
+    if (!actorId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+    }
+
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get('userId')
     const email = searchParams.get('email')
-    
-    if (!userId && !email) {
-      return NextResponse.json({ error: 'userId or email required' }, { status: 400 })
-    }
-    
+
+    // Non-admin users may only fetch their own valuations.
+    const actor = await prisma.user.findUnique({ where: { id: actorId }, select: { role: true, email: true } })
+    const isAdmin = actor?.role === 'admin'
+
     const where: any = {}
-    if (userId) where.userId = userId
-    if (email) where.email = email
+    if (isAdmin) {
+      if (userId) where.userId = userId
+      if (email) where.email = email
+      if (!userId && !email) {
+        return NextResponse.json({ error: 'userId or email required' }, { status: 400 })
+      }
+    } else {
+      where.userId = actorId
+    }
     
     const valuations = await prisma.valuation.findMany({
       where,

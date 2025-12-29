@@ -505,7 +505,7 @@ export default function Header() {
                       </>
                     )}
                     <Link
-                      href={getLocalizedPath('/dashboard')}
+                      href={isDemo ? demoDashboardHref : getLocalizedPath('/dashboard')}
                       className="flex items-center space-x-3 text-sm sm:text-base font-medium text-gray-900 hover:text-primary-navy transition-colors py-3.5 px-4 rounded-xl hover:bg-gray-50 active:bg-gray-100 min-h-[48px]"
                       onClick={() => setIsMenuOpen(false)}
                     >

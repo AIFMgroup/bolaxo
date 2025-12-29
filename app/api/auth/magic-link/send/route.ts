@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import crypto from 'crypto'
 import { checkRateLimit } from '@/lib/ratelimit'
 import { sendMagicLinkEmail } from '@/lib/email'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export async function POST(request: Request) {
   // Rate limit: 5 requests per 15 min per IP

@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { getClientIp, checkRateLimit, RATE_LIMIT_CONFIGS } from '@/app/lib/rate-limiter'
 import { isBuyer } from '@/lib/user-roles'
 import { getAuthenticatedUserId } from '@/lib/request-auth'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 // Helper to verify user is a buyer
 async function verifyBuyerAuth(request: NextRequest) {

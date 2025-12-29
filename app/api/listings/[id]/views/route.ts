@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 // POST /api/listings/[id]/views - Increment view count
 export async function POST(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  props: { params: Promise<{ id: string }> }
 ) {
   try {
-    const params = await context.params
+    const params = await props.params
     const listingId = params.id
 
     // Increment view count

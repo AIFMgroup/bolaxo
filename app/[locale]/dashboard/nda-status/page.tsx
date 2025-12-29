@@ -191,7 +191,7 @@ export default function NDAStatusPage() {
                   </Link>
                   {request.status === 'approved' && (
                     <>
-                      <Link href={`/dashboard/documents?object=${request.objectId}`} className="inline-flex items-center gap-2 px-4 py-2 bg-sky/20 text-navy text-sm rounded-full hover:bg-sky/30 transition-colors">
+                      <Link href={`../documents?object=${request.objectId}`} className="inline-flex items-center gap-2 px-4 py-2 bg-sky/20 text-navy text-sm rounded-full hover:bg-sky/30 transition-colors">
                         <FileText className="w-4 h-4" />
                         Dokument
                       </Link>

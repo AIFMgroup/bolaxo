@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createNotification } from '@/lib/notifications'
 import { getAuthenticatedUserId } from '@/lib/request-auth'
 
 // GET /api/notifications
@@ -45,27 +44,6 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Fetch notifications error:', error)
     return NextResponse.json({ notifications: [], unreadCount: 0 })
-  }
-}
-
-// POST /api/notifications - Create a notification (internal)
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json()
-    const { userId, type, title, message, listingId } = body
-
-    await createNotification({
-      userId,
-      type: (type || 'system') as any,
-      title: title || 'Notifiering',
-      message: message || '',
-      listingId
-    })
-
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('Create notification error:', error)
-    return NextResponse.json({ success: true })
   }
 }
 

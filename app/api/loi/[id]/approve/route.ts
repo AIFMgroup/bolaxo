@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { cookies } from 'next/headers'
 import { sendTransactionMilestoneEmail, sendLOIApprovalEmail } from '@/lib/email'
 import { createNotification } from '@/lib/notifications'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 // POST /api/loi/[id]/reject - Seller rejects LOI
 export async function POST(

@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { cookies } from 'next/headers'
 import { sendLOINotificationEmail } from '@/lib/email'
 import { createNotification } from '@/lib/notifications'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 // POST /api/loi/create - Create LOI from form data
 export async function POST(request: NextRequest) {
