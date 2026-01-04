@@ -19,8 +19,9 @@ export default function ObjectDetailPage() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
   const [isSyncingToDb, setIsSyncingToDb] = useState(false)
-  const { savedObjects, toggleSaved, hasRequestedNDA } = useBuyerStore()
+  const { savedObjects, compareList, toggleSaved, toggleCompare, hasRequestedNDA } = useBuyerStore()
   const isSaved = savedObjects.includes(objectId)
+  const inCompare = compareList.includes(objectId)
 
   // Fetch listing from API
   useEffect(() => {
@@ -123,10 +124,6 @@ export default function ObjectDetailPage() {
     return `${(minRevenue * margin).toFixed(0)}-${(maxRevenue * margin).toFixed(0)} MSEK`
   }
   
-  // Use hasNDA from API response or fallback to local store
-  const { savedObjects, compareList, toggleSaved, toggleCompare, hasRequestedNDA } = useBuyerStore()
-  const isSaved = savedObjects.includes(objectId)
-  const inCompare = compareList.includes(objectId)
   const userHasNDA = object?.hasNDA || hasRequestedNDA(objectId)
 
   return (
