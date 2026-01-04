@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLocale, useTranslations } from 'next-intl'
 import { ArrowLeft, MapPin, TrendingUp, Users, Eye, Bookmark, Shield, AlertCircle, Calendar, FileText, BarChart, CheckCircle } from 'lucide-react'
-import { useBuyerStore } from '@/stores/buyerStore'
+import { useBuyerStore } from '@/store/buyerStore'
 import { useAuth } from '@/contexts/AuthContext'
 import InfoPopup from '@/components/InfoPopup'
 import { ListingStructuredData } from '@/components/ListingStructuredData'
@@ -23,7 +23,7 @@ export default function ObjectDetailPage() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
   const [isSyncingToDb, setIsSyncingToDb] = useState(false)
-  const { savedObjects, toggleSaved, hasNDA } = useBuyerStore()
+  const { savedObjects, toggleSaved, hasRequestedNDA } = useBuyerStore()
   const isSaved = savedObjects.includes(objectId)
 
   // Fetch listing from API
@@ -55,6 +55,9 @@ export default function ObjectDetailPage() {
       e.preventDefault()
     }
     
+    // Check current state BEFORE toggling
+    const wasAlreadySaved = savedObjects.includes(objectId)
+    
     // Update local state immediately
     toggleSaved(objectId)
     
@@ -62,9 +65,7 @@ export default function ObjectDetailPage() {
     if (user) {
       setIsSyncingToDb(true)
       try {
-        const newIsSaved = savedObjects.includes(objectId)
-        
-        if (newIsSaved) {
+        if (wasAlreadySaved) {
           // Remove from database
           await fetch(`/api/saved-listings?listingId=${objectId}`, {
             method: 'DELETE',
@@ -127,7 +128,7 @@ export default function ObjectDetailPage() {
   }
   
   // Use hasNDA from API response or fallback to local store
-  const userHasNDA = object?.hasNDA || hasNDA(objectId)
+  const userHasNDA = object?.hasNDA || hasRequestedNDA(objectId)
 
   return (
     <main className="min-h-screen bg-background">
@@ -279,13 +280,13 @@ export default function ObjectDetailPage() {
               
               {/* Title and Location */}
               <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-text-dark mb-2 sm:mb-3">
-                {hasNDA(objectId) && !object.anonymousTitle ? object.companyName : object.anonymousTitle}
+                {hasRequestedNDA(objectId) && !object.anonymousTitle ? object.companyName : object.anonymousTitle}
               </h1>
               
               <div className="flex items-center text-text-gray mb-4 sm:mb-6">
                 <MapPin className="w-4 sm:w-5 h-4 sm:h-5 mr-1.5 sm:mr-2" />
                 <span className="text-sm sm:text-base md:text-lg">
-                  {hasNDA(objectId) && object.address ? object.address : `${object.type} • ${object.region}`}
+                  {hasRequestedNDA(objectId) && object.address ? object.address : `${object.type} • ${object.region}`}
                 </span>
               </div>
 
@@ -531,7 +532,7 @@ export default function ObjectDetailPage() {
                   </div>
                 </section>
 
-                {hasNDA(objectId) && (
+                {hasRequestedNDA(objectId) && (
                   <>
                     {/* Detailed Financials */}
                     <section>
@@ -780,11 +781,11 @@ export default function ObjectDetailPage() {
             <div className="relative z-10">
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary-navy mb-3 sm:mb-4">Intresserad av detta företag?</h2>
               <p className="text-sm sm:text-base md:text-lg text-primary-navy mb-6 sm:mb-8 max-w-2xl">
-                {hasNDA(objectId) 
+                {hasRequestedNDA(objectId) 
                   ? 'Du har redan signerat NDA för detta objekt. Kontakta säljaren för att gå vidare i processen.'
                   : 'Signera NDA för att få tillgång till all information och komma i kontakt med säljaren.'}
               </p>
-              {!hasNDA(objectId) && (
+              {!hasRequestedNDA(objectId) && (
                 <Link
                   href={`/nda/${objectId}`}
                   className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-primary-navy text-white rounded-lg sm:rounded-xl font-bold text-base sm:text-lg hover:bg-primary-navy/90 hover:shadow-lg transition-all duration-200 transform hover:scale-105"

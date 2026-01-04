@@ -19,22 +19,40 @@ export interface BuyerProfile {
   createdAt: Date | null
 }
 
+type MatchStatus =
+  | 'saved'
+  | 'unsaved'
+  | 'invite_sent'
+  | 'nda_signed'
+  | 'dd_start'
+
+interface MatchEvent {
+  listingId: string
+  status: MatchStatus
+  note?: string
+  timestamp: string
+}
+
 interface BuyerStore {
   preferences: BuyerPreferences
   profile: BuyerProfile
   savedObjects: string[]
   compareList: string[]
   shortlist: string[]
-  ndaSignedObjects: string[]
+  ndaRequestedObjects: string[] // Objects where user has requested NDA access
+  matchEvents: MatchEvent[]
   updatePreferences: (prefs: Partial<BuyerPreferences>) => void
   updateProfile: (profile: Partial<BuyerProfile>) => void
   toggleSaved: (objectId: string) => void
   toggleCompare: (objectId: string) => void
   toggleShortlist: (objectId: string) => void
-  signNDA: (objectId: string) => void
+  requestNDA: (objectId: string) => void // Request NDA access (not yet approved)
   clearCompare: () => void
   saveToLocalStorage: () => void
   loadFromLocalStorage: () => void
+  logMatchEvent: (listingId: string, status: MatchStatus, note?: string) => void
+  getLatestStatus: (objectId: string) => MatchEvent | undefined
+  hasRequestedNDA: (objectId: string) => boolean // Check if NDA has been requested
 }
 
 const initialPreferences: BuyerPreferences = {
@@ -62,7 +80,8 @@ export const useBuyerStore = create<BuyerStore>((set, get) => ({
   savedObjects: [],
   compareList: [],
   shortlist: [],
-  ndaSignedObjects: [],
+  ndaRequestedObjects: [],
+  matchEvents: [],
 
   updatePreferences: (prefs) => {
     set((state) => ({
@@ -79,11 +98,24 @@ export const useBuyerStore = create<BuyerStore>((set, get) => ({
   },
 
   toggleSaved: (objectId) => {
-    set((state) => ({
-      savedObjects: state.savedObjects.includes(objectId)
-        ? state.savedObjects.filter(id => id !== objectId)
+    set((state) => {
+      const alreadySaved = state.savedObjects.includes(objectId)
+      const updatedSaved = alreadySaved
+        ? state.savedObjects.filter((id) => id !== objectId)
         : [...state.savedObjects, objectId]
-    }))
+
+      return {
+        savedObjects: updatedSaved,
+        matchEvents: [
+          ...state.matchEvents,
+          {
+            listingId: objectId,
+            status: alreadySaved ? 'unsaved' : 'saved',
+            timestamp: new Date().toISOString()
+          }
+        ]
+      }
+    })
     setTimeout(() => get().saveToLocalStorage(), 100)
   },
 
@@ -92,7 +124,7 @@ export const useBuyerStore = create<BuyerStore>((set, get) => ({
       const inList = state.compareList.includes(objectId)
       const newList = inList
         ? state.compareList.filter(id => id !== objectId)
-        : state.compareList.length < 4
+        : state.compareList.length < 3
           ? [...state.compareList, objectId]
           : state.compareList
       return { compareList: newList }
@@ -109,17 +141,62 @@ export const useBuyerStore = create<BuyerStore>((set, get) => ({
     setTimeout(() => get().saveToLocalStorage(), 100)
   },
 
-  signNDA: (objectId) => {
+  requestNDA: (objectId) => {
+    set((state) => {
+      const alreadyRequested = state.ndaRequestedObjects.includes(objectId)
+      if (alreadyRequested) {
+        return state
+      }
+
+      return {
+        ndaRequestedObjects: [...state.ndaRequestedObjects, objectId],
+        matchEvents: [
+          ...state.matchEvents,
+          {
+            listingId: objectId,
+            status: 'nda_signed',
+            timestamp: new Date().toISOString()
+          }
+        ]
+      }
+    })
+    setTimeout(() => get().saveToLocalStorage(), 100)
+  },
+
+  clearCompare: () => {
+    set({ compareList: [] })
+    setTimeout(() => get().saveToLocalStorage(), 100)
+  },
+
+  logMatchEvent: (objectId: string, status: MatchStatus, note?: string) => {
     set((state) => ({
-      ndaSignedObjects: [...state.ndaSignedObjects, objectId]
+      matchEvents: [
+        ...state.matchEvents,
+        {
+          listingId: objectId,
+          status,
+          note,
+          timestamp: new Date().toISOString()
+        }
+      ]
     }))
     setTimeout(() => get().saveToLocalStorage(), 100)
   },
 
-  clearCompare: () => set({ compareList: [] }),
+  getLatestStatus: (objectId: string) => {
+    const events = get().matchEvents
+    for (let i = events.length - 1; i >= 0; i--) {
+      if (events[i].listingId === objectId) return events[i]
+    }
+    return undefined
+  },
+
+  hasRequestedNDA: (objectId: string) => {
+    return get().ndaRequestedObjects.includes(objectId)
+  },
 
   saveToLocalStorage: () => {
-    const { preferences, profile, savedObjects, compareList, shortlist, ndaSignedObjects } = get()
+    const { preferences, profile, savedObjects, compareList, shortlist, ndaRequestedObjects, matchEvents } = get()
     if (typeof window !== 'undefined') {
       localStorage.setItem('bolagsportalen_buyer', JSON.stringify({
         preferences,
@@ -127,7 +204,9 @@ export const useBuyerStore = create<BuyerStore>((set, get) => ({
         savedObjects,
         compareList,
         shortlist,
-        ndaSignedObjects,
+        ndaSignedObjects: ndaRequestedObjects, // Keep old key for backward compatibility
+        ndaRequestedObjects, // Add new key for future
+        matchEvents,
       }))
     }
   },
@@ -138,6 +217,10 @@ export const useBuyerStore = create<BuyerStore>((set, get) => ({
       if (saved) {
         try {
           const data = JSON.parse(saved)
+          // Support both old and new key names for backward compatibility
+          if (data.ndaSignedObjects && !data.ndaRequestedObjects) {
+            data.ndaRequestedObjects = data.ndaSignedObjects
+          }
           set(data)
         } catch (e) {
           console.error('Failed to load buyer data', e)

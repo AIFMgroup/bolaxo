@@ -135,8 +135,10 @@ export async function middleware(request: NextRequest) {
   }
 
   // For paths WITHOUT locale prefix, use next-intl middleware
-  // But only for paths that don't have one
-  if (!hasValidLocalePrefix && pathname !== '/') {
+  // But only for paths that don't have one and ARE NOT static assets
+  const isStaticAsset = pathname.includes('.') || pathname.startsWith('/_next/') || pathname.startsWith('/api/')
+  
+  if (!hasValidLocalePrefix && pathname !== '/' && !isStaticAsset) {
     // Extract locale from referer header if available
     const referer = safeHeader(request, 'referer')
     if (referer) {
@@ -199,10 +201,10 @@ export const config = {
      * Match alla routes utom:
      * - _next/static (static files)
      * - _next/image (image optimization)
-     * - favicon.ico (favicon file)
-     * - public folder
-     * - api routes (handled separately)
+     * - favicon.ico, apple-touch-icon.png, etc.
+     * - public folder assets
+     * - api routes
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|apple-touch-icon.*|manifest\\.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|json|txt)$).*)',
   ],
 }

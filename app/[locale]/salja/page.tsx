@@ -353,7 +353,7 @@ export default function SaljaInfoPage() {
           <p className="text-base sm:text-lg text-primary-navy mb-6 sm:mb-8 max-w-2xl mx-auto px-4 sm:px-0">
             {t('smeKit.description')}
           </p>
-          <Link href={`/${locale}/sme-kit`} className="inline-flex items-center gap-2 px-6 sm:px-8 md:px-10 py-3 sm:py-4 bg-primary-navy text-white font-bold rounded-lg hover:shadow-lg transition-all text-base sm:text-lg">
+          <Link href={`/${locale}/salja/sme-kit`} className="inline-flex items-center gap-2 px-6 sm:px-8 md:px-10 py-3 sm:py-4 bg-primary-navy text-white font-bold rounded-lg hover:shadow-lg transition-all text-base sm:text-lg">
             {t('smeKit.cta')}
             <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5" />
           </Link>

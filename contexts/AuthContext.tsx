@@ -35,7 +35,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
   const pathname = usePathname()
 
-  const fetchUser = async () => {
+  const fetchUser = async (force = false) => {
+    // If already loading and not a forced refresh, don't start another fetch
+    if (loading && !force && user) return
+
     try {
       // Demo dashboards: derive a demo user from the URL (no real session needed).
       // This keeps demo isolated and avoids relying on cookies/localStorage hacks in production.
@@ -138,9 +141,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Refresh user when window gains focus (helps catch cookies after redirect)
     const handleFocus = () => {
       // Small delay to ensure cookies are available
-      setTimeout(() => {
-        fetchUser()
-      }, 100)
+      fetchUser(true)
     }
     
     window.addEventListener('focus', handleFocus)
@@ -148,15 +149,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [pathname])
   
   // Also refresh after a short delay to catch cookies set during redirect
+  // but only if we haven't found a user yet
   useEffect(() => {
+    if (user) return
+
     const timer = setTimeout(() => {
-      if (!user && !loading) {
-        console.log('🔄 [AUTH] No user found after delay, refreshing...')
-        fetchUser()
+      if (!user) {
+        console.log('🔄 [AUTH] No user found after delay, refreshing once...')
+        fetchUser(true)
       }
-    }, 2000) // Increased delay to catch cookies after redirect
+    }, 3000) 
     return () => clearTimeout(timer)
-  }, [])
+  }, [user])
   
   // Check if we're on a page that just did magic link verification
   useEffect(() => {

@@ -4,16 +4,20 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useBuyerStore } from '@/store/buyerStore'
 import { useAuth } from '@/contexts/AuthContext'
+import { useToast } from '@/contexts/ToastContext'
 import { useLocale, useTranslations } from 'next-intl'
 import { CheckCircle, AlertTriangle } from 'lucide-react'
+import type { Listing } from '@/types/listing'
 
 export default function ComparePageContent() {
   const { compareList, toggleCompare, clearCompare, loadFromLocalStorage } = useBuyerStore()
   const { user } = useAuth()
+  const { error: showError } = useToast()
   const locale = useLocale()
   const t = useTranslations('compare')
-  const [objects, setObjects] = useState<any[]>([])
+  const [objects, setObjects] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
+  const [failedIds, setFailedIds] = useState<string[]>([])
 
   useEffect(() => {
     loadFromLocalStorage()
@@ -30,16 +34,37 @@ export default function ComparePageContent() {
 
       try {
         setLoading(true)
-        const promises = compareList.map(id => 
-          fetch(`/api/listings/${id}`, { credentials: 'include' })
-            .then(res => res.ok ? res.json() : null)
-            .catch(() => null)
-        )
+        setFailedIds([])
+        
+        const promises = compareList.map(async (id) => {
+          try {
+            const res = await fetch(`/api/listings/${id}`, { credentials: 'include' })
+            if (res.ok) {
+              return await res.json()
+            } else {
+              console.error(`Failed to fetch listing ${id}: ${res.status}`)
+              return null
+            }
+          } catch (err) {
+            console.error(`Error fetching listing ${id}:`, err)
+            return null
+          }
+        })
         
         const results = await Promise.all(promises)
-        setObjects(results.filter(Boolean))
+        const validListings = results.filter(Boolean) as Listing[]
+        const failed = compareList.filter((id, index) => !results[index])
+        
+        setObjects(validListings)
+        setFailedIds(failed)
+        
+        // Show error if some listings failed to load
+        if (failed.length > 0) {
+          showError(t('loadError', { count: failed.length, total: compareList.length }))
+        }
       } catch (error) {
         console.error('Error fetching listings:', error)
+        showError(t('generalError'))
         setObjects([])
       } finally {
         setLoading(false)
@@ -47,7 +72,7 @@ export default function ComparePageContent() {
     }
 
     fetchListings()
-  }, [compareList, user?.id])
+  }, [compareList, user?.id, showError, t])
 
   if (loading) {
     return (
@@ -117,7 +142,7 @@ export default function ComparePageContent() {
                           {obj.anonymousTitle || obj.companyName || 'Företag'}
                         </Link>
                         <div className="flex gap-2 mt-2">
-                          {obj.user?.verified && (
+                          {obj.verified && (
                             <span className="text-xs bg-success text-white px-2 py-1 rounded-full">
                               Verifierad
                             </span>

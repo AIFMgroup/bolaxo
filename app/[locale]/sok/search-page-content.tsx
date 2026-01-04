@@ -5,11 +5,14 @@ import { useRouter } from 'next/navigation'
 import type { BusinessObject } from '@/data/mockObjects'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
+import { useBuyerStore } from '@/store/buyerStore'
 import ObjectCard from '@/components/ObjectCard'
+import LazyObjectCard from '@/components/LazyObjectCard'
 import MultiSelect from '@/components/MultiSelect'
 import PriceRangeSlider from '@/components/PriceRangeSlider'
 import AdvancedFilterDropdown from '@/components/AdvancedFilterDropdown'
-import { Search, SlidersHorizontal, ChevronDown, X, TrendingUp, AlertCircle, MapPin, Briefcase, DollarSign, Users, Calendar, Shield, BarChart3, Filter, Zap, HelpCircle } from 'lucide-react'
+import { ListingComparison } from '@/components/ListingComparison'
+import { Search, SlidersHorizontal, ChevronDown, X, TrendingUp, AlertCircle, MapPin, Briefcase, DollarSign, Users, Calendar, Shield, BarChart3, Filter, Zap, HelpCircle, Scale } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 
 export default function SearchPageContent() {
@@ -39,6 +42,15 @@ export default function SearchPageContent() {
     verified: 'all',
     broker: 'all'
   })
+
+  // Comparison feature - Using global store
+  const { compareList, toggleCompare, clearCompare, loadFromLocalStorage } = useBuyerStore()
+  const [showComparison, setShowComparison] = useState(false)
+
+  // Load comparison list from localStorage on mount
+  useEffect(() => {
+    loadFromLocalStorage()
+  }, [loadFromLocalStorage])
 
   // Check buyer profile on mount
   useEffect(() => {
@@ -626,6 +638,43 @@ export default function SearchPageContent() {
         </div>
       </div>
 
+      {/* Comparison Floating Bar - Mobile optimized */}
+      {compareList.length > 0 && (
+        <div className="fixed bottom-20 lg:bottom-4 left-2 right-2 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-40 bg-primary-navy text-white px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl shadow-2xl flex items-center justify-between sm:justify-start gap-2 sm:gap-4" style={{ marginBottom: 'env(safe-area-inset-bottom)' }}>
+          <div className="flex items-center gap-2 min-w-0">
+            <Scale className="w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" />
+            <span className="font-medium text-sm sm:text-base truncate">{compareList.length} {t('selected')}</span>
+          </div>
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            <button
+              onClick={() => setShowComparison(true)}
+              className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-primary-navy rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:bg-gray-100 active:bg-gray-200 transition-colors min-h-[36px]"
+            >
+              {t('compare')}
+            </button>
+            <button
+              onClick={clearCompare}
+              className="p-1.5 sm:p-2 hover:bg-white/10 active:bg-white/20 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Comparison Modal - Mobile optimized */}
+      {showComparison && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center overflow-y-auto">
+          <div className="w-full sm:max-w-6xl max-h-[85vh] sm:max-h-[90vh] overflow-y-auto bg-white rounded-t-2xl sm:rounded-2xl sm:m-4">
+            <ListingComparison 
+              listingIds={compareList}
+              onRemove={toggleCompare}
+              onClose={() => setShowComparison(false)}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Results Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         {/* Results Header */}
@@ -636,11 +685,18 @@ export default function SearchPageContent() {
               matched: activeFilterCount > 0 ? t('matched') : '' 
             })}
           </h2>
-          {!loading && filteredObjects.length > 0 && (
-            <p className="text-xs sm:text-sm text-text-gray hidden lg:block">
-              {t('allVerified')}
-            </p>
-          )}
+          <div className="flex items-center gap-4">
+            {!loading && filteredObjects.length > 0 && (
+              <p className="text-xs sm:text-sm text-text-gray hidden lg:block">
+                {t('allVerified')}
+              </p>
+            )}
+            {compareList.length > 0 && compareList.length < 3 && (
+              <span className="text-xs text-primary-blue">
+                {t('selectMore', { count: 3 - compareList.length })}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Loading State */}
@@ -663,8 +719,16 @@ export default function SearchPageContent() {
         {/* Results Grid */}
         {!loading && filteredObjects.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
-            {filteredObjects.map((object) => (
-              <ObjectCard key={object.id} object={object} matchScore={object.matchScore} />
+            {filteredObjects.map((object, index) => (
+              <LazyObjectCard 
+                key={object.id} 
+                object={object} 
+                matchScore={object.matchScore}
+                index={index}
+                isInComparison={compareList.includes(object.id)}
+                onToggleComparison={toggleCompare}
+                canAddToComparison={compareList.length < 3}
+              />
             ))}
           </div>
         )}

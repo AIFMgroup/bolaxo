@@ -11,13 +11,13 @@ import { Handshake, Download, Send, Lightbulb, ArrowRight } from 'lucide-react'
 export default function LOIPage() {
   const params = useParams()
   const router = useRouter()
-  const { ndaSignedObjects } = useBuyerStore()
+  const { ndaRequestedObjects } = useBuyerStore()
   const { user } = useAuth()
   
   const objectId = params.id as string
   const [object, setObject] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const hasNDA = ndaSignedObjects.includes(objectId)
+  const hasNDA = ndaRequestedObjects.includes(objectId)
 
   // Fetch listing from API
   useEffect(() => {

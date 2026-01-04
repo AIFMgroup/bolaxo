@@ -11,12 +11,12 @@ export default function NDASigningPage() {
   const params = useParams()
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
-  const { ndaSignedObjects, signNDA } = useBuyerStore()
+  const { ndaRequestedObjects, requestNDA } = useBuyerStore()
   
   const objectId = params.id as string
   const [object, setObject] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const hasSignedNDA = ndaSignedObjects.includes(objectId)
+  const hasRequestedNDA = ndaRequestedObjects.includes(objectId)
 
   // Fetch listing from API
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function NDASigningPage() {
     return <div>Objekt ej hittat</div>
   }
 
-  if (hasSignedNDA) {
+  if (hasRequestedNDA) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-white to-light-blue/20 flex items-center justify-center py-6 sm:py-8 md:py-12 px-3 sm:px-4">
         <div className="max-w-2xl w-full card text-center">
@@ -88,7 +88,7 @@ export default function NDASigningPage() {
           </div>
           <div className="flex items-center justify-center gap-2 mb-4">
             <h1 className="text-2xl sm:text-3xl font-bold text-text-dark">
-              NDA redan signerad
+              NDA-förfrågan skickad
             </h1>
             <InfoPopup
               title="Vad händer nu?"
@@ -97,7 +97,7 @@ export default function NDASigningPage() {
             />
           </div>
           <p className="text-text-gray mb-8">
-            Du har redan signerat NDA för detta objekt. Väntar på att säljaren ska ge dig åtkomst.
+            Du har redan begärt NDA för detta objekt. Väntar på att säljaren ska godkänna din förfrågan och ge dig åtkomst.
           </p>
           <div className="bg-light-blue/50 rounded-xl p-6 mb-8 text-left">
             <h3 className="font-semibold text-text-dark mb-3 text-center">Nästa steg i processen</h3>
@@ -177,7 +177,7 @@ export default function NDASigningPage() {
         const errorData = await ndaResponse.json()
         if (errorData.existing) {
           // NDA already exists, just update local state and continue
-          signNDA(objectId)
+          requestNDA(objectId)
           setStep(3)
           return
         }
@@ -188,7 +188,7 @@ export default function NDASigningPage() {
       console.log('NDA created:', ndaData)
 
       // Update local state
-      signNDA(objectId)
+      requestNDA(objectId)
       setStep(3)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Något gick fel')

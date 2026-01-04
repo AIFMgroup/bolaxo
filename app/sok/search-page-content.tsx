@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { mockObjects, BusinessObject } from '@/data/mockObjects'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
+import { useBuyerStore } from '@/store/buyerStore'
 import ObjectCard from '@/components/ObjectCard'
 import LazyObjectCard from '@/components/LazyObjectCard'
 import MultiSelect from '@/components/MultiSelect'
@@ -13,7 +14,7 @@ import AdvancedFilterDropdown from '@/components/AdvancedFilterDropdown'
 import { useDebounce, useDebouncedCallback } from '@/lib/hooks/useDebounce'
 import { Search, SlidersHorizontal, ChevronDown, X, TrendingUp, AlertCircle, MapPin, Briefcase, DollarSign, Users, Calendar, Shield, BarChart3, Filter, Zap, HelpCircle, Loader2, Bookmark, Scale } from 'lucide-react'
 import { SavedSearches } from '@/components/SavedSearches'
-import { ListingComparison, useListingComparison } from '@/components/ListingComparison'
+import { ListingComparison } from '@/components/ListingComparison'
 
 export default function SearchPageContent() {
   const router = useRouter()
@@ -45,17 +46,15 @@ export default function SearchPageContent() {
     broker: 'all'
   })
 
-  // Comparison feature
-  const { 
-    comparisonIds, 
-    addToComparison, 
-    removeFromComparison, 
-    clearComparison, 
-    isInComparison,
-    canAdd: canAddToComparison 
-  } = useListingComparison(3)
+  // Comparison feature - NOW USING GLOBAL STORE
+  const { compareList, toggleCompare, clearCompare, loadFromLocalStorage } = useBuyerStore()
   const [showComparison, setShowComparison] = useState(false)
   const [showSavedSearches, setShowSavedSearches] = useState(false)
+
+  // Load comparison list from localStorage on mount
+  useEffect(() => {
+    loadFromLocalStorage()
+  }, [loadFromLocalStorage])
 
   // Check buyer profile on mount
   useEffect(() => {
@@ -704,11 +703,11 @@ export default function SearchPageContent() {
       </div>
 
       {/* Comparison Floating Bar - Mobile optimized */}
-      {comparisonIds.length > 0 && (
+      {compareList.length > 0 && (
         <div className="fixed bottom-20 lg:bottom-4 left-2 right-2 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-40 bg-primary-navy text-white px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl shadow-2xl flex items-center justify-between sm:justify-start gap-2 sm:gap-4" style={{ marginBottom: 'env(safe-area-inset-bottom)' }}>
           <div className="flex items-center gap-2 min-w-0">
             <Scale className="w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" />
-            <span className="font-medium text-sm sm:text-base truncate">{comparisonIds.length} valda</span>
+            <span className="font-medium text-sm sm:text-base truncate">{compareList.length} valda</span>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
             <button
@@ -718,7 +717,7 @@ export default function SearchPageContent() {
               Jämför
             </button>
             <button
-              onClick={clearComparison}
+              onClick={clearCompare}
               className="p-1.5 sm:p-2 hover:bg-white/10 active:bg-white/20 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
             >
               <X className="w-4 h-4" />
@@ -732,8 +731,8 @@ export default function SearchPageContent() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center overflow-y-auto">
           <div className="w-full sm:max-w-6xl max-h-[85vh] sm:max-h-[90vh] overflow-y-auto bg-white rounded-t-2xl sm:rounded-2xl sm:m-4">
             <ListingComparison 
-              listingIds={comparisonIds}
-              onRemove={removeFromComparison}
+              listingIds={compareList}
+              onRemove={toggleCompare}
               onClose={() => setShowComparison(false)}
             />
           </div>
@@ -790,9 +789,9 @@ export default function SearchPageContent() {
                 Alla annonser är verifierade
               </p>
             )}
-            {comparisonIds.length > 0 && comparisonIds.length < 3 && (
+            {compareList.length > 0 && compareList.length < 3 && (
               <span className="text-xs text-primary-blue">
-                Välj {3 - comparisonIds.length} till för att jämföra
+                Välj {3 - compareList.length} till för att jämföra
               </span>
             )}
           </div>
@@ -824,15 +823,9 @@ export default function SearchPageContent() {
                 object={object} 
                 matchScore={object.matchScore}
                 index={index}
-                isInComparison={isInComparison(object.id)}
-                onToggleComparison={(id) => {
-                  if (isInComparison(id)) {
-                    removeFromComparison(id)
-                  } else {
-                    addToComparison(id)
-                  }
-                }}
-                canAddToComparison={canAddToComparison}
+                isInComparison={compareList.includes(object.id)}
+                onToggleComparison={toggleCompare}
+                canAddToComparison={compareList.length < 3}
               />
             ))}
           </div>

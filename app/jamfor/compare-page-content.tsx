@@ -4,14 +4,18 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useBuyerStore } from '@/store/buyerStore'
 import { useAuth } from '@/contexts/AuthContext'
+import { useToast } from '@/contexts/ToastContext'
 import { Scale, Plus, ArrowRight } from 'lucide-react'
 import { ListingComparison } from '@/components/ListingComparison'
+import type { Listing } from '@/types/listing'
 
 export default function ComparePageContent() {
   const { compareList, toggleCompare, clearCompare, loadFromLocalStorage } = useBuyerStore()
   const { user } = useAuth()
-  const [objects, setObjects] = useState<any[]>([])
+  const { error: showError } = useToast()
+  const [objects, setObjects] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
+  const [failedIds, setFailedIds] = useState<string[]>([])
 
   useEffect(() => {
     loadFromLocalStorage()
@@ -28,16 +32,37 @@ export default function ComparePageContent() {
 
       try {
         setLoading(true)
-        const promises = compareList.map(id => 
-          fetch(`/api/listings/${id}`, { credentials: 'include' })
-            .then(res => res.ok ? res.json() : null)
-            .catch(() => null)
-        )
+        setFailedIds([])
+        
+        const promises = compareList.map(async (id) => {
+          try {
+            const res = await fetch(`/api/listings/${id}`, { credentials: 'include' })
+            if (res.ok) {
+              return await res.json()
+            } else {
+              console.error(`Failed to fetch listing ${id}: ${res.status}`)
+              return null
+            }
+          } catch (err) {
+            console.error(`Error fetching listing ${id}:`, err)
+            return null
+          }
+        })
         
         const results = await Promise.all(promises)
-        setObjects(results.filter(Boolean))
+        const validListings = results.filter(Boolean) as Listing[]
+        const failed = compareList.filter((id, index) => !results[index])
+        
+        setObjects(validListings)
+        setFailedIds(failed)
+        
+        // Show error if some listings failed to load
+        if (failed.length > 0) {
+          showError(`Kunde inte ladda ${failed.length} av ${compareList.length} bolag`)
+        }
       } catch (error) {
         console.error('Error fetching listings:', error)
+        showError('Ett fel uppstod vid laddning av bolag')
         setObjects([])
       } finally {
         setLoading(false)
@@ -45,7 +70,7 @@ export default function ComparePageContent() {
     }
 
     fetchListings()
-  }, [compareList, user?.id])
+  }, [compareList, user?.id, showError])
 
   if (loading) {
     return (

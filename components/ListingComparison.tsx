@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 
 interface Listing {
@@ -28,13 +28,7 @@ export function ListingComparison({ listingIds = [], onRemove, onClose }: Props)
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    if (listingIds.length > 0) {
-      loadListings()
-    }
-  }, [listingIds])
-
-  const loadListings = async () => {
+  const loadListings = useCallback(async () => {
     setLoading(true)
     try {
       const results = await Promise.all(
@@ -42,7 +36,7 @@ export function ListingComparison({ listingIds = [], onRemove, onClose }: Props)
           const res = await fetch(`/api/listings/${id}`)
           if (res.ok) {
             const data = await res.json()
-            return data.listing
+            return data // API returns listing directly, not wrapped in .listing
           }
           return null
         })
@@ -53,7 +47,13 @@ export function ListingComparison({ listingIds = [], onRemove, onClose }: Props)
     } finally {
       setLoading(false)
     }
-  }
+  }, [listingIds])
+
+  useEffect(() => {
+    if (listingIds.length > 0) {
+      loadListings()
+    }
+  }, [listingIds, loadListings])
 
   const formatCurrency = (value: number) => {
     if (value >= 1000000) {
@@ -343,41 +343,5 @@ export function ListingComparison({ listingIds = [], onRemove, onClose }: Props)
       </div>
     </div>
   )
-}
-
-// Hook for managing comparison state
-export function useListingComparison(maxItems: number = 3) {
-  const [comparisonIds, setComparisonIds] = useState<string[]>([])
-
-  const addToComparison = (id: string) => {
-    if (comparisonIds.length >= maxItems) {
-      alert(`Max ${maxItems} bolag kan jämföras samtidigt`)
-      return false
-    }
-    if (comparisonIds.includes(id)) {
-      return false
-    }
-    setComparisonIds(prev => [...prev, id])
-    return true
-  }
-
-  const removeFromComparison = (id: string) => {
-    setComparisonIds(prev => prev.filter(i => i !== id))
-  }
-
-  const clearComparison = () => {
-    setComparisonIds([])
-  }
-
-  const isInComparison = (id: string) => comparisonIds.includes(id)
-
-  return {
-    comparisonIds,
-    addToComparison,
-    removeFromComparison,
-    clearComparison,
-    isInComparison,
-    canAdd: comparisonIds.length < maxItems,
-  }
 }
 

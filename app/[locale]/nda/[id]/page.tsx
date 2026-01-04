@@ -14,12 +14,12 @@ export default function NDASigningPage() {
   const locale = useLocale()
   const t = useTranslations('nda')
   const { user, loading: authLoading } = useAuth()
-  const { ndaSignedObjects, signNDA } = useBuyerStore()
+  const { ndaRequestedObjects, requestNDA } = useBuyerStore()
   
   const objectId = params.id as string
   const [object, setObject] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const hasSignedNDA = ndaSignedObjects.includes(objectId)
+  const hasRequestedNDA = ndaRequestedObjects.includes(objectId)
 
   // Fetch listing from API
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function NDASigningPage() {
     return <div>{t('objectNotFound')}</div>
   }
 
-  if (hasSignedNDA) {
+  if (hasRequestedNDA) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-white to-light-blue/20 flex items-center justify-center py-6 sm:py-8 md:py-12 px-3 sm:px-4">
         <div className="max-w-2xl w-full card text-center">
@@ -180,7 +180,7 @@ export default function NDASigningPage() {
         const errorData = await ndaResponse.json()
         if (errorData.existing) {
           // NDA already exists, just update local state and continue
-          signNDA(objectId)
+          requestNDA(objectId)
           setStep(3)
           return
         }
@@ -191,7 +191,7 @@ export default function NDASigningPage() {
       console.log('NDA created:', ndaData)
 
       // Update local state
-      signNDA(objectId)
+      requestNDA(objectId)
       setStep(3)
     } catch (err) {
       setError(err instanceof Error ? err.message : t('errorGeneric'))
