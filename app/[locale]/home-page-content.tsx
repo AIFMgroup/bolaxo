@@ -67,19 +67,24 @@ export default function HomePageContent() {
             <div className="flex flex-col sm:flex-row gap-4 mb-10">
               <Link
                 href={`/${locale}/sok`}
-                className="group inline-flex items-center justify-center gap-3 bg-navy text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 active:scale-95 sm:hover:scale-105 shadow-lg shadow-navy/30 min-h-[56px]"
+                className="group relative inline-flex items-center justify-center gap-3 bg-gradient-to-r from-navy via-navy/95 to-navy text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 active:scale-95 sm:hover:scale-105 shadow-lg hover:shadow-xl hover:shadow-navy/40 min-h-[56px] overflow-hidden animate-pulse-box-navy whitespace-nowrap"
               >
-                <Search className="w-5 h-5" />
-                <span>Utforska bolag till salu</span>
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                {/* Shimmer effect */}
+                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                <Search className="w-5 h-5 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+                <span className="relative z-10">Utforska bolag till salu</span>
+                <ArrowRight className="w-5 h-5 relative z-10 transition-transform group-hover:translate-x-1" />
               </Link>
               
               <Link
                 href={`/${locale}/salja/skapa-annons`}
-                className="group inline-flex items-center justify-center gap-3 bg-navy/10 text-navy font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 active:scale-95 sm:hover:bg-navy/20 border-2 border-navy/20 min-h-[56px]"
+                className="group relative inline-flex items-center justify-center gap-3 bg-white text-navy font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 active:scale-95 sm:hover:scale-105 border-2 border-navy/30 hover:border-navy/60 hover:bg-navy/5 min-h-[56px] overflow-hidden shadow-md hover:shadow-lg whitespace-nowrap"
               >
-                <FileText className="w-5 h-5" />
-                <span>Annonsera ditt företag</span>
+                {/* Subtle shimmer */}
+                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-navy/10 to-transparent" />
+                <FileText className="w-5 h-5 relative z-10 group-hover:scale-110 transition-transform duration-300" />
+                <span className="relative z-10">Annonsera ditt företag</span>
+                <ArrowRight className="w-5 h-5 relative z-10 opacity-0 -ml-3 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
               </Link>
             </div>
             
